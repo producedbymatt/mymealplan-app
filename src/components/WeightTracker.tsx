@@ -13,6 +13,8 @@ interface WeightEntry {
 const WeightTracker = () => {
   const [entries, setEntries] = React.useState<WeightEntry[]>([]);
   const [newWeight, setNewWeight] = React.useState("");
+  const [targetWeight, setTargetWeight] = React.useState("");
+  const [targetDays, setTargetDays] = React.useState("");
   const { toast } = useToast();
 
   const addWeight = (e: React.FormEvent) => {
@@ -36,30 +38,82 @@ const WeightTracker = () => {
     setEntries([...entries, newEntry]);
     setNewWeight("");
 
-    if (entries.length > 0) {
+    if (entries.length > 0 && targetWeight) {
       const weightLoss = entries[0].weight - weight;
+      const targetLoss = entries[0].weight - parseFloat(targetWeight);
+      const progressPercentage = (weightLoss / targetLoss) * 100;
+      
       if (weightLoss >= 5) {
         toast({
           title: "Milestone Achieved! 🎉",
-          description: `Congratulations! You've lost ${weightLoss.toFixed(1)} kg!`,
+          description: `Congratulations! You've lost ${weightLoss.toFixed(1)} lbs!`,
+        });
+      }
+
+      if (progressPercentage >= 50 && progressPercentage < 51) {
+        toast({
+          title: "Halfway There! 🎉",
+          description: "You're halfway to your goal weight!",
         });
       }
     }
   };
 
+  const setGoal = (e: React.FormEvent) => {
+    e.preventDefault();
+    const weight = parseFloat(targetWeight);
+    const days = parseInt(targetDays);
+
+    if (isNaN(weight) || isNaN(days)) {
+      toast({
+        title: "Invalid Goal",
+        description: "Please enter valid weight and days values.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    toast({
+      title: "Goal Set!",
+      description: `Aiming to reach ${weight} lbs in ${days} days.`,
+    });
+  };
+
   return (
     <Card className="p-6 w-full max-w-2xl mx-auto">
       <h2 className="text-2xl font-bold mb-4">Weight Tracker</h2>
-      <form onSubmit={addWeight} className="mb-6 flex gap-4">
-        <Input
-          type="number"
-          value={newWeight}
-          onChange={(e) => setNewWeight(e.target.value)}
-          placeholder="Enter today's weight (kg)"
-          className="flex-1"
-        />
-        <Button type="submit">Log Weight</Button>
-      </form>
+      
+      <div className="mb-6 space-y-4">
+        <form onSubmit={setGoal} className="flex gap-4">
+          <Input
+            type="number"
+            value={targetWeight}
+            onChange={(e) => setTargetWeight(e.target.value)}
+            placeholder="Target weight (lbs)"
+            className="flex-1"
+          />
+          <Input
+            type="number"
+            value={targetDays}
+            onChange={(e) => setTargetDays(e.target.value)}
+            placeholder="Days to achieve"
+            className="flex-1"
+          />
+          <Button type="submit">Set Goal</Button>
+        </form>
+
+        <form onSubmit={addWeight} className="flex gap-4">
+          <Input
+            type="number"
+            value={newWeight}
+            onChange={(e) => setNewWeight(e.target.value)}
+            placeholder="Enter today's weight (lbs)"
+            className="flex-1"
+          />
+          <Button type="submit">Log Weight</Button>
+        </form>
+      </div>
+
       <div className="h-[300px] w-full">
         {entries.length > 0 ? (
           <ResponsiveContainer width="100%" height="100%">

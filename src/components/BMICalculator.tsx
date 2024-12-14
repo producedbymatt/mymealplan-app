@@ -16,10 +16,10 @@ const BMICalculator = ({ onBMICalculated }: BMICalculatorProps) => {
 
   const calculateBMI = (e: React.FormEvent) => {
     e.preventDefault();
-    const heightInMeters = parseFloat(height) / 100;
-    const weightInKg = parseFloat(weight);
+    const heightInInches = parseFloat(height);
+    const weightInPounds = parseFloat(weight);
     
-    if (isNaN(heightInMeters) || isNaN(weightInKg)) {
+    if (isNaN(heightInInches) || isNaN(weightInPounds)) {
       toast({
         title: "Invalid Input",
         description: "Please enter valid height and weight values.",
@@ -28,7 +28,8 @@ const BMICalculator = ({ onBMICalculated }: BMICalculatorProps) => {
       return;
     }
 
-    const calculatedBMI = weightInKg / (heightInMeters * heightInMeters);
+    // BMI Formula for imperial units: (weight in pounds * 703) / (height in inches)²
+    const calculatedBMI = (weightInPounds * 703) / (heightInInches * heightInInches);
     setBMI(calculatedBMI);
     onBMICalculated(calculatedBMI);
   };
@@ -45,7 +46,7 @@ const BMICalculator = ({ onBMICalculated }: BMICalculatorProps) => {
       <h2 className="text-2xl font-bold mb-4 text-center">BMI Calculator</h2>
       <form onSubmit={calculateBMI} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium mb-1">Height (cm)</label>
+          <label className="block text-sm font-medium mb-1">Height (inches)</label>
           <Input
             type="number"
             value={height}
@@ -55,7 +56,7 @@ const BMICalculator = ({ onBMICalculated }: BMICalculatorProps) => {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Weight (kg)</label>
+          <label className="block text-sm font-medium mb-1">Weight (lbs)</label>
           <Input
             type="number"
             value={weight}
