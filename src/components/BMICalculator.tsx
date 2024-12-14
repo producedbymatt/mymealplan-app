@@ -6,9 +6,10 @@ import { useToast } from "@/components/ui/use-toast";
 
 interface BMICalculatorProps {
   onBMICalculated: (bmi: number) => void;
+  onMetricsUpdate: (height: number, weight: number) => void;
 }
 
-const BMICalculator = ({ onBMICalculated }: BMICalculatorProps) => {
+const BMICalculator = ({ onBMICalculated, onMetricsUpdate }: BMICalculatorProps) => {
   const [height, setHeight] = React.useState("");
   const [weight, setWeight] = React.useState("");
   const [bmi, setBMI] = React.useState<number | null>(null);
@@ -32,6 +33,7 @@ const BMICalculator = ({ onBMICalculated }: BMICalculatorProps) => {
     const calculatedBMI = (weightInPounds * 703) / (heightInInches * heightInInches);
     setBMI(calculatedBMI);
     onBMICalculated(calculatedBMI);
+    onMetricsUpdate(heightInInches, weightInPounds);
   };
 
   const getBMICategory = (bmi: number) => {

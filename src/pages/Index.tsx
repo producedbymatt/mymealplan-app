@@ -1,9 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import BMICalculator from "@/components/BMICalculator";
 import WeightTracker from "@/components/WeightTracker";
 import MealPlan from "@/components/MealPlan";
+import CalorieCalculator from "@/components/CalorieCalculator";
 
 const Index = () => {
+  const [userMetrics, setUserMetrics] = useState({
+    height: 0,
+    currentWeight: 0,
+    targetWeight: 0,
+    targetDays: 0,
+  });
+
   const handleBMICalculated = (bmi: number) => {
     console.log("BMI calculated:", bmi);
   };
@@ -16,12 +24,34 @@ const Index = () => {
         </h1>
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           <div>
-            <BMICalculator onBMICalculated={handleBMICalculated} />
+            <BMICalculator 
+              onBMICalculated={handleBMICalculated}
+              onMetricsUpdate={(height, weight) => {
+                setUserMetrics(prev => ({
+                  ...prev,
+                  height,
+                  currentWeight: weight
+                }));
+              }}
+            />
           </div>
           <div className="md:col-span-2">
-            <WeightTracker />
+            <WeightTracker
+              onGoalSet={(weight, days) => {
+                setUserMetrics(prev => ({
+                  ...prev,
+                  targetWeight: weight,
+                  targetDays: days
+                }));
+              }}
+            />
           </div>
         </div>
+        {userMetrics.height > 0 && userMetrics.targetWeight > 0 && (
+          <div className="mt-8">
+            <CalorieCalculator {...userMetrics} />
+          </div>
+        )}
         <div className="mt-8">
           <MealPlan />
         </div>
