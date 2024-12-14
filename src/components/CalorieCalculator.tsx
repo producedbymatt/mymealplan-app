@@ -68,6 +68,27 @@ const CalorieCalculator = ({ height, currentWeight, targetWeight, targetDays }: 
   const weightLossPerWeek = ((currentWeight - targetWeight) / targetDays) * 7;
   const { minProtein, maxProtein } = calculateProteinNeeds();
 
+  const getWeightLossWarning = (weeklyLoss: number) => {
+    if (weeklyLoss > 2) {
+      return {
+        message: "Your target may be too aggressive. A safe weight loss rate is 1-2 pounds per week.",
+        color: "text-red-500"
+      };
+    }
+    if (weeklyLoss < 0) {
+      return {
+        message: "This plan will result in weight gain. Adjust if weight loss is your goal.",
+        color: "text-yellow-500"
+      };
+    }
+    return {
+      message: "Your target is within a healthy weight loss range of 1-2 pounds per week.",
+      color: "text-green-500"
+    };
+  };
+
+  const weightLossWarning = getWeightLossWarning(weightLossPerWeek);
+
   return (
     <Card className="p-6 w-full max-w-md mx-auto mt-4">
       <h2 className="text-2xl font-bold mb-4 text-center">Calorie Analysis</h2>
@@ -106,6 +127,9 @@ const CalorieCalculator = ({ height, currentWeight, targetWeight, targetDays }: 
           <p className="text-sm text-center">
             To reach your goal weight of {targetWeight} lbs in {targetDays} days, you should aim to lose approximately{" "}
             <span className="font-semibold">{weightLossPerWeek.toFixed(1)} lbs per week</span>
+          </p>
+          <p className={`text-sm text-center mt-2 ${weightLossWarning.color}`}>
+            {weightLossWarning.message}
           </p>
         </div>
 
