@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card } from "@/components/ui/card";
+import { Slider } from "@/components/ui/slider";
 
 interface CalorieCalculatorProps {
   height: number;
@@ -9,6 +10,8 @@ interface CalorieCalculatorProps {
 }
 
 const CalorieCalculator = ({ height, currentWeight, targetWeight, targetDays }: CalorieCalculatorProps) => {
+  const [activityLevel, setActivityLevel] = useState([1.2]); // Default to sedentary
+
   // Calculate BMR using Harris-Benedict equation (for standard units)
   const calculateBMR = () => {
     // Converting weight to kg and height to cm for the formula
@@ -23,24 +26,57 @@ const CalorieCalculator = ({ height, currentWeight, targetWeight, targetDays }: 
 
   const calculateDailyCalories = () => {
     const bmr = calculateBMR();
-    const tdee = bmr * 1.2; // Assuming sedentary lifestyle
+    const tdee = bmr * activityLevel[0]; // Using activity multiplier
     
     // Calculate required deficit
     const weightToLose = currentWeight - targetWeight;
     const caloriesPerDay = tdee - ((weightToLose * 3500) / targetDays);
     
     console.log("TDEE:", tdee);
+    console.log("Activity Level:", activityLevel[0]);
     console.log("Target daily calories:", caloriesPerDay);
     
     return Math.max(1200, Math.round(caloriesPerDay)); // Never recommend below 1200 calories
   };
 
+  const calculateProteinNeeds = () => {
+    // Recommend 0.8-1.2g of protein per pound of target body weight
+    const minProtein = Math.round(targetWeight * 0.8);
+    const maxProtein = Math.round(targetWeight * 1.2);
+    return { minProtein, maxProtein };
+  };
+
+  const getActivityLevelLabel = (level: number) => {
+    if (level <= 1.2) return "Sedentary (little or no exercise)";
+    if (level <= 1.375) return "Lightly active (exercise 1-3 times/week)";
+    if (level <= 1.55) return "Moderately active (exercise 3-5 times/week)";
+    if (level <= 1.725) return "Very active (exercise 6-7 times/week)";
+    return "Extra active (very intense exercise daily)";
+  };
+
   const dailyCalories = calculateDailyCalories();
   const weightLossPerWeek = ((currentWeight - targetWeight) / targetDays) * 7;
+  const { minProtein, maxProtein } = calculateProteinNeeds();
 
   return (
     <Card className="p-6 w-full max-w-md mx-auto mt-4">
       <h2 className="text-2xl font-bold mb-4 text-center">Calorie Analysis</h2>
+      
+      <div className="mb-6">
+        <label className="block text-sm font-medium mb-2">Activity Level</label>
+        <Slider
+          value={activityLevel}
+          onValueChange={setActivityLevel}
+          min={1.2}
+          max={1.9}
+          step={0.025}
+          className="mb-2"
+        />
+        <p className="text-sm text-muted-foreground">
+          {getActivityLevelLabel(activityLevel[0])}
+        </p>
+      </div>
+
       <div className="space-y-4">
         <div className="text-center">
           <p className="text-lg font-semibold">
@@ -48,14 +84,23 @@ const CalorieCalculator = ({ height, currentWeight, targetWeight, targetDays }: 
             <span className="block text-2xl text-green-600">{dailyCalories} calories</span>
           </p>
         </div>
+
+        <div className="text-center">
+          <p className="text-lg font-semibold">
+            Daily Protein Target:
+            <span className="block text-2xl text-blue-600">{minProtein}-{maxProtein}g</span>
+          </p>
+        </div>
+
         <div className="bg-muted p-4 rounded-lg">
           <p className="text-sm text-center">
             To reach your goal weight of {targetWeight} lbs in {targetDays} days, you should aim to lose approximately{" "}
             <span className="font-semibold">{weightLossPerWeek.toFixed(1)} lbs per week</span>
           </p>
         </div>
+
         <div className="text-xs text-gray-500 text-center mt-2">
-          * Calculations assume a sedentary lifestyle. Adjust your intake based on your activity level.
+          * Adjust your intake based on how you feel and your progress. These are general guidelines.
         </div>
       </div>
     </Card>
