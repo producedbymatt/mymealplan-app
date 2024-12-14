@@ -10,7 +10,11 @@ interface WeightEntry {
   weight: number;
 }
 
-const WeightTracker = () => {
+interface WeightTrackerProps {
+  onGoalSet?: (weight: number, days: number) => void;
+}
+
+const WeightTracker = ({ onGoalSet }: WeightTrackerProps) => {
   const [entries, setEntries] = React.useState<WeightEntry[]>([]);
   const [newWeight, setNewWeight] = React.useState("");
   const [targetWeight, setTargetWeight] = React.useState("");
@@ -71,6 +75,10 @@ const WeightTracker = () => {
         variant: "destructive",
       });
       return;
+    }
+
+    if (onGoalSet) {
+      onGoalSet(weight, days);
     }
 
     toast({
