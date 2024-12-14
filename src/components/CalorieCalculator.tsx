@@ -26,23 +26,33 @@ const CalorieCalculator = ({ height, currentWeight, targetWeight, targetDays }: 
 
   const calculateDailyCalories = () => {
     const bmr = calculateBMR();
-    const tdee = bmr * activityLevel[0]; // Using activity multiplier
+    const tdee = bmr * activityLevel[0];
     
-    // Calculate required deficit
+    // Calculate required deficit for weight loss
     const weightToLose = currentWeight - targetWeight;
-    const caloriesPerDay = tdee - ((weightToLose * 3500) / targetDays);
+    const totalCaloriesNeeded = weightToLose * 3500; // 3500 calories per pound
+    const dailyDeficit = totalCaloriesNeeded / targetDays;
+    
+    // Calculate target calories with deficit
+    const targetCalories = tdee - dailyDeficit;
     
     console.log("TDEE:", tdee);
     console.log("Activity Level:", activityLevel[0]);
-    console.log("Target daily calories:", caloriesPerDay);
+    console.log("Daily deficit needed:", dailyDeficit);
+    console.log("Target daily calories:", targetCalories);
     
-    return Math.max(1200, Math.round(caloriesPerDay)); // Never recommend below 1200 calories
+    return Math.max(1200, Math.round(targetCalories));
   };
 
   const calculateProteinNeeds = () => {
-    // Recommend 0.8-1.2g of protein per pound of target body weight
-    const minProtein = Math.round(targetWeight * 0.8);
-    const maxProtein = Math.round(targetWeight * 1.2);
+    // Adjust protein needs based on activity level
+    // More active individuals need more protein
+    const baseProteinMultiplier = activityLevel[0] >= 1.55 ? 1.0 : 0.8;
+    const maxProteinMultiplier = activityLevel[0] >= 1.55 ? 1.4 : 1.2;
+    
+    const minProtein = Math.round(targetWeight * baseProteinMultiplier);
+    const maxProtein = Math.round(targetWeight * maxProteinMultiplier);
+    
     return { minProtein, maxProtein };
   };
 
