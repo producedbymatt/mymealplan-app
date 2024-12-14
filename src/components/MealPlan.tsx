@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
+import { RefreshCw } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
 interface Meal {
   name: string;
@@ -16,7 +19,46 @@ interface MealTimeSlot {
   options: Meal[];
 }
 
-const mealPlan: MealTimeSlot[] = [
+// Additional meal options pool
+const mealOptionsPool: Meal[] = [
+  {
+    name: "Greek Yogurt Bowl",
+    calories: 320,
+    protein: 20,
+    carbs: 40,
+    fat: 12,
+  },
+  {
+    name: "Tuna Avocado Salad",
+    calories: 390,
+    protein: 28,
+    carbs: 20,
+    fat: 24,
+  },
+  {
+    name: "Chicken Stir-Fry",
+    calories: 410,
+    protein: 32,
+    carbs: 45,
+    fat: 16,
+  },
+  {
+    name: "Mediterranean Bowl",
+    calories: 440,
+    protein: 22,
+    carbs: 58,
+    fat: 18,
+  },
+  {
+    name: "Tofu Veggie Bowl",
+    calories: 360,
+    protein: 20,
+    carbs: 48,
+    fat: 14,
+  },
+];
+
+const initialMealPlan: MealTimeSlot[] = [
   {
     time: "12:00 PM - 2:00 PM",
     options: [
@@ -72,6 +114,32 @@ const mealPlan: MealTimeSlot[] = [
 ];
 
 const MealPlan = () => {
+  const [mealPlan, setMealPlan] = useState<MealTimeSlot[]>(initialMealPlan);
+  const { toast } = useToast();
+
+  const refreshMealOptions = (timeSlotIndex: number) => {
+    console.log(`Refreshing meal options for time slot ${timeSlotIndex}`);
+    
+    setMealPlan((currentPlan) => {
+      const newPlan = [...currentPlan];
+      const newOptions = [...mealOptionsPool]
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 3);
+      
+      newPlan[timeSlotIndex] = {
+        ...newPlan[timeSlotIndex],
+        options: newOptions,
+      };
+      
+      return newPlan;
+    });
+
+    toast({
+      title: "Meal options refreshed",
+      description: "New meal suggestions have been generated.",
+    });
+  };
+
   return (
     <Card className="p-6 w-full max-w-2xl mx-auto">
       <h2 className="text-2xl font-bold mb-4">Today's Meal Plan</h2>
@@ -80,7 +148,18 @@ const MealPlan = () => {
       </p>
       {mealPlan.map((slot, index) => (
         <div key={slot.time} className="mb-6">
-          <h3 className="text-xl font-semibold mb-3">{slot.time}</h3>
+          <div className="flex justify-between items-center mb-3">
+            <h3 className="text-xl font-semibold">{slot.time}</h3>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => refreshMealOptions(index)}
+              className="flex items-center gap-2"
+            >
+              <RefreshCw className="h-4 w-4" />
+              Refresh Options
+            </Button>
+          </div>
           <div className="grid gap-4">
             {slot.options.map((meal, mealIndex) => (
               <div
