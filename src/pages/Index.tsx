@@ -72,7 +72,7 @@ const Index = () => {
         </div>
       </div>
       <footer className="mt-16 py-8 bg-gray-100">
-        <div className="container mx-auto px-4 flex flex-col items-center">
+        <div className="container mx-auto px-4 flex flex-col items-center text-center">
           <img 
             src="/lovable-uploads/67003c76-1908-4b2f-93d3-01ea4a4cf510.png" 
             alt="MyMealPlan Logo" 
