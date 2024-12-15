@@ -95,7 +95,6 @@ const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: Me
       });
   };
 
-  // Update meal plan when calories or protein targets change
   useEffect(() => {
     console.log('Updating meal plan with new targets:', {
       dailyCalories,
