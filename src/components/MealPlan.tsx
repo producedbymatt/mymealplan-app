@@ -106,9 +106,9 @@ const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: Me
 
     const caloriesPerMeal = Math.round(dailyCalories / 3);
     const timeSlots = [
-      "7:00 AM - 9:00 AM",
-      "12:00 PM - 2:00 PM",
-      "6:00 PM - 8:00 PM"
+      "Breakfast",
+      "Lunch",
+      "Dinner"
     ];
     
     setUsedRecipes(new Set());
