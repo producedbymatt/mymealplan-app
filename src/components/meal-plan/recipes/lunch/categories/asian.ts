@@ -2,33 +2,41 @@ import { Meal } from "../../../types";
 
 export const asianLunchRecipes: Meal[] = [
   {
-    name: "Asian Tempeh Noodle Bowl",
+    name: "Asian Ginger Chicken Bowl",
     calories: 520,
-    protein: 28,
-    carbs: 65,
+    protein: 35,
+    carbs: 58,
     fat: 18,
     recipe: {
       ingredients: [
+        "6 oz chicken breast, sliced (220 cal)",
         "2 cups rice noodles (220 cal)",
-        "8 oz tempeh (320 cal)",
-        "1 cup mixed vegetables (50 cal)",
-        "2 tbsp peanut sauce (120 cal)",
-        "1 tbsp sesame oil (120 cal)"
+        "1 cup mixed Asian vegetables (broccoli, snap peas, carrots) (50 cal)",
+        "2 tbsp stir-fry sauce (120 cal)",
+        "1 tbsp sesame oil (120 cal)",
+        "1 tbsp fresh ginger, minced (5 cal)",
+        "2 cloves garlic, minced (10 cal)",
+        "2 green onions, chopped (5 cal)"
       ],
       instructions: [
-        "Bring a large pot of water to a rolling boil",
-        "Add rice noodles and cook according to package instructions (usually 3-4 minutes)",
-        "While noodles cook, cut tempeh into 1-inch cubes",
-        "Drain noodles and rinse with cold water to prevent sticking, set aside",
-        "Heat sesame oil in a large wok or pan over medium-high heat until shimmering",
-        "Add tempeh cubes and pan-fry for 3-4 minutes per side until golden brown and crispy",
-        "Add mixed vegetables to the same pan, keeping tempeh to one side",
+        "Bring a large pot of water to a rolling boil for the rice noodles",
+        "While water heats, slice chicken breast into thin, even strips",
+        "Mince fresh ginger and garlic, set aside together",
+        "Chop green onions, separating white and green parts",
+        "Cut vegetables into similar-sized pieces for even cooking",
+        "Add rice noodles to boiling water and cook according to package instructions (usually 3-4 minutes)",
+        "While noodles cook, heat sesame oil in a large wok or pan over medium-high heat until shimmering",
+        "Add white parts of green onions, ginger, and garlic to the hot oil, stir-fry for 30 seconds until fragrant",
+        "Add chicken strips to the pan, spread them out evenly",
+        "Cook chicken for 3-4 minutes, stirring occasionally, until nearly cooked through",
+        "Add vegetables to the pan, keeping chicken to one side",
         "Stir-fry vegetables for 2-3 minutes until crisp-tender but still vibrant in color",
-        "Return noodles to the pan and add peanut sauce",
-        "Using tongs, gently toss everything together until well combined and heated through",
+        "Drain noodles and rinse with cold water to prevent sticking",
+        "Add noodles to the pan along with stir-fry sauce",
+        "Toss everything together until well combined and heated through",
         "Taste and adjust seasoning if needed",
-        "Transfer to serving bowls immediately while hot",
-        "Optional: Garnish with chopped green onions and sesame seeds"
+        "Garnish with green parts of onions and serve immediately while hot",
+        "Optional: add a sprinkle of sesame seeds or crushed peanuts for extra crunch"
       ],
       prepTime: "15 minutes",
       cookTime: "20 minutes"
