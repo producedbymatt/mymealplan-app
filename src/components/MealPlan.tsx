@@ -32,7 +32,7 @@ const scaleMeal = (originalMeal: Meal, targetCalories: number): Meal => {
       ? scaledAmount.toString() 
       : scaledAmount.toFixed(1);
     
-    return `${formattedAmount} ${unit} ${rest.join(" ").replace(/\(\d+) cal\)/, `(${scaledCalories} cal)`)}`;
+    return `${formattedAmount} ${unit} ${rest.join(" ").replace(/\(\d+ cal\)/, `(${scaledCalories} cal)`)}`;
   });
 
   // Use the actual sum of scaled ingredient calories
