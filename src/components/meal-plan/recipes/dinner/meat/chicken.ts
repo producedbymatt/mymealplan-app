@@ -126,5 +126,38 @@ export const chickenRecipes: Meal[] = [
       prepTime: "20 minutes",
       cookTime: "30 minutes"
     }
+  },
+  {
+    name: "Mediterranean Chicken Skillet",
+    calories: 520,
+    protein: 45,
+    carbs: 30,
+    fat: 25,
+    recipe: {
+      ingredients: [
+        "6 oz chicken breast (165 cal)",
+        "1 cup cherry tomatoes (27 cal)",
+        "1 cup artichoke hearts (50 cal)",
+        "1/2 cup kalamata olives (200 cal)",
+        "2 tbsp olive oil (240 cal)",
+        "2 cloves garlic (10 cal)",
+        "1 tbsp fresh oregano (5 cal)",
+        "1/2 lemon (10 cal)",
+        "1/4 cup crumbled feta (100 cal)"
+      ],
+      instructions: [
+        "Slice chicken breast into even pieces",
+        "Heat olive oil in a large skillet over medium heat",
+        "Add minced garlic and cook until fragrant, about 30 seconds",
+        "Add chicken and cook until golden, about 5-6 minutes",
+        "Add halved cherry tomatoes and artichoke hearts",
+        "Stir in olives and oregano",
+        "Cook for another 5 minutes until tomatoes start to burst",
+        "Squeeze lemon juice over the dish",
+        "Top with crumbled feta cheese and serve hot"
+      ],
+      prepTime: "10 minutes",
+      cookTime: "20 minutes"
+    }
   }
 ];

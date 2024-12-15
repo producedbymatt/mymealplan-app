@@ -1,150 +1,196 @@
 import { Meal } from "../../../types";
-import { grilledFishRecipes } from "./grilled-fish";
 
 export const fishRecipes: Meal[] = [
-  ...grilledFishRecipes,
   {
-    name: "Tuna Avocado Salad",
-    calories: 455,
-    protein: 35,
-    carbs: 15,
-    fat: 25,
+    name: "Baked Cod with Quinoa",
+    calories: 440,
+    protein: 38,
+    carbs: 40,
+    fat: 15,
     recipe: {
       ingredients: [
-        "2 cans tuna in water, drained (240 cal)",
-        "1 medium avocado (160 cal)",
-        "1/4 cup red onion, diced (15 cal)",
-        "0.5 tbsp olive oil (60 cal)",
-        "1 tbsp lemon juice (5 cal)",
-        "2 cups mixed greens (10 cal)",
-        "1/2 cup cherry tomatoes (25 cal)"
+        "6 oz cod fillet (140 cal)",
+        "1 cup cooked quinoa (220 cal)",
+        "1 cup roasted vegetables (50 cal)",
+        "1 tbsp olive oil (120 cal)",
+        "Lemon and herbs (10 cal)"
       ],
       instructions: [
-        "Drain the tuna and place it in a mixing bowl, breaking it up with a fork.",
-        "Cut the avocado in half, remove the pit, and scoop the flesh into the bowl with the tuna.",
-        "Add diced red onion, olive oil, and lemon juice to the bowl.",
-        "Gently mix all ingredients together until well combined, being careful not to mash the avocado too much.",
-        "Season with salt and pepper to taste.",
-        "Serve the tuna avocado mixture over a bed of mixed greens.",
-        "Halve the cherry tomatoes and scatter them on top of the salad before serving."
+        "Season cod with herbs and lemon",
+        "Bake cod until flaky",
+        "Cook quinoa according to package",
+        "Roast vegetables with olive oil",
+        "Serve cod over quinoa with vegetables"
       ],
       prepTime: "10 minutes",
-      cookTime: "0 minutes"
+      cookTime: "25 minutes"
     }
   },
   {
-    name: "Shrimp and Cauliflower Rice Bowl",
-    calories: 410,
+    name: "Salmon Power Bowl",
+    calories: 570,
     protein: 35,
-    carbs: 25,
+    carbs: 35,
     fat: 22,
     recipe: {
       ingredients: [
-        "8 oz shrimp (240 cal)",
-        "2 cups cauliflower rice (50 cal)",
-        "1 cup mixed vegetables (50 cal)",
-        "1 tbsp coconut oil (120 cal)",
-        "Garlic and ginger (10 cal)"
+        "6 oz salmon fillet (270 cal)",
+        "1 cup sweet potato, cubed (120 cal)",
+        "1.5 cups broccoli (45 cal)",
+        "1 tbsp olive oil (120 cal)",
+        "1/2 lemon (10 cal)",
+        "Fresh herbs (5 cal)",
+        "3/4 cup quinoa, cooked (160 cal)"
       ],
       instructions: [
-        "Peel and devein the shrimp, then season with salt and pepper.",
-        "Heat coconut oil in a large skillet over medium heat.",
-        "Add minced garlic and ginger to the skillet and sauté for 1-2 minutes until fragrant.",
-        "Add the shrimp to the skillet and cook for 3-4 minutes until they turn pink and opaque.",
-        "Remove the shrimp from the skillet and set aside.",
-        "In the same skillet, add cauliflower rice and mixed vegetables, stirring to combine.",
-        "Cook for 5-7 minutes until the vegetables are tender and the cauliflower rice is heated through.",
-        "Return the shrimp to the skillet, mixing everything together.",
-        "Serve hot, garnished with additional herbs if desired."
+        "Cook quinoa according to package instructions",
+        "Season salmon with herbs and lemon",
+        "Roast sweet potato and broccoli",
+        "Pan-sear salmon until cooked through",
+        "Assemble bowl with quinoa base",
+        "Top with vegetables and salmon"
       ],
       prepTime: "15 minutes",
-      cookTime: "15 minutes"
+      cookTime: "25 minutes"
     }
   },
   {
-    name: "Garlic Shrimp Pasta",
-    calories: 520,
-    protein: 35,
-    carbs: 45,
-    fat: 22,
+    name: "Grilled Tilapia Tacos",
+    calories: 450,
+    protein: 40,
+    carbs: 35,
+    fat: 20,
     recipe: {
       ingredients: [
-        "6 oz shrimp (180 cal)",
-        "2 oz whole grain pasta (200 cal)",
-        "2 cups vegetables (100 cal)",
-        "1 tbsp olive oil (120 cal)",
-        "Garlic and herbs (10 cal)",
-        "Parmesan cheese (60 cal)"
+        "6 oz tilapia (150 cal)",
+        "2 corn tortillas (120 cal)",
+        "1 cup cabbage slaw (30 cal)",
+        "1 avocado (120 cal)",
+        "Lime juice (5 cal)",
+        "Fresh cilantro (5 cal)",
+        "Spices (20 cal)"
       ],
       instructions: [
-        "Cook the pasta according to package instructions until al dente, then drain and set aside.",
-        "In a large skillet, heat olive oil over medium heat.",
-        "Add minced garlic and sauté for 1-2 minutes until fragrant.",
-        "Add the shrimp to the skillet and cook for 3-4 minutes until they turn pink.",
-        "Add the vegetables to the skillet and stir-fry for an additional 3-4 minutes until tender.",
-        "Combine the cooked pasta with the shrimp and vegetables in the skillet, tossing to mix well.",
-        "Season with salt, pepper, and herbs to taste.",
-        "Serve hot, topped with grated Parmesan cheese."
+        "Season tilapia with spices",
+        "Grill until flaky",
+        "Prepare cabbage slaw",
+        "Warm tortillas",
+        "Assemble tacos with fish and toppings"
+      ],
+      prepTime: "15 minutes",
+      cookTime: "10 minutes"
+    }
+  },
+  {
+    name: "Mediterranean Sea Bass",
+    calories: 480,
+    protein: 42,
+    carbs: 25,
+    fat: 24,
+    recipe: {
+      ingredients: [
+        "6 oz sea bass (160 cal)",
+        "2 cups mixed vegetables (100 cal)",
+        "1 tbsp olive oil (120 cal)",
+        "1 lemon (20 cal)",
+        "Fresh herbs (5 cal)",
+        "Capers (15 cal)",
+        "Garlic (10 cal)"
+      ],
+      instructions: [
+        "Season sea bass with herbs",
+        "Roast vegetables",
+        "Pan-sear fish until done",
+        "Make lemon-caper sauce",
+        "Serve fish over vegetables"
+      ],
+      prepTime: "10 minutes",
+      cookTime: "20 minutes"
+    }
+  },
+  {
+    name: "Asian Glazed Mahi-Mahi",
+    calories: 460,
+    protein: 45,
+    carbs: 30,
+    fat: 18,
+    recipe: {
+      ingredients: [
+        "6 oz mahi-mahi (165 cal)",
+        "1 cup brown rice (130 cal)",
+        "1 cup bok choy (20 cal)",
+        "2 tbsp soy glaze (80 cal)",
+        "1 tbsp sesame oil (120 cal)",
+        "Ginger and garlic (10 cal)"
+      ],
+      instructions: [
+        "Cook brown rice",
+        "Steam bok choy",
+        "Pan-sear mahi-mahi",
+        "Make Asian glaze",
+        "Combine and serve"
       ],
       prepTime: "15 minutes",
       cookTime: "20 minutes"
     }
   },
   {
-    name: "Cajun Seafood Bowl",
-    calories: 490,
-    protein: 40,
-    carbs: 35,
-    fat: 23,
+    name: "Herb-Crusted Trout",
+    calories: 440,
+    protein: 48,
+    carbs: 15,
+    fat: 22,
     recipe: {
       ingredients: [
-        "4 oz shrimp (120 cal)",
-        "2 oz white fish (60 cal)",
-        "1 cup cauliflower rice (25 cal)",
-        "1 cup vegetables (50 cal)",
+        "6 oz trout fillet (170 cal)",
+        "2 cups roasted vegetables (100 cal)",
         "1 tbsp olive oil (120 cal)",
-        "Cajun seasoning (15 cal)",
-        "Lemon (20 cal)"
+        "Fresh herbs (5 cal)",
+        "Lemon (20 cal)",
+        "Garlic (10 cal)"
       ],
       instructions: [
-        "Season the shrimp and white fish with Cajun seasoning.",
-        "Heat olive oil in a skillet over medium heat.",
-        "Add the seasoned shrimp and fish to the skillet and cook for 3-4 minutes until cooked through.",
-        "Remove the seafood from the skillet and set aside.",
-        "In the same skillet, add cauliflower rice and mixed vegetables, cooking for 5-7 minutes until tender.",
-        "Return the seafood to the skillet, mixing everything together.",
-        "Serve hot with lemon wedges on the side."
+        "Mix herbs for crust",
+        "Press herbs onto trout",
+        "Roast vegetables",
+        "Bake trout until flaky",
+        "Serve with lemon"
       ],
       prepTime: "15 minutes",
-      cookTime: "15 minutes"
+      cookTime: "20 minutes"
     }
   },
   {
-    name: "Poke Bowl",
-    calories: 470,
-    protein: 35,
-    carbs: 40,
-    fat: 20,
+    name: "Citrus-Glazed Salmon Bowl",
+    calories: 510,
+    protein: 42,
+    carbs: 35,
+    fat: 24,
     recipe: {
       ingredients: [
-        "6 oz sushi-grade tuna (180 cal)",
-        "1 cup brown rice (130 cal)",
-        "1 avocado (120 cal)",
-        "Cucumber (8 cal)",
-        "Seaweed (10 cal)",
-        "Soy sauce (10 cal)",
-        "Sesame oil (60 cal)"
+        "6 oz salmon fillet (290 cal)",
+        "1 cup quinoa (220 cal)",
+        "2 cups mixed greens (10 cal)",
+        "1 orange (62 cal)",
+        "2 tbsp honey (120 cal)",
+        "1 tbsp olive oil (120 cal)",
+        "Fresh herbs (5 cal)",
+        "1 tbsp sesame seeds (52 cal)"
       ],
       instructions: [
-        "Cook brown rice according to package instructions and let it cool slightly.",
-        "Cube the sushi-grade tuna and place it in a bowl.",
-        "Slice the avocado and cucumber into thin slices.",
-        "In a serving bowl, layer the brown rice, followed by the cubed tuna, avocado slices, and cucumber.",
-        "Top with seaweed, a drizzle of soy sauce, and sesame oil.",
-        "Serve immediately, garnished with additional toppings if desired."
+        "Cook quinoa according to package instructions",
+        "Prepare citrus glaze by mixing orange juice with honey",
+        "Season salmon with salt and pepper",
+        "Heat olive oil in a pan over medium-high heat",
+        "Cook salmon skin-side up for 4 minutes",
+        "Flip salmon and brush with citrus glaze",
+        "Cook for another 3-4 minutes until done",
+        "Arrange quinoa and greens in a bowl",
+        "Top with salmon and remaining glaze",
+        "Garnish with fresh herbs and sesame seeds"
       ],
-      prepTime: "20 minutes",
-      cookTime: "25 minutes"
+      prepTime: "10 minutes",
+      cookTime: "15 minutes"
     }
   }
 ];
