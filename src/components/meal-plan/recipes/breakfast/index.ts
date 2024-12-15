@@ -219,23 +219,26 @@ export const breakfastRecipes: Meal[] = [
     }
   },
   {
-    name: "Fruit and Cottage Cheese Bowl",
+    name: "Apple Cinnamon Protein Bowl",
     calories: 380,
     protein: 28,
     carbs: 42,
     fat: 14,
     recipe: {
       ingredients: [
-        "1 cup cottage cheese (220 cal)",
-        "1 cup mixed berries (85 cal)",
-        "1 tbsp honey (60 cal)",
-        "1/4 cup granola (120 cal)"
+        "1 cup Greek yogurt (130 cal)",
+        "1 apple, diced (95 cal)",
+        "1/4 cup granola (120 cal)",
+        "1 scoop vanilla protein powder (120 cal)",
+        "1 tsp cinnamon (6 cal)",
+        "1 tbsp honey (60 cal)"
       ],
       instructions: [
-        "Place cottage cheese in bowl",
-        "Top with berries",
-        "Drizzle with honey",
-        "Sprinkle granola on top"
+        "Mix Greek yogurt with protein powder",
+        "Add diced apple",
+        "Sprinkle with cinnamon",
+        "Top with granola",
+        "Drizzle with honey"
       ],
       prepTime: "5 minutes",
       cookTime: "0 minutes"
