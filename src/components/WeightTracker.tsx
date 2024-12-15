@@ -92,22 +92,26 @@ const WeightTracker = ({ onGoalSet }: WeightTrackerProps) => {
       <h2 className="text-2xl font-bold mb-4">Weight Tracker</h2>
       
       <div className="mb-6 space-y-4">
-        <form onSubmit={setGoal} className="flex gap-4">
-          <Input
-            type="number"
-            value={targetWeight}
-            onChange={(e) => setTargetWeight(e.target.value)}
-            placeholder="Target weight (lbs)"
-            className="flex-1"
-          />
-          <Input
-            type="number"
-            value={targetDays}
-            onChange={(e) => setTargetDays(e.target.value)}
-            placeholder="Days to achieve"
-            className="flex-1"
-          />
-          <Button type="submit">Set Goal</Button>
+        <form onSubmit={setGoal} className="space-y-4">
+          <div>
+            <Input
+              type="number"
+              value={targetWeight}
+              onChange={(e) => setTargetWeight(e.target.value)}
+              placeholder="Target weight (lbs)"
+              className="w-full"
+            />
+          </div>
+          <div>
+            <Input
+              type="number"
+              value={targetDays}
+              onChange={(e) => setTargetDays(e.target.value)}
+              placeholder="Days to achieve"
+              className="w-full"
+            />
+          </div>
+          <Button type="submit" className="w-full">Set Goal</Button>
         </form>
 
         <form onSubmit={addWeight} className="flex gap-4">
