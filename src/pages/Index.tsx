@@ -20,6 +20,11 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4">
+        <img 
+          src="/lovable-uploads/f851ba42-5f55-4300-9fd7-59d3d2167693.png" 
+          alt="MyMealPlan Logo" 
+          className="mx-auto mb-6 h-24 w-auto"
+        />
         <h1 className="text-4xl font-bold text-center mb-4">
           MyMealPlan.App
         </h1>
