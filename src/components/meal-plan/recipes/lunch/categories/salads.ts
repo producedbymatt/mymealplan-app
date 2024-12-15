@@ -17,50 +17,37 @@ export const saladLunchRecipes: Meal[] = [
         "2 tbsp olive oil (240 cal)"
       ],
       instructions: [
-        "Season chicken breast with salt and pepper, then grill for 6-7 minutes per side until internal temperature reaches 165°F",
-        "Let chicken rest for 5 minutes, then slice into thin strips",
-        "Wash and dry mixed greens, then place in a large serving bowl",
-        "Drain and rinse chickpeas, then add to the bowl",
-        "Add sliced grilled chicken on top of the greens",
-        "Crumble feta cheese over the salad",
-        "Arrange kalamata olives around the bowl",
-        "Drizzle olive oil evenly over all ingredients just before serving",
-        "Toss gently to combine all ingredients"
+        "Prepare all ingredients",
+        "Combine in a bowl",
+        "Drizzle with olive oil",
+        "Toss and serve"
       ],
       prepTime: "15 minutes",
-      cookTime: "15 minutes"
+      cookTime: "0 minutes"
     }
   },
   {
     name: "Cobb Salad",
     calories: 520,
     protein: 35,
-    carbs: 15,
-    fat: 38,
+    carbs: 20,
+    fat: 35,
     recipe: {
       ingredients: [
-        "3 cups romaine lettuce (15 cal)",
-        "4 oz grilled chicken breast (180 cal)",
-        "2 hard-boiled eggs (140 cal)",
-        "4 strips bacon, cooked and crumbled (180 cal)",
-        "1 medium avocado (240 cal)",
-        "2 oz blue cheese (200 cal)",
-        "1 cup cherry tomatoes (27 cal)"
+        "2 cups romaine lettuce (10 cal)",
+        "4 oz grilled chicken (180 cal)",
+        "2 eggs (140 cal)",
+        "2 strips bacon (80 cal)",
+        "1/2 avocado (160 cal)",
+        "2 tbsp blue cheese (100 cal)"
       ],
       instructions: [
-        "Wash and chop romaine lettuce into bite-sized pieces",
-        "Grill chicken breast for 6-7 minutes per side until cooked through",
-        "Let chicken rest for 5 minutes, then slice into strips",
-        "Cook bacon until crispy, then crumble into pieces",
-        "Boil eggs for 8 minutes, then peel and quarter them",
-        "Slice avocado into wedges",
-        "Halve cherry tomatoes",
-        "Arrange lettuce in a large bowl",
-        "Section ingredients in rows over lettuce: chicken, eggs, bacon, avocado, blue cheese, and tomatoes",
-        "Serve with your preferred dressing on the side"
+        "Chop lettuce and arrange in bowl",
+        "Add toppings in rows",
+        "Serve with dressing on side"
       ],
       prepTime: "20 minutes",
-      cookTime: "25 minutes"
+      cookTime: "15 minutes"
     }
   },
   {
