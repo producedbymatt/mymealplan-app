@@ -60,11 +60,31 @@ const scaleMeal = (originalMeal: Meal, targetCalories: number): Meal => {
 
 const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: MealPlanProps) => {
   const [mealPlan, setMealPlan] = useState<MealTimeSlotType[]>([]);
+  const [usedRecipes, setUsedRecipes] = useState<Set<string>>(new Set());
   const { toast } = useToast();
 
   // Function to generate new meal options that meet the protein requirements
-  const generateMealOptions = (timeSlot: string, caloriesPerMeal: number) => {
-    return [...getMealOptionsForTime(timeSlot)]
+  const generateMealOptions = (timeSlot: string, caloriesPerMeal: number, excludeNames: Set<string>) => {
+    const allOptions = getMealOptionsForTime(timeSlot);
+    const availableOptions = allOptions.filter(meal => !excludeNames.has(meal.name));
+    
+    if (availableOptions.length < 3) {
+      console.log('Not enough unique recipes available, resetting used recipes list');
+      setUsedRecipes(new Set());
+      return [...allOptions]
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 3)
+        .map(meal => {
+          const scaledMeal = scaleMeal(meal, caloriesPerMeal);
+          console.log(`Scaled meal ${meal.name}:`, {
+            calories: scaledMeal.calories,
+            protein: scaledMeal.protein
+          });
+          return scaledMeal;
+        });
+    }
+
+    return [...availableOptions]
       .sort(() => Math.random() - 0.5)
       .slice(0, 3)
       .map(meal => {
@@ -92,10 +112,17 @@ const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: Me
       "6:00 PM - 8:00 PM"
     ];
     
-    const newMealPlan = timeSlots.map(time => ({
-      time,
-      options: generateMealOptions(time, caloriesPerMeal)
-    }));
+    // Reset used recipes when generating a new meal plan
+    setUsedRecipes(new Set());
+    
+    const newMealPlan = timeSlots.map(time => {
+      const options = generateMealOptions(time, caloriesPerMeal, new Set());
+      // Add the new recipe names to usedRecipes
+      options.forEach(meal => {
+        setUsedRecipes(prev => new Set([...prev, meal.name]));
+      });
+      return { time, options };
+    });
 
     setMealPlan(newMealPlan);
 
@@ -111,7 +138,16 @@ const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: Me
     
     setMealPlan((currentPlan) => {
       const newPlan = [...currentPlan];
-      const newOptions = generateMealOptions(newPlan[timeSlotIndex].time, caloriesPerMeal);
+      const newOptions = generateMealOptions(
+        newPlan[timeSlotIndex].time, 
+        caloriesPerMeal,
+        usedRecipes
+      );
+      
+      // Add the new recipe names to usedRecipes
+      newOptions.forEach(meal => {
+        setUsedRecipes(prev => new Set([...prev, meal.name]));
+      });
       
       newPlan[timeSlotIndex] = {
         ...newPlan[timeSlotIndex],
