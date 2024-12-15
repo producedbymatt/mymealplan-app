@@ -21,7 +21,7 @@ const Index = () => {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4">
         <img 
-          src="/lovable-uploads/f851ba42-5f55-4300-9fd7-59d3d2167693.png" 
+          src="/lovable-uploads/69f2e5e5-9a7f-4ecf-80e5-41c6305e6717.png" 
           alt="MyMealPlan Logo" 
           className="mx-auto mb-6 h-24 w-auto"
         />
