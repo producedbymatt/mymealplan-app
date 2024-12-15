@@ -78,7 +78,7 @@ const Index = () => {
             alt="MyMealPlan Logo" 
             className="h-16 w-auto mb-4"
           />
-          <p className="text-sm text-gray-600">© 2024 MyMealPlan.App. All rights reserved.</p>
+          <p className="text-sm text-gray-600">© 2024 Matthew Campbell | MyMealPlan.App. All rights reserved.</p>
         </div>
       </footer>
     </div>
