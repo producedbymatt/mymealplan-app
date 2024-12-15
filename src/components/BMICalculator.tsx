@@ -63,7 +63,7 @@ const BMICalculator = ({ onBMICalculated, onMetricsUpdate }: BMICalculatorProps)
                 <SelectTrigger>
                   <SelectValue placeholder="Feet" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white">
                   {Array.from({ length: 8 }, (_, i) => i + 4).map((foot) => (
                     <SelectItem key={foot} value={foot.toString()}>
                       {foot} ft
@@ -77,7 +77,7 @@ const BMICalculator = ({ onBMICalculated, onMetricsUpdate }: BMICalculatorProps)
                 <SelectTrigger>
                   <SelectValue placeholder="Inches" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-white">
                   {Array.from({ length: 12 }, (_, i) => i).map((inch) => (
                     <SelectItem key={inch} value={inch.toString()}>
                       {inch} in
