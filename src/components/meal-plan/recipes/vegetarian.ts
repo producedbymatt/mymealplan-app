@@ -55,26 +55,26 @@ export const vegetarianRecipes: Meal[] = [
     }
   },
   {
-    name: "Tofu Stir-Fry",
+    name: "Quinoa Black Bean Bowl",
     calories: 450,
     protein: 30,
     carbs: 40,
     fat: 22,
     recipe: {
       ingredients: [
-        "8 oz firm tofu (160 cal)",
+        "1.5 cups cooked quinoa (160 cal)",
+        "1 cup black beans (220 cal)",
         "2 cups mixed vegetables (100 cal)",
         "1 cup brown rice (130 cal)",
-        "2 tbsp soy sauce (20 cal)",
-        "1 tbsp sesame oil (120 cal)",
-        "Ginger and garlic (10 cal)"
+        "2 tbsp olive oil (120 cal)",
+        "Fresh herbs and spices (10 cal)"
       ],
       instructions: [
-        "Press and cube tofu",
-        "Cook brown rice",
-        "Stir-fry vegetables",
-        "Cook tofu until crispy",
-        "Combine with sauce"
+        "Cook quinoa according to package instructions",
+        "Heat black beans with seasonings",
+        "Sauté vegetables",
+        "Combine all ingredients",
+        "Top with fresh herbs"
       ],
       prepTime: "20 minutes",
       cookTime: "20 minutes"

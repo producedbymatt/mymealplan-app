@@ -2,6 +2,31 @@ import { Meal } from "../../types";
 
 export const vegetarianDinnerRecipes: Meal[] = [
   {
+    name: "Chickpea and Sweet Potato Curry",
+    calories: 420,
+    protein: 20,
+    carbs: 52,
+    fat: 18,
+    recipe: {
+      ingredients: [
+        "2 cups chickpeas (400 cal)",
+        "1 cup brown rice (220 cal)",
+        "1 sweet potato, cubed (120 cal)",
+        "2 tbsp coconut oil (120 cal)",
+        "Curry spices (10 cal)"
+      ],
+      instructions: [
+        "Cook rice",
+        "Roast sweet potato",
+        "Prepare curry sauce",
+        "Combine ingredients",
+        "Simmer until done"
+      ],
+      prepTime: "20 minutes",
+      cookTime: "25 minutes"
+    }
+  },
+  {
     name: "Vegetable Stir-Fry",
     calories: 420,
     protein: 20,
@@ -24,31 +49,6 @@ export const vegetarianDinnerRecipes: Meal[] = [
       ],
       prepTime: "20 minutes",
       cookTime: "25 minutes"
-    }
-  },
-  {
-    name: "Vegetable Curry",
-    calories: 420,
-    protein: 18,
-    carbs: 52,
-    fat: 20,
-    recipe: {
-      ingredients: [
-        "2 cups mixed vegetables (100 cal)",
-        "1 cup chickpeas (220 cal)",
-        "1/2 cup coconut milk (120 cal)",
-        "1 cup brown rice (220 cal)",
-        "Curry spices (10 cal)"
-      ],
-      instructions: [
-        "Cook rice",
-        "Prepare curry sauce",
-        "Add vegetables",
-        "Simmer until done",
-        "Serve over rice"
-      ],
-      prepTime: "20 minutes",
-      cookTime: "30 minutes"
     }
   },
   {
