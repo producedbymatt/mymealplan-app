@@ -3,22 +3,21 @@ import { Meal } from "./types";
 export const mealOptionsPool: Meal[] = [
   {
     name: "High-Protein Breakfast Bowl",
-    calories: 600,
-    protein: 40,
-    carbs: 55,
-    fat: 25,
+    calories: 450,
+    protein: 35,
+    carbs: 45,
+    fat: 15,
     recipe: {
       ingredients: [
-        "2 cups Greek yogurt",
-        "1 cup mixed berries",
-        "1/2 cup granola",
-        "2 tbsp honey",
-        "2 tbsp chia seeds",
-        "1/4 cup almonds",
-        "1 scoop protein powder"
+        "1 cup Greek yogurt (130 cal)",
+        "1/2 cup mixed berries (40 cal)",
+        "1/4 cup low-fat granola (120 cal)",
+        "1 tbsp honey (60 cal)",
+        "1 tbsp chia seeds (60 cal)",
+        "2 tbsp sliced almonds (40 cal)"
       ],
       instructions: [
-        "Mix Greek yogurt with protein powder",
+        "Mix Greek yogurt in a bowl",
         "Add mixed berries",
         "Top with granola and chia seeds",
         "Sprinkle almonds",
@@ -29,48 +28,47 @@ export const mealOptionsPool: Meal[] = [
     }
   },
   {
-    name: "Hearty Tuna Avocado Salad",
-    calories: 590,
-    protein: 45,
-    carbs: 30,
-    fat: 35,
+    name: "Tuna Avocado Salad",
+    calories: 400,
+    protein: 35,
+    carbs: 15,
+    fat: 25,
     recipe: {
       ingredients: [
-        "2 cans tuna, drained",
-        "2 ripe avocados",
-        "1/2 cup red onion, diced",
-        "2 tbsp olive oil",
-        "2 tbsp lemon juice",
-        "2 cups mixed greens",
-        "1/4 cup cherry tomatoes",
-        "2 hard-boiled eggs"
+        "1 can tuna in water, drained (120 cal)",
+        "1 medium avocado (160 cal)",
+        "1/4 cup red onion, diced (15 cal)",
+        "1 tbsp olive oil (120 cal)",
+        "1 tbsp lemon juice (5 cal)",
+        "2 cups mixed greens (10 cal)",
+        "1/2 cup cherry tomatoes (25 cal)"
       ],
       instructions: [
         "Drain tuna and place in a bowl",
-        "Mash avocados and mix with tuna",
+        "Mash avocado and mix with tuna",
         "Add diced red onion and lemon juice",
         "Add olive oil and mix well",
-        "Serve over mixed greens with sliced eggs and tomatoes"
+        "Serve over mixed greens with tomatoes"
       ],
-      prepTime: "15 minutes",
+      prepTime: "10 minutes",
       cookTime: "0 minutes"
     }
   },
   {
-    name: "Protein-Packed Chicken Stir-Fry",
-    calories: 610,
-    protein: 45,
-    carbs: 50,
-    fat: 25,
+    name: "Chicken Stir-Fry",
+    calories: 425,
+    protein: 40,
+    carbs: 35,
+    fat: 15,
     recipe: {
       ingredients: [
-        "300g chicken breast, diced",
-        "2 cups mixed vegetables",
-        "3 tbsp soy sauce",
-        "2 tbsp olive oil",
-        "1.5 cups brown rice",
-        "2 cloves garlic",
-        "1 tbsp ginger"
+        "5 oz chicken breast (165 cal)",
+        "1 cup mixed vegetables (50 cal)",
+        "2 tsp soy sauce (10 cal)",
+        "1 tbsp olive oil (120 cal)",
+        "3/4 cup brown rice (150 cal)",
+        "1 clove garlic (5 cal)",
+        "1 tsp ginger (5 cal)"
       ],
       instructions: [
         "Cook brown rice according to package instructions",
@@ -85,27 +83,26 @@ export const mealOptionsPool: Meal[] = [
     }
   },
   {
-    name: "Mediterranean Power Bowl",
-    calories: 580,
-    protein: 35,
-    carbs: 65,
-    fat: 25,
+    name: "Mediterranean Bowl",
+    calories: 380,
+    protein: 20,
+    carbs: 45,
+    fat: 18,
     recipe: {
       ingredients: [
-        "1.5 cups quinoa",
-        "2 cups chickpeas",
-        "1 cup cherry tomatoes",
-        "1 cucumber",
-        "100g feta cheese",
-        "2 tbsp olive oil",
-        "2 tbsp lemon juice",
-        "Mixed herbs"
+        "3/4 cup quinoa (160 cal)",
+        "1/2 cup chickpeas (120 cal)",
+        "1/2 cup cherry tomatoes (25 cal)",
+        "1/2 cucumber (8 cal)",
+        "1 oz feta cheese (70 cal)",
+        "1 tbsp olive oil (120 cal)",
+        "1 tbsp lemon juice (5 cal)"
       ],
       instructions: [
         "Cook quinoa according to package instructions",
         "Combine with chickpeas and chopped vegetables",
         "Top with crumbled feta",
-        "Mix herbs with olive oil and lemon juice",
+        "Mix olive oil and lemon juice",
         "Drizzle dressing over bowl"
       ],
       prepTime: "10 minutes",
@@ -114,19 +111,19 @@ export const mealOptionsPool: Meal[] = [
   },
   {
     name: "Salmon Power Bowl",
-    calories: 620,
-    protein: 42,
-    carbs: 45,
-    fat: 30,
+    calories: 440,
+    protein: 35,
+    carbs: 35,
+    fat: 22,
     recipe: {
       ingredients: [
-        "250g salmon fillet",
-        "2 cups sweet potato, cubed",
-        "2 cups broccoli",
-        "2 tbsp olive oil",
-        "1 lemon",
-        "Fresh herbs",
-        "1 cup quinoa"
+        "4 oz salmon fillet (180 cal)",
+        "1 cup sweet potato, cubed (120 cal)",
+        "1 cup broccoli (30 cal)",
+        "1 tbsp olive oil (120 cal)",
+        "1/2 lemon (10 cal)",
+        "Fresh herbs (0 cal)",
+        "1/2 cup quinoa (110 cal)"
       ],
       instructions: [
         "Cook quinoa according to package instructions",
