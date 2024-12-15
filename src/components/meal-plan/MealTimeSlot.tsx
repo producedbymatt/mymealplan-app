@@ -58,6 +58,11 @@ const MealTimeSlot = ({ time, options, onRefresh, isLast, showFavoritesOnly }: M
           />
         ))}
       </div>
+      {showAllRecipes && (
+        <div className="mt-4 text-sm text-gray-500 text-right">
+          Total recipes available: {allRecipes.length}
+        </div>
+      )}
       {!isLast && <Separator className="mt-6" />}
     </div>
   );
