@@ -3,6 +3,13 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface BMICalculatorProps {
   onBMICalculated: (bmi: number) => void;
@@ -10,20 +17,21 @@ interface BMICalculatorProps {
 }
 
 const BMICalculator = ({ onBMICalculated, onMetricsUpdate }: BMICalculatorProps) => {
-  const [height, setHeight] = React.useState("");
+  const [feet, setFeet] = React.useState("");
+  const [inches, setInches] = React.useState("");
   const [weight, setWeight] = React.useState("");
   const [bmi, setBMI] = React.useState<number | null>(null);
   const { toast } = useToast();
 
   const calculateBMI = (e: React.FormEvent) => {
     e.preventDefault();
-    const heightInInches = parseFloat(height);
+    const heightInInches = parseInt(feet) * 12 + parseInt(inches);
     const weightInPounds = parseFloat(weight);
     
     if (isNaN(heightInInches) || isNaN(weightInPounds)) {
       toast({
         title: "Invalid Input",
-        description: "Please enter valid height and weight values.",
+        description: "Please select your height and enter a valid weight.",
         variant: "destructive",
       });
       return;
@@ -47,15 +55,38 @@ const BMICalculator = ({ onBMICalculated, onMetricsUpdate }: BMICalculatorProps)
     <Card className="p-6 w-full max-w-md mx-auto">
       <h2 className="text-2xl font-bold mb-4 text-center">BMI Calculator</h2>
       <form onSubmit={calculateBMI} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium mb-1">Height (inches)</label>
-          <Input
-            type="number"
-            value={height}
-            onChange={(e) => setHeight(e.target.value)}
-            placeholder="Enter your height"
-            className="w-full"
-          />
+        <div className="space-y-2">
+          <label className="block text-sm font-medium mb-1">Height</label>
+          <div className="flex gap-4">
+            <div className="flex-1">
+              <Select value={feet} onValueChange={setFeet}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Feet" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Array.from({ length: 8 }, (_, i) => i + 4).map((foot) => (
+                    <SelectItem key={foot} value={foot.toString()}>
+                      {foot} ft
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex-1">
+              <Select value={inches} onValueChange={setInches}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Inches" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Array.from({ length: 12 }, (_, i) => i).map((inch) => (
+                    <SelectItem key={inch} value={inch.toString()}>
+                      {inch} in
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
         </div>
         <div>
           <label className="block text-sm font-medium mb-1">Weight (lbs)</label>
