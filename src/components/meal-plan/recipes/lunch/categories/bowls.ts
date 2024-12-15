@@ -76,30 +76,40 @@ export const bowlLunchRecipes: Meal[] = [
     }
   },
   {
-    name: "Teriyaki Tofu Bowl",
+    name: "Teriyaki Chicken Bowl",
     calories: 480,
-    protein: 22,
-    carbs: 60,
-    fat: 20,
+    protein: 35,
+    carbs: 55,
+    fat: 18,
     recipe: {
       ingredients: [
-        "1 block firm tofu (240 cal)",
+        "6 oz chicken breast (165 cal)",
         "1 cup brown rice (220 cal)",
-        "2 cups stir-fry vegetables (100 cal)",
+        "2 cups mixed vegetables (broccoli, carrots, snap peas) (100 cal)",
         "3 tbsp teriyaki sauce (90 cal)",
-        "1 tbsp sesame oil (120 cal)"
+        "1 tbsp sesame oil (120 cal)",
+        "2 cloves garlic, minced (10 cal)",
+        "1 tbsp fresh ginger, minced (5 cal)",
+        "2 green onions, chopped (5 cal)"
       ],
       instructions: [
-        "Press tofu for 15 minutes to remove excess moisture",
-        "Cook brown rice according to package instructions",
-        "Cut tofu into 1-inch cubes",
-        "Heat sesame oil in a large pan over medium-high heat",
-        "Pan-fry tofu until golden brown on all sides, about 8-10 minutes",
-        "Add vegetables to the pan and stir-fry for 3-4 minutes",
-        "Pour teriyaki sauce over tofu and vegetables, cook for 2 more minutes",
-        "Serve over brown rice and garnish with sesame seeds if desired"
+        "Rinse brown rice thoroughly and cook according to package instructions",
+        "While rice cooks, slice chicken breast into thin, even strips",
+        "Mince garlic and ginger, set aside together",
+        "Chop green onions, separating white and green parts",
+        "Cut vegetables into similar-sized pieces for even cooking",
+        "Heat sesame oil in a large wok or pan over medium-high heat",
+        "Add white parts of green onions, garlic, and ginger, stir-fry for 30 seconds until fragrant",
+        "Add chicken strips to the pan, spread them out evenly",
+        "Cook chicken for 4-5 minutes, stirring occasionally, until nearly cooked through",
+        "Add vegetables to the pan, keeping chicken to one side",
+        "Stir-fry vegetables for 3-4 minutes until crisp-tender",
+        "Add teriyaki sauce and toss everything together",
+        "Cook for an additional 2 minutes until sauce is heated and slightly thickened",
+        "Serve over brown rice and garnish with green onion tops",
+        "Optional: sprinkle with sesame seeds for added crunch and presentation"
       ],
-      prepTime: "20 minutes",
+      prepTime: "15 minutes",
       cookTime: "25 minutes"
     }
   },
