@@ -4,9 +4,9 @@ import { dinnerRecipes } from "./recipes/dinner";
 import { Meal } from "./types";
 
 export const getMealOptionsForTime = (time: string): Meal[] => {
-  if (time.includes("AM")) {
+  if (time.includes("Breakfast")) {
     return breakfastRecipes;
-  } else if (time.includes("12:00 PM")) {
+  } else if (time.includes("Lunch")) {
     return lunchRecipes;
   } else {
     return dinnerRecipes;
