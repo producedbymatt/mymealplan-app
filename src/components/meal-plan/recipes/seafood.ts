@@ -53,5 +53,84 @@ export const seafoodRecipes: Meal[] = [
       cookTime: "15 minutes"
     }
   },
-  // Add more seafood recipes...
+  {
+    name: "Garlic Shrimp Pasta",
+    calories: 520,
+    protein: 35,
+    carbs: 45,
+    fat: 22,
+    recipe: {
+      ingredients: [
+        "6 oz shrimp (180 cal)",
+        "2 oz whole grain pasta (200 cal)",
+        "2 cups vegetables (100 cal)",
+        "1 tbsp olive oil (120 cal)",
+        "Garlic and herbs (10 cal)",
+        "Parmesan cheese (60 cal)"
+      ],
+      instructions: [
+        "Cook pasta al dente",
+        "Sauté garlic and vegetables",
+        "Cook shrimp until pink",
+        "Combine all ingredients",
+        "Top with parmesan"
+      ],
+      prepTime: "15 minutes",
+      cookTime: "20 minutes"
+    }
+  },
+  {
+    name: "Cajun Seafood Bowl",
+    calories: 490,
+    protein: 40,
+    carbs: 35,
+    fat: 23,
+    recipe: {
+      ingredients: [
+        "4 oz shrimp (120 cal)",
+        "2 oz white fish (60 cal)",
+        "1 cup cauliflower rice (25 cal)",
+        "1 cup vegetables (50 cal)",
+        "1 tbsp olive oil (120 cal)",
+        "Cajun seasoning (15 cal)",
+        "Lemon (20 cal)"
+      ],
+      instructions: [
+        "Season seafood with Cajun spices",
+        "Cook cauliflower rice",
+        "Sauté vegetables",
+        "Cook seafood",
+        "Combine and add lemon"
+      ],
+      prepTime: "15 minutes",
+      cookTime: "15 minutes"
+    }
+  },
+  {
+    name: "Poke Bowl",
+    calories: 470,
+    protein: 35,
+    carbs: 40,
+    fat: 20,
+    recipe: {
+      ingredients: [
+        "6 oz sushi-grade tuna (180 cal)",
+        "1 cup brown rice (130 cal)",
+        "1 avocado (120 cal)",
+        "Cucumber (8 cal)",
+        "Seaweed (10 cal)",
+        "Soy sauce (10 cal)",
+        "Sesame oil (60 cal)"
+      ],
+      instructions: [
+        "Cook brown rice",
+        "Cube tuna",
+        "Slice vegetables",
+        "Make sauce",
+        "Assemble bowl"
+      ],
+      prepTime: "20 minutes",
+      cookTime: "25 minutes"
+    }
+  }
 ];

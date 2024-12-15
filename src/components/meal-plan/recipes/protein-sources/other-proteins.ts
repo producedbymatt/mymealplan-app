@@ -51,5 +51,55 @@ export const otherProteinRecipes: Meal[] = [
       cookTime: "25 minutes"
     }
   },
-  // Add more protein recipes...
+  {
+    name: "Turkey Taco Bowl",
+    calories: 470,
+    protein: 45,
+    carbs: 35,
+    fat: 20,
+    recipe: {
+      ingredients: [
+        "6 oz ground turkey (280 cal)",
+        "1 cup brown rice (130 cal)",
+        "1/2 cup black beans (110 cal)",
+        "1 oz cheese (110 cal)",
+        "Salsa (20 cal)",
+        "Taco seasoning (10 cal)"
+      ],
+      instructions: [
+        "Cook brown rice",
+        "Brown turkey with seasoning",
+        "Heat black beans",
+        "Assemble bowl",
+        "Top with cheese and salsa"
+      ],
+      prepTime: "10 minutes",
+      cookTime: "20 minutes"
+    }
+  },
+  {
+    name: "BBQ Pulled Pork Bowl",
+    calories: 510,
+    protein: 40,
+    carbs: 45,
+    fat: 22,
+    recipe: {
+      ingredients: [
+        "6 oz pulled pork (300 cal)",
+        "1 cup sweet potato (120 cal)",
+        "1 cup coleslaw mix (30 cal)",
+        "2 tbsp BBQ sauce (60 cal)",
+        "1 tbsp olive oil (120 cal)"
+      ],
+      instructions: [
+        "Heat pulled pork",
+        "Roast sweet potato",
+        "Make fresh coleslaw",
+        "Layer in bowl",
+        "Top with BBQ sauce"
+      ],
+      prepTime: "15 minutes",
+      cookTime: "25 minutes"
+    }
+  }
 ];
