@@ -18,27 +18,36 @@ const scaleMeal = (originalMeal: Meal, targetCalories: number): Meal => {
   
   // Scale the ingredients and calculate total calories
   const scaledIngredients = originalMeal.recipe.ingredients.map(ingredient => {
-    const [amount, unit, ...rest] = ingredient.split(" ");
+    const parts = ingredient.split(" ");
+    const amount = parseFloat(parts[0]);
+    if (isNaN(amount)) return ingredient; // Skip scaling if amount is not a number
+    
+    const unit = parts[1];
     const calorieMatch = ingredient.match(/\((\d+) cal\)/);
     if (!calorieMatch) return ingredient;
     
     const originalCalories = parseInt(calorieMatch[1]);
     const scaledCalories = Math.round(originalCalories * scaleFactor);
     totalCalories += scaledCalories;
-    const scaledAmount = parseFloat(amount) * scaleFactor;
     
-    // Format the scaled amount to 1 decimal place if it's not a whole number
-    const formattedAmount = Number.isInteger(scaledAmount) 
-      ? scaledAmount.toString() 
-      : scaledAmount.toFixed(1);
+    // Calculate scaled amount and handle potential floating point issues
+    const scaledAmount = amount * scaleFactor;
+    // Format the number to prevent excessive decimal places
+    const formattedAmount = scaledAmount < 0.1 
+      ? scaledAmount.toFixed(2) 
+      : scaledAmount < 1 
+        ? scaledAmount.toFixed(1) 
+        : Math.round(scaledAmount * 10) / 10;
     
-    return `${formattedAmount} ${unit} ${rest.join(" ").replace(/\(\d+ cal\)/, `(${scaledCalories} cal)`)}`;
+    // Reconstruct the ingredient string with scaled values
+    const remainingParts = parts.slice(2).join(" ").replace(/\(\d+ cal\)/, `(${scaledCalories} cal)`);
+    return `${formattedAmount} ${unit} ${remainingParts}`;
   });
 
   // Use the actual sum of scaled ingredient calories
   return {
     ...originalMeal,
-    calories: totalCalories, // This ensures the total matches ingredient sum exactly
+    calories: Math.round(totalCalories), // Round the total calories
     protein: Math.round(originalMeal.protein * scaleFactor),
     carbs: Math.round(originalMeal.carbs * scaleFactor),
     fat: Math.round(originalMeal.fat * scaleFactor),
