@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import BMICalculator from "@/components/BMICalculator";
 import WeightTracker from "@/components/WeightTracker";
 import MealPlan from "@/components/MealPlan";
@@ -12,9 +12,17 @@ const Index = () => {
     targetDays: 0,
   });
   const [recommendedCalories, setRecommendedCalories] = useState(1200);
+  const calorieAnalysisRef = useRef<HTMLDivElement>(null);
 
   const handleBMICalculated = (bmi: number) => {
     console.log("BMI calculated:", bmi);
+  };
+
+  const scrollToCalorieAnalysis = () => {
+    calorieAnalysisRef.current?.scrollIntoView({ 
+      behavior: 'smooth',
+      block: 'start'
+    });
   };
 
   return (
@@ -52,12 +60,13 @@ const Index = () => {
                   targetWeight: weight,
                   targetDays: days
                 }));
+                scrollToCalorieAnalysis();
               }}
             />
           </div>
         </div>
         {userMetrics.height > 0 && userMetrics.targetWeight > 0 && (
-          <div className="mt-8">
+          <div className="mt-8" ref={calorieAnalysisRef}>
             <CalorieCalculator 
               {...userMetrics} 
               onCaloriesCalculated={(calories: number) => {
