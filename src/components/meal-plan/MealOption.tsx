@@ -12,20 +12,26 @@ import { useToast } from "@/components/ui/use-toast";
 
 interface MealOptionProps {
   meal: Meal;
+  showFavoritesOnly?: boolean;
 }
 
-const MealOption = ({ meal }: MealOptionProps) => {
+const MealOption = ({ meal, showFavoritesOnly }: MealOptionProps) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const { toast } = useToast();
 
   const toggleFavorite = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent accordion from toggling when clicking heart
+    e.stopPropagation();
     setIsFavorite(!isFavorite);
     toast({
       title: isFavorite ? "Removed from favorites" : "Added to favorites",
       description: `${meal.name} has been ${isFavorite ? "removed from" : "added to"} your favorites.`,
     });
   };
+
+  // If showing favorites only and this meal isn't a favorite, don't render it
+  if (showFavoritesOnly && !isFavorite) {
+    return null;
+  }
 
   return (
     <Accordion type="single" collapsible>
