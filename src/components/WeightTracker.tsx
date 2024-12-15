@@ -4,7 +4,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
-import { useToast } from "@/components/ui/use-toast";
 
 interface WeightEntry {
   date: string;
@@ -20,18 +19,12 @@ const WeightTracker = ({ onGoalSet }: WeightTrackerProps) => {
   const [newWeight, setNewWeight] = React.useState("");
   const [targetWeight, setTargetWeight] = React.useState("");
   const [targetDays, setTargetDays] = React.useState("");
-  const { toast } = useToast();
 
   const addWeight = (e: React.FormEvent) => {
     e.preventDefault();
     const weight = parseFloat(newWeight);
     
     if (isNaN(weight)) {
-      toast({
-        title: "Invalid Weight",
-        description: "Please enter a valid weight value.",
-        variant: "destructive",
-      });
       return;
     }
 
@@ -42,26 +35,6 @@ const WeightTracker = ({ onGoalSet }: WeightTrackerProps) => {
 
     setEntries([...entries, newEntry]);
     setNewWeight("");
-
-    if (entries.length > 0 && targetWeight) {
-      const weightLoss = entries[0].weight - weight;
-      const targetLoss = entries[0].weight - parseFloat(targetWeight);
-      const progressPercentage = (weightLoss / targetLoss) * 100;
-      
-      if (weightLoss >= 5) {
-        toast({
-          title: "Milestone Achieved! 🎉",
-          description: `Congratulations! You've lost ${weightLoss.toFixed(1)} lbs!`,
-        });
-      }
-
-      if (progressPercentage >= 50 && progressPercentage < 51) {
-        toast({
-          title: "Halfway There! 🎉",
-          description: "You're halfway to your goal weight!",
-        });
-      }
-    }
   };
 
   const setGoal = (e: React.FormEvent) => {
@@ -70,22 +43,12 @@ const WeightTracker = ({ onGoalSet }: WeightTrackerProps) => {
     const days = parseInt(targetDays);
 
     if (isNaN(weight) || isNaN(days)) {
-      toast({
-        title: "Invalid Goal",
-        description: "Please enter valid weight and days values.",
-        variant: "destructive",
-      });
       return;
     }
 
     if (onGoalSet) {
       onGoalSet(weight, days);
     }
-
-    toast({
-      title: "Goal Set!",
-      description: `Aiming to reach ${weight} lbs in ${days} days.`,
-    });
   };
 
   return (
