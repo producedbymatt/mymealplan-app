@@ -18,18 +18,22 @@ export const wrapLunchRecipes: Meal[] = [
         "10 kalamata olives (100 cal)"
       ],
       instructions: [
-        "Season chicken breast with Greek seasoning",
+        "Season chicken breast with 1 tbsp Greek seasoning blend",
+        "Preheat grill or grill pan to medium-high heat",
         "Grill chicken for 6-7 minutes per side until internal temperature reaches 165°F",
-        "Let chicken rest for 5 minutes, then slice into strips",
+        "Let chicken rest for 5 minutes, then slice into thin strips against the grain",
+        "While chicken rests, dice tomato into small cubes",
+        "Roughly chop kalamata olives",
+        "Crumble feta cheese if not already crumbled",
         "Warm wrap in a dry skillet over medium heat for 30 seconds per side",
-        "Spread tzatziki sauce evenly on wrap",
-        "Layer mixed greens in the center",
+        "Spread tzatziki sauce evenly on wrap, leaving a 1-inch border",
+        "Layer mixed greens in the center of the wrap",
         "Add sliced chicken on top of greens",
-        "Dice tomato and add to wrap",
-        "Sprinkle crumbled feta cheese",
-        "Add kalamata olives",
-        "Fold in sides of wrap and roll tightly",
-        "Cut diagonally and serve"
+        "Sprinkle diced tomatoes, crumbled feta, and chopped olives",
+        "Fold in sides of wrap about 2 inches",
+        "Starting from the bottom, roll wrap tightly, tucking in the sides as you go",
+        "Cut diagonally and serve immediately",
+        "Optional: warm completed wrap in skillet for 1-2 minutes to seal"
       ],
       prepTime: "15 minutes",
       cookTime: "15 minutes"

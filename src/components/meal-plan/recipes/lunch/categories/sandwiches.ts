@@ -17,17 +17,21 @@ export const sandwichLunchRecipes: Meal[] = [
         "1 tbsp olive oil (120 cal)"
       ],
       instructions: [
-        "Slice tomatoes into 1/4 inch thick rounds",
-        "Slice mozzarella into 1/4 inch thick slices",
-        "Wash and dry basil leaves",
-        "Lightly toast sourdough bread slices",
-        "Drizzle olive oil on both inner sides of bread",
-        "Layer mozzarella slices on one piece of bread",
-        "Add tomato slices on top of mozzarella",
-        "Place basil leaves over tomatoes",
+        "Slice tomatoes into 1/4 inch thick rounds, lay on paper towels to remove excess moisture",
+        "Slice fresh mozzarella into 1/4 inch thick slices",
+        "Wash and thoroughly dry fresh basil leaves",
+        "Preheat a panini press or skillet over medium heat",
+        "Lightly toast sourdough bread slices until just golden",
+        "Drizzle the inner side of each bread slice with olive oil",
+        "On one piece of bread, layer: mozzarella slices, tomato slices",
+        "Sprinkle tomatoes with a pinch of salt and fresh black pepper",
+        "Add a generous layer of fresh basil leaves",
         "Drizzle with balsamic glaze",
-        "Close sandwich with other bread slice",
-        "Cut diagonally and serve immediately"
+        "Top with the second piece of bread, olive oil side down",
+        "If using a panini press, grill until cheese starts to melt",
+        "If using a skillet, press down with a spatula and flip once",
+        "Cut sandwich diagonally",
+        "Serve immediately while cheese is still warm"
       ],
       prepTime: "10 minutes",
       cookTime: "5 minutes"

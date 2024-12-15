@@ -16,14 +16,19 @@ export const asianLunchRecipes: Meal[] = [
         "1 tbsp sesame oil (120 cal)"
       ],
       instructions: [
-        "Boil water and cook rice noodles according to package instructions, then drain and set aside",
-        "Cut tempeh into 1-inch cubes",
-        "Heat sesame oil in a large pan over medium-high heat",
-        "Pan-fry tempeh cubes for 3-4 minutes per side until golden brown",
-        "Add mixed vegetables to the same pan and stir-fry for 2-3 minutes until crisp-tender",
-        "Return noodles to the pan and add peanut sauce, stirring to coat everything evenly",
-        "Cook for an additional 1-2 minutes until everything is hot and well combined",
-        "Serve immediately while hot"
+        "Bring a large pot of water to a rolling boil",
+        "Add rice noodles and cook according to package instructions (usually 3-4 minutes)",
+        "While noodles cook, cut tempeh into 1-inch cubes",
+        "Drain noodles and rinse with cold water to prevent sticking, set aside",
+        "Heat sesame oil in a large wok or pan over medium-high heat until shimmering",
+        "Add tempeh cubes and pan-fry for 3-4 minutes per side until golden brown and crispy",
+        "Add mixed vegetables to the same pan, keeping tempeh to one side",
+        "Stir-fry vegetables for 2-3 minutes until crisp-tender but still vibrant in color",
+        "Return noodles to the pan and add peanut sauce",
+        "Using tongs, gently toss everything together until well combined and heated through",
+        "Taste and adjust seasoning if needed",
+        "Transfer to serving bowls immediately while hot",
+        "Optional: Garnish with chopped green onions and sesame seeds"
       ],
       prepTime: "15 minutes",
       cookTime: "20 minutes"

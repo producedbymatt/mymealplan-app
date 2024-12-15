@@ -17,15 +17,23 @@ export const mediterraneanLunchRecipes: Meal[] = [
         "2 tbsp olive oil (240 cal)"
       ],
       instructions: [
-        "Season chicken breast with salt and pepper, then grill for 6-7 minutes per side until internal temperature reaches 165°F",
-        "Let chicken rest for 5 minutes, then slice into thin strips",
-        "Wash and dry mixed greens, then place in a large serving bowl",
-        "Drain and rinse chickpeas, then add to the bowl",
-        "Add sliced grilled chicken on top of the greens",
-        "Crumble feta cheese over the salad",
-        "Arrange kalamata olives around the bowl",
-        "Drizzle olive oil evenly over all ingredients just before serving",
-        "Toss gently to combine all ingredients"
+        "Pat chicken breast dry with paper towels",
+        "Season chicken with 1 tsp each of dried oregano, salt, and black pepper",
+        "Heat grill or grill pan over medium-high heat",
+        "Grill chicken for 6-7 minutes per side until internal temperature reaches 165°F",
+        "While chicken cooks, thoroughly wash and dry mixed greens",
+        "Drain and rinse chickpeas, pat dry with paper towels",
+        "Slice kalamata olives in half if desired",
+        "Let chicken rest for 5 minutes after cooking",
+        "Slice chicken against the grain into thin strips",
+        "In a large serving bowl, arrange mixed greens as the base",
+        "Add chickpeas in a section of the bowl",
+        "Arrange sliced grilled chicken in another section",
+        "Crumble feta cheese over the entire salad",
+        "Place kalamata olives around the bowl",
+        "Just before serving, drizzle olive oil evenly over all ingredients",
+        "Optional: add fresh cracked black pepper and dried oregano",
+        "Toss gently to combine all ingredients when ready to eat"
       ],
       prepTime: "15 minutes",
       cookTime: "15 minutes"
