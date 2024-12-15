@@ -32,12 +32,8 @@ const scaleMeal = (originalMeal: Meal, targetCalories: number): Meal => {
     
     // Calculate scaled amount and handle potential floating point issues
     const scaledAmount = amount * scaleFactor;
-    // Format the number to prevent excessive decimal places
-    const formattedAmount = scaledAmount < 0.1 
-      ? scaledAmount.toFixed(2) 
-      : scaledAmount < 1 
-        ? scaledAmount.toFixed(1) 
-        : Math.round(scaledAmount * 10) / 10;
+    // Round all amounts to whole numbers
+    const formattedAmount = Math.round(scaledAmount);
     
     // Reconstruct the ingredient string with scaled values
     const remainingParts = parts.slice(2).join(" ").replace(/\(\d+ cal\)/, `(${scaledCalories} cal)`);
