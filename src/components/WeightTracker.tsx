@@ -2,6 +2,7 @@ import React from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -113,6 +114,8 @@ const WeightTracker = ({ onGoalSet }: WeightTrackerProps) => {
           </div>
           <Button type="submit" className="w-full">Set Goal</Button>
         </form>
+
+        <Separator className="my-4" />
 
         <form onSubmit={addWeight} className="flex gap-4">
           <Input
