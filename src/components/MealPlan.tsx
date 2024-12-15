@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import MealTimeSlot from "./meal-plan/MealTimeSlot";
 import { mealOptionsPool } from "./meal-plan/mealData";
-import { MealTimeSlot as MealTimeSlotType } from "./meal-plan/types";
+import { MealTimeSlot as MealTimeSlotType, Meal } from "./meal-plan/types";
 
 interface MealPlanProps {
   dailyCalories?: number;
@@ -15,27 +15,50 @@ const MealPlan = ({ dailyCalories = 1200 }: MealPlanProps) => {
     return [
       {
         time: "12:00 PM - 2:00 PM",
-        options: mealOptionsPool.slice(0, 3).map(meal => ({
-          ...meal,
-          calories: Math.round(caloriesPerMeal),
-          protein: Math.round(meal.protein * (caloriesPerMeal / meal.calories)),
-          carbs: Math.round(meal.carbs * (caloriesPerMeal / meal.calories)),
-          fat: Math.round(meal.fat * (caloriesPerMeal / meal.calories))
-        }))
+        options: mealOptionsPool.slice(0, 3).map(meal => scaleMeal(meal, caloriesPerMeal))
       },
       {
         time: "4:00 PM - 6:00 PM",
-        options: mealOptionsPool.slice(3, 6).map(meal => ({
-          ...meal,
-          calories: Math.round(caloriesPerMeal),
-          protein: Math.round(meal.protein * (caloriesPerMeal / meal.calories)),
-          carbs: Math.round(meal.carbs * (caloriesPerMeal / meal.calories)),
-          fat: Math.round(meal.fat * (caloriesPerMeal / meal.calories))
-        }))
+        options: mealOptionsPool.slice(3, 6).map(meal => scaleMeal(meal, caloriesPerMeal))
       }
     ];
   });
   const { toast } = useToast();
+
+  // Helper function to scale a meal's ingredients and macros
+  const scaleMeal = (originalMeal: Meal, targetCalories: number): Meal => {
+    const scaleFactor = targetCalories / originalMeal.calories;
+    
+    // Scale the ingredients
+    const scaledIngredients = originalMeal.recipe.ingredients.map(ingredient => {
+      const [amount, unit, ...rest] = ingredient.split(" ");
+      const calorieMatch = ingredient.match(/\((\d+) cal\)/);
+      if (!calorieMatch) return ingredient;
+      
+      const originalCalories = parseInt(calorieMatch[1]);
+      const scaledCalories = Math.round(originalCalories * scaleFactor);
+      const scaledAmount = parseFloat(amount) * scaleFactor;
+      
+      // Format the scaled amount to 1 decimal place if it's not a whole number
+      const formattedAmount = Number.isInteger(scaledAmount) 
+        ? scaledAmount.toString() 
+        : scaledAmount.toFixed(1);
+      
+      return `${formattedAmount} ${unit} ${rest.join(" ").replace(/\(\d+ cal\)/, `(${scaledCalories} cal)`)}`;
+    });
+
+    return {
+      ...originalMeal,
+      calories: Math.round(targetCalories),
+      protein: Math.round(originalMeal.protein * scaleFactor),
+      carbs: Math.round(originalMeal.carbs * scaleFactor),
+      fat: Math.round(originalMeal.fat * scaleFactor),
+      recipe: {
+        ...originalMeal.recipe,
+        ingredients: scaledIngredients
+      }
+    };
+  };
 
   const refreshMealOptions = (timeSlotIndex: number) => {
     console.log(`Refreshing meal options for time slot ${timeSlotIndex}`);
@@ -46,13 +69,7 @@ const MealPlan = ({ dailyCalories = 1200 }: MealPlanProps) => {
       const newOptions = [...mealOptionsPool]
         .sort(() => Math.random() - 0.5)
         .slice(0, 3)
-        .map(meal => ({
-          ...meal,
-          calories: Math.round(caloriesPerMeal),
-          protein: Math.round(meal.protein * (caloriesPerMeal / meal.calories)),
-          carbs: Math.round(meal.carbs * (caloriesPerMeal / meal.calories)),
-          fat: Math.round(meal.fat * (caloriesPerMeal / meal.calories))
-        }));
+        .map(meal => scaleMeal(meal, caloriesPerMeal));
       
       newPlan[timeSlotIndex] = {
         ...newPlan[timeSlotIndex],
