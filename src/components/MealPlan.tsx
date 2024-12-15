@@ -12,8 +12,9 @@ interface MealPlanProps {
 // Helper function to scale a meal's ingredients and macros
 const scaleMeal = (originalMeal: Meal, targetCalories: number): Meal => {
   const scaleFactor = targetCalories / originalMeal.calories;
+  let totalCalories = 0;
   
-  // Scale the ingredients
+  // Scale the ingredients and calculate total calories
   const scaledIngredients = originalMeal.recipe.ingredients.map(ingredient => {
     const [amount, unit, ...rest] = ingredient.split(" ");
     const calorieMatch = ingredient.match(/\((\d+) cal\)/);
@@ -21,6 +22,7 @@ const scaleMeal = (originalMeal: Meal, targetCalories: number): Meal => {
     
     const originalCalories = parseInt(calorieMatch[1]);
     const scaledCalories = Math.round(originalCalories * scaleFactor);
+    totalCalories += scaledCalories;
     const scaledAmount = parseFloat(amount) * scaleFactor;
     
     // Format the scaled amount to 1 decimal place if it's not a whole number
@@ -31,9 +33,10 @@ const scaleMeal = (originalMeal: Meal, targetCalories: number): Meal => {
     return `${formattedAmount} ${unit} ${rest.join(" ").replace(/\(\d+ cal\)/, `(${scaledCalories} cal)`)}`;
   });
 
+  // Use the actual sum of scaled ingredient calories
   return {
     ...originalMeal,
-    calories: Math.round(targetCalories),
+    calories: totalCalories, // This ensures the total matches ingredient sum exactly
     protein: Math.round(originalMeal.protein * scaleFactor),
     carbs: Math.round(originalMeal.carbs * scaleFactor),
     fat: Math.round(originalMeal.fat * scaleFactor),
