@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import MealTimeSlot from "./meal-plan/MealTimeSlot";
@@ -7,6 +7,8 @@ import { MealTimeSlot as MealTimeSlotType, Meal } from "./meal-plan/types";
 
 interface MealPlanProps {
   dailyCalories?: number;
+  minProtein?: number;
+  maxProtein?: number;
 }
 
 // Helper function to scale a meal's ingredients and macros
@@ -30,7 +32,7 @@ const scaleMeal = (originalMeal: Meal, targetCalories: number): Meal => {
       ? scaledAmount.toString() 
       : scaledAmount.toFixed(1);
     
-    return `${formattedAmount} ${unit} ${rest.join(" ").replace(/\(\d+ cal\)/, `(${scaledCalories} cal)`)}`;
+    return `${formattedAmount} ${unit} ${rest.join(" ").replace(/\(\d+) cal\)/, `(${scaledCalories} cal)`)}`;
   });
 
   // Use the actual sum of scaled ingredient calories
@@ -47,21 +49,52 @@ const scaleMeal = (originalMeal: Meal, targetCalories: number): Meal => {
   };
 };
 
-const MealPlan = ({ dailyCalories = 1200 }: MealPlanProps) => {
-  const [mealPlan, setMealPlan] = useState<MealTimeSlotType[]>(() => {
+const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: MealPlanProps) => {
+  const [mealPlan, setMealPlan] = useState<MealTimeSlotType[]>([]);
+  const { toast } = useToast();
+
+  // Function to generate new meal options that meet the protein requirements
+  const generateMealOptions = (caloriesPerMeal: number) => {
+    return [...mealOptionsPool]
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 3)
+      .map(meal => {
+        const scaledMeal = scaleMeal(meal, caloriesPerMeal);
+        console.log(`Scaled meal ${meal.name}:`, {
+          calories: scaledMeal.calories,
+          protein: scaledMeal.protein
+        });
+        return scaledMeal;
+      });
+  };
+
+  // Update meal plan when calories or protein targets change
+  useEffect(() => {
+    console.log('Updating meal plan with new targets:', {
+      dailyCalories,
+      minProtein,
+      maxProtein
+    });
+
     const caloriesPerMeal = dailyCalories / 2;
-    return [
+    const newMealPlan = [
       {
         time: "12:00 PM - 2:00 PM",
-        options: mealOptionsPool.slice(0, 3).map(meal => scaleMeal(meal, caloriesPerMeal))
+        options: generateMealOptions(caloriesPerMeal)
       },
       {
         time: "4:00 PM - 6:00 PM",
-        options: mealOptionsPool.slice(3, 6).map(meal => scaleMeal(meal, caloriesPerMeal))
+        options: generateMealOptions(caloriesPerMeal)
       }
     ];
-  });
-  const { toast } = useToast();
+
+    setMealPlan(newMealPlan);
+
+    toast({
+      title: "Meal plan updated",
+      description: `Adjusted for ${dailyCalories} calories and ${minProtein}-${maxProtein}g protein target.`,
+    });
+  }, [dailyCalories, minProtein, maxProtein, toast]);
 
   const refreshMealOptions = (timeSlotIndex: number) => {
     console.log(`Refreshing meal options for time slot ${timeSlotIndex}`);
@@ -69,10 +102,7 @@ const MealPlan = ({ dailyCalories = 1200 }: MealPlanProps) => {
     
     setMealPlan((currentPlan) => {
       const newPlan = [...currentPlan];
-      const newOptions = [...mealOptionsPool]
-        .sort(() => Math.random() - 0.5)
-        .slice(0, 3)
-        .map(meal => scaleMeal(meal, caloriesPerMeal));
+      const newOptions = generateMealOptions(caloriesPerMeal);
       
       newPlan[timeSlotIndex] = {
         ...newPlan[timeSlotIndex],
