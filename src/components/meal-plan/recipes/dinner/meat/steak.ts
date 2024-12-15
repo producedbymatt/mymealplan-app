@@ -16,11 +16,20 @@ export const steakRecipes: Meal[] = [
         "Fresh herbs (5 cal)"
       ],
       instructions: [
-        "Crush peppercorns and coat steak",
-        "Heat oil in cast iron skillet",
-        "Cook steak to desired doneness",
-        "Let rest for 5-10 minutes",
-        "Serve with roasted vegetables"
+        "Remove steak from refrigerator 30 minutes before cooking",
+        "Coarsely crush black peppercorns using a mortar and pestle",
+        "Pat steak dry thoroughly with paper towels",
+        "Season steak generously with salt on both sides",
+        "Press crushed peppercorns firmly into both sides of the steak",
+        "Heat olive oil in a cast iron skillet over high heat until smoking",
+        "Carefully place steak in the hot skillet",
+        "Cook for 4-5 minutes on each side for medium-rare (135°F)",
+        "Add fresh herbs to the pan during the last minute of cooking",
+        "Transfer steak to a cutting board",
+        "Let rest for 5-10 minutes under foil",
+        "Meanwhile, roast vegetables in the same pan",
+        "Slice steak against the grain",
+        "Serve with roasted vegetables and pan juices"
       ],
       prepTime: "10 minutes",
       cookTime: "15 minutes"
@@ -42,11 +51,19 @@ export const steakRecipes: Meal[] = [
         "Ginger and garlic (10 cal)"
       ],
       instructions: [
-        "Marinate steak in soy sauce and spices",
-        "Grill or pan-sear steak",
-        "Cook rice according to package",
-        "Stir-fry vegetables",
-        "Slice steak against the grain"
+        "Score flank steak in a diamond pattern on both sides",
+        "Mince 2 cloves garlic and 1-inch piece of ginger",
+        "Mix soy sauce, half the sesame oil, minced garlic, and ginger",
+        "Marinate steak in the mixture for at least 30 minutes",
+        "Cook brown rice according to package instructions",
+        "Remove steak from marinade and pat dry",
+        "Heat remaining sesame oil in a large skillet over high heat",
+        "Cook steak for 4-5 minutes per side for medium-rare",
+        "Remove steak and let rest for 5 minutes",
+        "In the same pan, stir-fry vegetables until crisp-tender",
+        "Slice steak thinly against the grain",
+        "Serve over brown rice with stir-fried vegetables",
+        "Optional: garnish with sesame seeds and green onions"
       ],
       prepTime: "20 minutes",
       cookTime: "20 minutes"
@@ -67,11 +84,19 @@ export const steakRecipes: Meal[] = [
         "Herbs and seasonings (10 cal)"
       ],
       instructions: [
-        "Season steak with herbs and spices",
-        "Cook steak to desired doneness",
-        "Roast sweet potato wedges",
-        "Sauté spinach",
-        "Serve together"
+        "Bring steak to room temperature for 30 minutes",
+        "Peel and cut sweet potato into uniform wedges",
+        "Toss sweet potato wedges with half the olive oil and seasonings",
+        "Preheat oven to 400°F (200°C)",
+        "Roast sweet potato wedges for 20-25 minutes, flipping halfway",
+        "Season steak generously with salt, pepper, and herbs",
+        "Heat remaining olive oil in a skillet over high heat",
+        "Cook steak 4-5 minutes per side for medium-rare",
+        "Remove steak and let rest for 5 minutes",
+        "In the same pan, quickly wilt spinach",
+        "Slice steak against the grain",
+        "Serve with roasted sweet potato wedges and wilted spinach",
+        "Drizzle with any remaining pan juices"
       ],
       prepTime: "15 minutes",
       cookTime: "25 minutes"

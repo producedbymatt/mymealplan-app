@@ -16,11 +16,19 @@ export const fishRecipes: Meal[] = [
         "Lemon and herbs (10 cal)"
       ],
       instructions: [
-        "Season cod with herbs and lemon",
-        "Bake cod until flaky",
-        "Cook quinoa according to package",
-        "Roast vegetables with olive oil",
-        "Serve cod over quinoa with vegetables"
+        "Preheat oven to 400°F (200°C)",
+        "Rinse quinoa thoroughly and cook according to package instructions",
+        "Pat cod fillet dry with paper towels",
+        "Season cod with salt, pepper, and fresh herbs",
+        "Cut mixed vegetables into uniform pieces",
+        "Toss vegetables with half the olive oil",
+        "Place vegetables on a baking sheet and roast for 15 minutes",
+        "Drizzle remaining olive oil over cod",
+        "Place cod on the baking sheet with vegetables",
+        "Bake for 10-12 minutes until fish flakes easily",
+        "Squeeze fresh lemon juice over fish",
+        "Fluff quinoa with a fork",
+        "Serve cod over quinoa with roasted vegetables"
       ],
       prepTime: "10 minutes",
       cookTime: "25 minutes"
@@ -43,12 +51,20 @@ export const fishRecipes: Meal[] = [
         "3/4 cup quinoa, cooked (160 cal)"
       ],
       instructions: [
-        "Cook quinoa according to package instructions",
-        "Season salmon with herbs and lemon",
-        "Roast sweet potato and broccoli",
-        "Pan-sear salmon until cooked through",
-        "Assemble bowl with quinoa base",
-        "Top with vegetables and salmon"
+        "Preheat oven to 400°F (200°C)",
+        "Rinse quinoa and cook according to package instructions",
+        "Peel and cube sweet potato into 1/2-inch pieces",
+        "Cut broccoli into uniform florets",
+        "Toss sweet potato and broccoli with half the olive oil",
+        "Season vegetables with salt and pepper",
+        "Roast vegetables for 20-25 minutes, stirring halfway",
+        "Pat salmon fillet dry and season with salt, pepper, and herbs",
+        "Heat remaining olive oil in an oven-safe skillet",
+        "Place salmon skin-side down in the skillet",
+        "Cook for 4 minutes, then transfer to oven",
+        "Bake for 5-7 minutes until salmon is cooked through",
+        "Squeeze fresh lemon juice over salmon",
+        "Assemble bowl with quinoa, roasted vegetables, and salmon"
       ],
       prepTime: "15 minutes",
       cookTime: "25 minutes"
@@ -71,11 +87,19 @@ export const fishRecipes: Meal[] = [
         "Spices (20 cal)"
       ],
       instructions: [
-        "Season tilapia with spices",
-        "Grill until flaky",
-        "Prepare cabbage slaw",
-        "Warm tortillas",
-        "Assemble tacos with fish and toppings"
+        "Mix spices: chili powder, cumin, garlic powder, and paprika",
+        "Pat tilapia fillets dry with paper towels",
+        "Season fish generously with spice mixture",
+        "Shred cabbage finely for slaw",
+        "Mix cabbage with lime juice and chopped cilantro",
+        "Heat grill or grill pan over medium-high heat",
+        "Grill fish for 3-4 minutes per side until flaky",
+        "While fish cooks, warm corn tortillas",
+        "Slice avocado",
+        "Break fish into large chunks",
+        "Assemble tacos: tortilla, fish, cabbage slaw, avocado",
+        "Garnish with additional cilantro and lime wedges",
+        "Serve immediately while warm"
       ],
       prepTime: "15 minutes",
       cookTime: "10 minutes"
@@ -98,11 +122,20 @@ export const fishRecipes: Meal[] = [
         "Garlic (10 cal)"
       ],
       instructions: [
-        "Season sea bass with herbs",
-        "Roast vegetables",
-        "Pan-sear fish until done",
-        "Make lemon-caper sauce",
-        "Serve fish over vegetables"
+        "Pat sea bass fillets dry with paper towels",
+        "Season fish with salt, pepper, and chopped fresh herbs",
+        "Mince 2 cloves of garlic",
+        "Cut mixed vegetables into uniform pieces",
+        "Heat half the olive oil in a large skillet",
+        "Add vegetables and garlic, cook until tender-crisp",
+        "Remove vegetables and keep warm",
+        "Add remaining oil to the pan",
+        "Place sea bass skin-side down in the hot pan",
+        "Cook for 4-5 minutes until skin is crispy",
+        "Flip and cook for 2-3 minutes more",
+        "Add capers and lemon juice to the pan",
+        "Return vegetables to pan to heat through",
+        "Serve fish over vegetables with pan sauce"
       ],
       prepTime: "10 minutes",
       cookTime: "20 minutes"
@@ -124,11 +157,20 @@ export const fishRecipes: Meal[] = [
         "Ginger and garlic (10 cal)"
       ],
       instructions: [
-        "Cook brown rice",
-        "Steam bok choy",
-        "Pan-sear mahi-mahi",
-        "Make Asian glaze",
-        "Combine and serve"
+        "Rinse brown rice and cook according to package instructions",
+        "Mince 1-inch piece of ginger and 2 cloves of garlic",
+        "Cut bok choy into bite-sized pieces",
+        "Pat mahi-mahi dry with paper towels",
+        "Season fish with salt and pepper",
+        "Heat sesame oil in a large skillet over medium-high heat",
+        "Add ginger and garlic, sauté for 30 seconds",
+        "Add mahi-mahi to the pan",
+        "Cook for 4-5 minutes on each side",
+        "Add bok choy to the pan",
+        "Pour soy glaze over fish and vegetables",
+        "Cook for 2-3 minutes until glaze thickens",
+        "Serve over brown rice",
+        "Garnish with sesame seeds if desired"
       ],
       prepTime: "15 minutes",
       cookTime: "20 minutes"
@@ -150,11 +192,20 @@ export const fishRecipes: Meal[] = [
         "Garlic (10 cal)"
       ],
       instructions: [
-        "Mix herbs for crust",
-        "Press herbs onto trout",
-        "Roast vegetables",
-        "Bake trout until flaky",
-        "Serve with lemon"
+        "Preheat oven to 400°F (200°C)",
+        "Finely chop fresh herbs (parsley, dill, and thyme)",
+        "Mince 2 cloves of garlic",
+        "Mix herbs and garlic with 1 teaspoon olive oil to form paste",
+        "Pat trout fillet dry with paper towels",
+        "Season fish with salt and pepper",
+        "Press herb mixture onto the flesh side of the trout",
+        "Cut mixed vegetables into uniform pieces",
+        "Toss vegetables with remaining olive oil",
+        "Place vegetables on a baking sheet and roast for 15 minutes",
+        "Add trout to the baking sheet, skin-side down",
+        "Bake for 10-12 minutes until fish is cooked through",
+        "Squeeze fresh lemon juice over fish before serving",
+        "Serve with roasted vegetables"
       ],
       prepTime: "15 minutes",
       cookTime: "20 minutes"
@@ -178,15 +229,20 @@ export const fishRecipes: Meal[] = [
         "1 tbsp sesame seeds (52 cal)"
       ],
       instructions: [
-        "Cook quinoa according to package instructions",
-        "Prepare citrus glaze by mixing orange juice with honey",
-        "Season salmon with salt and pepper",
+        "Rinse quinoa thoroughly and cook according to package instructions",
+        "Zest and juice the orange",
+        "Mix orange juice with honey to make glaze",
+        "Pat salmon fillet dry with paper towels",
+        "Season salmon with salt, pepper, and orange zest",
         "Heat olive oil in a pan over medium-high heat",
-        "Cook salmon skin-side up for 4 minutes",
+        "Place salmon skin-side up in the hot pan",
+        "Cook for 4 minutes until golden brown",
         "Flip salmon and brush with citrus glaze",
-        "Cook for another 3-4 minutes until done",
-        "Arrange quinoa and greens in a bowl",
-        "Top with salmon and remaining glaze",
+        "Cook for 3-4 minutes more until done",
+        "Fluff quinoa with a fork",
+        "Arrange mixed greens and quinoa in bowls",
+        "Top with glazed salmon",
+        "Drizzle with remaining glaze",
         "Garnish with fresh herbs and sesame seeds"
       ],
       prepTime: "10 minutes",
