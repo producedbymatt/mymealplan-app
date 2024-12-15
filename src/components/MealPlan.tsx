@@ -5,29 +5,54 @@ import MealTimeSlot from "./meal-plan/MealTimeSlot";
 import { mealOptionsPool } from "./meal-plan/mealData";
 import { MealTimeSlot as MealTimeSlotType } from "./meal-plan/types";
 
-const initialMealPlan: MealTimeSlotType[] = [
-  {
-    time: "12:00 PM - 2:00 PM",
-    options: mealOptionsPool.slice(0, 3)
-  },
-  {
-    time: "4:00 PM - 6:00 PM",
-    options: mealOptionsPool.slice(3, 6)
-  }
-];
+interface MealPlanProps {
+  dailyCalories?: number;
+}
 
-const MealPlan = () => {
-  const [mealPlan, setMealPlan] = useState<MealTimeSlotType[]>(initialMealPlan);
+const MealPlan = ({ dailyCalories = 1200 }: MealPlanProps) => {
+  const [mealPlan, setMealPlan] = useState<MealTimeSlotType[]>(() => {
+    const caloriesPerMeal = dailyCalories / 2;
+    return [
+      {
+        time: "12:00 PM - 2:00 PM",
+        options: mealOptionsPool.slice(0, 3).map(meal => ({
+          ...meal,
+          calories: Math.round(caloriesPerMeal),
+          protein: Math.round(meal.protein * (caloriesPerMeal / meal.calories)),
+          carbs: Math.round(meal.carbs * (caloriesPerMeal / meal.calories)),
+          fat: Math.round(meal.fat * (caloriesPerMeal / meal.calories))
+        }))
+      },
+      {
+        time: "4:00 PM - 6:00 PM",
+        options: mealOptionsPool.slice(3, 6).map(meal => ({
+          ...meal,
+          calories: Math.round(caloriesPerMeal),
+          protein: Math.round(meal.protein * (caloriesPerMeal / meal.calories)),
+          carbs: Math.round(meal.carbs * (caloriesPerMeal / meal.calories)),
+          fat: Math.round(meal.fat * (caloriesPerMeal / meal.calories))
+        }))
+      }
+    ];
+  });
   const { toast } = useToast();
 
   const refreshMealOptions = (timeSlotIndex: number) => {
     console.log(`Refreshing meal options for time slot ${timeSlotIndex}`);
+    const caloriesPerMeal = dailyCalories / 2;
     
     setMealPlan((currentPlan) => {
       const newPlan = [...currentPlan];
       const newOptions = [...mealOptionsPool]
         .sort(() => Math.random() - 0.5)
-        .slice(0, 3);
+        .slice(0, 3)
+        .map(meal => ({
+          ...meal,
+          calories: Math.round(caloriesPerMeal),
+          protein: Math.round(meal.protein * (caloriesPerMeal / meal.calories)),
+          carbs: Math.round(meal.carbs * (caloriesPerMeal / meal.calories)),
+          fat: Math.round(meal.fat * (caloriesPerMeal / meal.calories))
+        }));
       
       newPlan[timeSlotIndex] = {
         ...newPlan[timeSlotIndex],

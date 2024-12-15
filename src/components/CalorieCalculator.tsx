@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 
@@ -7,9 +7,16 @@ interface CalorieCalculatorProps {
   currentWeight: number;
   targetWeight: number;
   targetDays: number;
+  onCaloriesCalculated?: (calories: number) => void;
 }
 
-const CalorieCalculator = ({ height, currentWeight, targetWeight, targetDays }: CalorieCalculatorProps) => {
+const CalorieCalculator = ({ 
+  height, 
+  currentWeight, 
+  targetWeight, 
+  targetDays,
+  onCaloriesCalculated 
+}: CalorieCalculatorProps) => {
   const [activityLevel, setActivityLevel] = useState([1.2]); // Default to sedentary
 
   // Calculate BMR using Harris-Benedict equation (for standard units)
@@ -88,6 +95,10 @@ const CalorieCalculator = ({ height, currentWeight, targetWeight, targetDays }: 
   };
 
   const weightLossWarning = getWeightLossWarning(weightLossPerWeek);
+
+  useEffect(() => {
+    onCaloriesCalculated?.(dailyCalories);
+  }, [dailyCalories, onCaloriesCalculated]);
 
   return (
     <Card className="p-6 w-full max-w-md mx-auto mt-4">

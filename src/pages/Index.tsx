@@ -11,6 +11,7 @@ const Index = () => {
     targetWeight: 0,
     targetDays: 0,
   });
+  const [recommendedCalories, setRecommendedCalories] = useState(1200);
 
   const handleBMICalculated = (bmi: number) => {
     console.log("BMI calculated:", bmi);
@@ -49,11 +50,17 @@ const Index = () => {
         </div>
         {userMetrics.height > 0 && userMetrics.targetWeight > 0 && (
           <div className="mt-8">
-            <CalorieCalculator {...userMetrics} />
+            <CalorieCalculator 
+              {...userMetrics} 
+              onCaloriesCalculated={(calories: number) => {
+                console.log("Setting recommended calories:", calories);
+                setRecommendedCalories(calories);
+              }}
+            />
           </div>
         )}
         <div className="mt-8">
-          <MealPlan />
+          <MealPlan dailyCalories={recommendedCalories} />
         </div>
       </div>
     </div>
