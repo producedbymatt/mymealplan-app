@@ -1,4 +1,4 @@
-import { Meal } from "../../../types";
+import { Meal } from "../../../../types";
 import { turkeyRecipes } from "./turkey";
 import { veggieRecipes } from "./veggie";
 
