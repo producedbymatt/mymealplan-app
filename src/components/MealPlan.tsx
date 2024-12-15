@@ -85,14 +85,18 @@ const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: Me
       maxProtein
     });
 
-    const caloriesPerMeal = dailyCalories / 2;
+    const caloriesPerMeal = Math.round(dailyCalories / 3); // Divide calories by 3 meals
     const newMealPlan = [
+      {
+        time: "7:00 AM - 9:00 AM",
+        options: generateMealOptions(caloriesPerMeal)
+      },
       {
         time: "12:00 PM - 2:00 PM",
         options: generateMealOptions(caloriesPerMeal)
       },
       {
-        time: "4:00 PM - 6:00 PM",
+        time: "6:00 PM - 8:00 PM",
         options: generateMealOptions(caloriesPerMeal)
       }
     ];
@@ -107,7 +111,7 @@ const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: Me
 
   const refreshMealOptions = (timeSlotIndex: number) => {
     console.log(`Refreshing meal options for time slot ${timeSlotIndex}`);
-    const caloriesPerMeal = dailyCalories / 2;
+    const caloriesPerMeal = Math.round(dailyCalories / 3);
     
     setMealPlan((currentPlan) => {
       const newPlan = [...currentPlan];
@@ -131,7 +135,7 @@ const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: Me
     <Card className="p-6 w-full max-w-2xl mx-auto">
       <h2 className="text-2xl font-bold mb-4">Today's Meal Plan</h2>
       <p className="text-gray-600 mb-6">
-        Following intermittent fasting schedule (12 PM - 6 PM eating window)
+        Three balanced meals throughout the day
       </p>
       {mealPlan.map((slot, index) => (
         <MealTimeSlot
