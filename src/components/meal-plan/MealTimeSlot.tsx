@@ -10,10 +10,9 @@ interface MealTimeSlotProps {
   options: Meal[];
   onRefresh: () => void;
   isLast?: boolean;
-  showFavoritesOnly?: boolean;
 }
 
-const MealTimeSlot = ({ time, options, onRefresh, isLast, showFavoritesOnly }: MealTimeSlotProps) => {
+const MealTimeSlot = ({ time, options, onRefresh, isLast }: MealTimeSlotProps) => {
   return (
     <div className="mb-6">
       <div className="flex justify-between items-center mb-3">
@@ -30,11 +29,7 @@ const MealTimeSlot = ({ time, options, onRefresh, isLast, showFavoritesOnly }: M
       </div>
       <div className="grid gap-4">
         {options.map((meal, index) => (
-          <MealOption 
-            key={index} 
-            meal={meal} 
-            showFavoritesOnly={showFavoritesOnly}
-          />
+          <MealOption key={index} meal={meal} />
         ))}
       </div>
       {!isLast && <Separator className="mt-6" />}

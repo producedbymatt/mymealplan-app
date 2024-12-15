@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
-import { Filter, FilterX } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import MealTimeSlot from "./meal-plan/MealTimeSlot";
 import { getMealOptionsForTime } from "./meal-plan/mealData";
 import { MealTimeSlot as MealTimeSlotType, Meal } from "./meal-plan/types";
@@ -59,7 +57,6 @@ const scaleMeal = (originalMeal: Meal, targetCalories: number): Meal => {
 const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: MealPlanProps) => {
   const [mealPlan, setMealPlan] = useState<MealTimeSlotType[]>([]);
   const [usedRecipes, setUsedRecipes] = useState<Set<string>>(new Set());
-  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const { toast } = useToast();
 
   // Function to generate new meal options that meet the protein requirements
@@ -111,10 +108,12 @@ const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: Me
       "6:00 PM - 8:00 PM"
     ];
     
+    // Reset used recipes when generating a new meal plan
     setUsedRecipes(new Set());
     
     const newMealPlan = timeSlots.map(time => {
       const options = generateMealOptions(time, caloriesPerMeal, new Set());
+      // Add the new recipe names to usedRecipes
       options.forEach(meal => {
         setUsedRecipes(prev => new Set([...prev, meal.name]));
       });
@@ -141,6 +140,7 @@ const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: Me
         usedRecipes
       );
       
+      // Add the new recipe names to usedRecipes
       newOptions.forEach(meal => {
         setUsedRecipes(prev => new Set([...prev, meal.name]));
       });
@@ -159,40 +159,12 @@ const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: Me
     });
   };
 
-  const toggleFavoritesFilter = () => {
-    setShowFavoritesOnly(!showFavoritesOnly);
-    toast({
-      title: showFavoritesOnly ? "Showing all meals" : "Showing favorites only",
-      description: showFavoritesOnly ? "Displaying all available meal options" : "Filtering to show your favorite meals",
-    });
-  };
-
   return (
     <Card className="p-6 w-full max-w-2xl mx-auto">
-      <div className="flex justify-between items-center mb-4">
-        <div>
-          <h2 className="text-2xl font-bold">Today's Meal Plan</h2>
-          <p className="text-gray-600">Three balanced meals throughout the day</p>
-        </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={toggleFavoritesFilter}
-          className="flex items-center gap-2"
-        >
-          {showFavoritesOnly ? (
-            <>
-              <FilterX className="h-4 w-4" />
-              Show All
-            </>
-          ) : (
-            <>
-              <Filter className="h-4 w-4" />
-              Show Favorites
-            </>
-          )}
-        </Button>
-      </div>
+      <h2 className="text-2xl font-bold mb-4">Today's Meal Plan</h2>
+      <p className="text-gray-600 mb-6">
+        Three balanced meals throughout the day
+      </p>
       {mealPlan.map((slot, index) => (
         <MealTimeSlot
           key={slot.time}
@@ -200,7 +172,6 @@ const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: Me
           options={slot.options}
           onRefresh={() => refreshMealOptions(index)}
           isLast={index === mealPlan.length - 1}
-          showFavoritesOnly={showFavoritesOnly}
         />
       ))}
     </Card>
