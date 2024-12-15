@@ -88,5 +88,63 @@ export const bowlLunchRecipes: Meal[] = [
       prepTime: "20 minutes",
       cookTime: "25 minutes"
     }
+  },
+  {
+    name: "Mediterranean Quinoa Bowl",
+    calories: 510,
+    protein: 28,
+    carbs: 62,
+    fat: 24,
+    recipe: {
+      ingredients: [
+        "1 cup cooked quinoa (220 cal)",
+        "4 oz grilled chicken breast (180 cal)",
+        "1/2 cup roasted chickpeas (120 cal)",
+        "1 cup mixed vegetables (50 cal)",
+        "2 tbsp olive oil (240 cal)",
+        "1/4 cup hummus (100 cal)"
+      ],
+      instructions: [
+        "Cook quinoa according to package instructions",
+        "Season chicken with Mediterranean herbs and grill until cooked through",
+        "Roast chickpeas with olive oil and spices until crispy",
+        "Steam or roast mixed vegetables",
+        "Assemble bowl with quinoa as base",
+        "Top with sliced chicken, chickpeas, and vegetables",
+        "Drizzle with olive oil and add a dollop of hummus",
+        "Garnish with fresh herbs if desired"
+      ],
+      prepTime: "15 minutes",
+      cookTime: "25 minutes"
+    }
+  },
+  {
+    name: "Asian Salmon Bowl",
+    calories: 530,
+    protein: 32,
+    carbs: 55,
+    fat: 26,
+    recipe: {
+      ingredients: [
+        "4 oz salmon fillet (180 cal)",
+        "1 cup brown rice (220 cal)",
+        "1 cup stir-fried vegetables (100 cal)",
+        "2 tbsp teriyaki sauce (90 cal)",
+        "1 tbsp sesame oil (120 cal)",
+        "1 tbsp sesame seeds (60 cal)"
+      ],
+      instructions: [
+        "Cook brown rice according to package instructions",
+        "Season salmon with salt and pepper",
+        "Pan-sear salmon in sesame oil until cooked through",
+        "Stir-fry mixed vegetables",
+        "Assemble bowl with rice as base",
+        "Top with salmon and vegetables",
+        "Drizzle with teriyaki sauce",
+        "Garnish with sesame seeds"
+      ],
+      prepTime: "10 minutes",
+      cookTime: "20 minutes"
+    }
   }
 ];

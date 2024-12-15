@@ -96,5 +96,35 @@ export const wrapLunchRecipes: Meal[] = [
       prepTime: "10 minutes",
       cookTime: "5 minutes"
     }
+  },
+  {
+    name: "Buffalo Chicken Wrap",
+    calories: 490,
+    protein: 32,
+    carbs: 48,
+    fat: 24,
+    recipe: {
+      ingredients: [
+        "1 large whole wheat wrap (120 cal)",
+        "4 oz grilled chicken breast (180 cal)",
+        "2 tbsp buffalo sauce (30 cal)",
+        "2 tbsp ranch dressing (140 cal)",
+        "1 cup romaine lettuce (5 cal)",
+        "1/4 cup shredded carrots (13 cal)",
+        "1/4 cup celery, diced (4 cal)"
+      ],
+      instructions: [
+        "Grill chicken and slice into strips",
+        "Toss chicken with buffalo sauce",
+        "Warm wrap slightly to make it more pliable",
+        "Spread ranch dressing on wrap",
+        "Layer lettuce, carrots, and celery",
+        "Add buffalo chicken",
+        "Roll tightly, tucking in sides",
+        "Cut diagonally and serve"
+      ],
+      prepTime: "10 minutes",
+      cookTime: "15 minutes"
+    }
   }
 ];

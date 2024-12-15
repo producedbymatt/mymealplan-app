@@ -91,5 +91,64 @@ export const sandwichLunchRecipes: Meal[] = [
       prepTime: "15 minutes",
       cookTime: "15 minutes"
     }
+  },
+  {
+    name: "Mediterranean Veggie Sandwich",
+    calories: 470,
+    protein: 18,
+    carbs: 52,
+    fat: 24,
+    recipe: {
+      ingredients: [
+        "2 slices whole grain bread (220 cal)",
+        "1/4 cup hummus (100 cal)",
+        "1 roasted red pepper (15 cal)",
+        "1/2 cucumber, sliced (8 cal)",
+        "1/4 cup mixed greens (3 cal)",
+        "2 tbsp olive tapenade (120 cal)",
+        "1 oz feta cheese (74 cal)"
+      ],
+      instructions: [
+        "Toast bread slices until golden",
+        "Spread hummus on one slice",
+        "Spread olive tapenade on the other slice",
+        "Layer roasted red peppers, cucumber, and mixed greens",
+        "Sprinkle crumbled feta cheese",
+        "Close sandwich and cut diagonally",
+        "Serve immediately"
+      ],
+      prepTime: "10 minutes",
+      cookTime: "5 minutes"
+    }
+  },
+  {
+    name: "Portobello Mushroom Sandwich",
+    calories: 440,
+    protein: 16,
+    carbs: 48,
+    fat: 22,
+    recipe: {
+      ingredients: [
+        "2 slices sourdough bread (220 cal)",
+        "1 large portobello mushroom (30 cal)",
+        "1 oz provolone cheese (100 cal)",
+        "1 tbsp pesto (80 cal)",
+        "1/4 avocado (80 cal)",
+        "1 cup arugula (5 cal)",
+        "1 tbsp balsamic glaze (40 cal)"
+      ],
+      instructions: [
+        "Clean and remove stem from portobello mushroom",
+        "Grill mushroom for 4-5 minutes per side",
+        "Toast sourdough bread",
+        "Spread pesto on one slice of bread",
+        "Layer grilled mushroom, provolone, and avocado",
+        "Add arugula",
+        "Drizzle with balsamic glaze",
+        "Close sandwich and serve"
+      ],
+      prepTime: "10 minutes",
+      cookTime: "10 minutes"
+    }
   }
 ];

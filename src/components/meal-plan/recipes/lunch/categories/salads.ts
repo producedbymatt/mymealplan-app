@@ -91,5 +91,62 @@ export const saladLunchRecipes: Meal[] = [
       prepTime: "15 minutes",
       cookTime: "15 minutes"
     }
+  },
+  {
+    name: "Southwest Chicken Salad",
+    calories: 490,
+    protein: 35,
+    carbs: 30,
+    fat: 28,
+    recipe: {
+      ingredients: [
+        "4 oz grilled chicken breast (180 cal)",
+        "2 cups romaine lettuce (10 cal)",
+        "1/2 cup black beans (110 cal)",
+        "1/2 cup corn (80 cal)",
+        "1/2 avocado (120 cal)",
+        "2 tbsp ranch dressing (140 cal)"
+      ],
+      instructions: [
+        "Season chicken with southwest spices and grill until cooked",
+        "Chop romaine lettuce",
+        "Rinse and drain black beans",
+        "Combine all ingredients in a large bowl",
+        "Top with sliced chicken and avocado",
+        "Drizzle with ranch dressing",
+        "Toss gently before serving"
+      ],
+      prepTime: "15 minutes",
+      cookTime: "15 minutes"
+    }
+  },
+  {
+    name: "Quinoa Tabbouleh Salad",
+    calories: 460,
+    protein: 18,
+    carbs: 52,
+    fat: 24,
+    recipe: {
+      ingredients: [
+        "1 cup cooked quinoa (220 cal)",
+        "2 cups parsley (10 cal)",
+        "1 cup cherry tomatoes (27 cal)",
+        "1/2 cup cucumber (8 cal)",
+        "1/4 cup mint leaves (5 cal)",
+        "3 tbsp olive oil (360 cal)",
+        "1 lemon, juiced (20 cal)"
+      ],
+      instructions: [
+        "Cook quinoa according to package instructions and let cool",
+        "Finely chop parsley and mint",
+        "Dice cucumber and halve cherry tomatoes",
+        "Combine all ingredients in a large bowl",
+        "Add olive oil and lemon juice",
+        "Season with salt and pepper",
+        "Toss well and chill before serving"
+      ],
+      prepTime: "20 minutes",
+      cookTime: "15 minutes"
+    }
   }
 ];
