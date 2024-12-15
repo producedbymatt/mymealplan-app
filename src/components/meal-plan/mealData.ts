@@ -3,7 +3,7 @@ import { Meal } from "./types";
 export const mealOptionsPool: Meal[] = [
   {
     name: "High-Protein Breakfast Bowl",
-    calories: 450,
+    calories: 450, // 130 + 40 + 120 + 60 + 60 + 40 = 450
     protein: 35,
     carbs: 45,
     fat: 15,
@@ -29,7 +29,7 @@ export const mealOptionsPool: Meal[] = [
   },
   {
     name: "Tuna Avocado Salad",
-    calories: 400,
+    calories: 455, // 120 + 160 + 15 + 120 + 5 + 10 + 25 = 455
     protein: 35,
     carbs: 15,
     fat: 25,
@@ -56,7 +56,7 @@ export const mealOptionsPool: Meal[] = [
   },
   {
     name: "Chicken Stir-Fry",
-    calories: 425,
+    calories: 505, // 165 + 50 + 10 + 120 + 150 + 5 + 5 = 505
     protein: 40,
     carbs: 35,
     fat: 15,
@@ -84,7 +84,7 @@ export const mealOptionsPool: Meal[] = [
   },
   {
     name: "Mediterranean Bowl",
-    calories: 380,
+    calories: 508, // 160 + 120 + 25 + 8 + 70 + 120 + 5 = 508
     protein: 20,
     carbs: 45,
     fat: 18,
@@ -111,7 +111,7 @@ export const mealOptionsPool: Meal[] = [
   },
   {
     name: "Salmon Power Bowl",
-    calories: 440,
+    calories: 570, // 180 + 120 + 30 + 120 + 10 + 0 + 110 = 570
     protein: 35,
     carbs: 35,
     fat: 22,
