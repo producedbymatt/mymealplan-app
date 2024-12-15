@@ -2,30 +2,35 @@ import { Meal } from "../../../types";
 
 export const sandwichLunchRecipes: Meal[] = [
   {
-    name: "Turkey Avocado Wrap",
-    calories: 480,
-    protein: 35,
-    carbs: 40,
+    name: "Caprese Sandwich",
+    calories: 450,
+    protein: 20,
+    carbs: 48,
     fat: 22,
     recipe: {
       ingredients: [
-        "2 slices turkey breast (100 cal)",
-        "1 whole wheat wrap (120 cal)",
-        "1 medium avocado (160 cal)",
-        "1 cup mixed greens (10 cal)",
-        "2 tbsp hummus (70 cal)"
+        "2 slices sourdough bread (220 cal)",
+        "4 oz fresh mozzarella (280 cal)",
+        "2 medium tomatoes (44 cal)",
+        "1 cup fresh basil leaves (1 cal)",
+        "2 tbsp balsamic glaze (40 cal)",
+        "1 tbsp olive oil (120 cal)"
       ],
       instructions: [
-        "Warm the whole wheat wrap in a dry skillet over medium heat for 30 seconds per side",
-        "Spread hummus evenly across the entire surface of the wrap",
-        "Layer turkey breast slices in the center of the wrap",
-        "Slice the avocado and arrange the slices over the turkey",
-        "Add a layer of mixed greens on top",
-        "Fold in both sides of the wrap, then roll from bottom to top, keeping ingredients tight",
-        "Cut diagonally in half and serve immediately"
+        "Slice tomatoes into 1/4 inch thick rounds",
+        "Slice mozzarella into 1/4 inch thick slices",
+        "Wash and dry basil leaves",
+        "Lightly toast sourdough bread slices",
+        "Drizzle olive oil on both inner sides of bread",
+        "Layer mozzarella slices on one piece of bread",
+        "Add tomato slices on top of mozzarella",
+        "Place basil leaves over tomatoes",
+        "Drizzle with balsamic glaze",
+        "Close sandwich with other bread slice",
+        "Cut diagonally and serve immediately"
       ],
       prepTime: "10 minutes",
-      cookTime: "0 minutes"
+      cookTime: "5 minutes"
     }
   }
 ];
