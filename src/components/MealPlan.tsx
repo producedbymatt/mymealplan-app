@@ -62,7 +62,6 @@ const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: Me
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const { toast } = useToast();
 
-  // Function to generate new meal options that meet the protein requirements
   const generateMealOptions = (timeSlot: string, caloriesPerMeal: number, excludeNames: Set<string>) => {
     const allOptions = getMealOptionsForTime(timeSlot);
     const availableOptions = allOptions.filter(meal => !excludeNames.has(meal.name));
@@ -122,12 +121,7 @@ const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: Me
     });
 
     setMealPlan(newMealPlan);
-
-    toast({
-      title: "Meal plan updated",
-      description: `Adjusted for ${dailyCalories} calories and ${minProtein}-${maxProtein}g protein target.`,
-    });
-  }, [dailyCalories, minProtein, maxProtein, toast]);
+  }, [dailyCalories, minProtein, maxProtein]);
 
   const refreshMealOptions = (timeSlotIndex: number) => {
     console.log(`Refreshing meal options for time slot ${timeSlotIndex}`);
