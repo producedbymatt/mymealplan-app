@@ -136,5 +136,130 @@ export const mealOptionsPool: Meal[] = [
       prepTime: "15 minutes",
       cookTime: "25 minutes"
     }
+  },
+  {
+    name: "Grilled Steak with Sweet Potato",
+    calories: 520,
+    protein: 45,
+    carbs: 30,
+    fat: 25,
+    recipe: {
+      ingredients: [
+        "6 oz lean beef steak (300 cal)",
+        "1 medium sweet potato (120 cal)",
+        "2 cups mixed vegetables (50 cal)",
+        "1 tbsp olive oil (120 cal)",
+        "Fresh herbs and spices (5 cal)"
+      ],
+      instructions: [
+        "Season steak with salt and pepper",
+        "Grill steak to desired doneness",
+        "Bake sweet potato until tender",
+        "Steam mixed vegetables",
+        "Drizzle with olive oil and season"
+      ],
+      prepTime: "10 minutes",
+      cookTime: "20 minutes"
+    }
+  },
+  {
+    name: "Baked Cod with Quinoa",
+    calories: 440,
+    protein: 38,
+    carbs: 40,
+    fat: 15,
+    recipe: {
+      ingredients: [
+        "6 oz cod fillet (140 cal)",
+        "1 cup cooked quinoa (220 cal)",
+        "1 cup roasted vegetables (50 cal)",
+        "1 tbsp olive oil (120 cal)",
+        "Lemon and herbs (10 cal)"
+      ],
+      instructions: [
+        "Season cod with herbs and lemon",
+        "Bake cod until flaky",
+        "Cook quinoa according to package",
+        "Roast vegetables with olive oil",
+        "Serve cod over quinoa with vegetables"
+      ],
+      prepTime: "10 minutes",
+      cookTime: "25 minutes"
+    }
+  },
+  {
+    name: "Turkey Meatballs with Zucchini Noodles",
+    calories: 480,
+    protein: 42,
+    carbs: 20,
+    fat: 28,
+    recipe: {
+      ingredients: [
+        "6 oz ground turkey (280 cal)",
+        "2 medium zucchini, spiralized (60 cal)",
+        "1/2 cup marinara sauce (60 cal)",
+        "1 oz parmesan cheese (110 cal)",
+        "1 tbsp olive oil (120 cal)"
+      ],
+      instructions: [
+        "Mix turkey with herbs and form meatballs",
+        "Bake meatballs until cooked through",
+        "Spiralize zucchini into noodles",
+        "Sauté zucchini noodles in olive oil",
+        "Top with meatballs, sauce, and cheese"
+      ],
+      prepTime: "15 minutes",
+      cookTime: "20 minutes"
+    }
+  },
+  {
+    name: "Shrimp and Cauliflower Rice Bowl",
+    calories: 410,
+    protein: 35,
+    carbs: 25,
+    fat: 22,
+    recipe: {
+      ingredients: [
+        "8 oz shrimp (240 cal)",
+        "2 cups cauliflower rice (50 cal)",
+        "1 cup mixed vegetables (50 cal)",
+        "1 tbsp coconut oil (120 cal)",
+        "Garlic and ginger (10 cal)"
+      ],
+      instructions: [
+        "Sauté shrimp with garlic and ginger",
+        "Rice cauliflower in food processor",
+        "Cook cauliflower rice in coconut oil",
+        "Steam mixed vegetables",
+        "Combine all ingredients in bowl"
+      ],
+      prepTime: "15 minutes",
+      cookTime: "15 minutes"
+    }
+  },
+  {
+    name: "Pork Tenderloin with Roasted Vegetables",
+    calories: 490,
+    protein: 40,
+    carbs: 35,
+    fat: 23,
+    recipe: {
+      ingredients: [
+        "6 oz pork tenderloin (280 cal)",
+        "2 cups roasted vegetables (100 cal)",
+        "1 medium sweet potato (120 cal)",
+        "1 tbsp olive oil (120 cal)",
+        "Herbs and spices (10 cal)"
+      ],
+      instructions: [
+        "Season pork with herbs and spices",
+        "Roast pork until cooked through",
+        "Cut vegetables into equal sizes",
+        "Roast vegetables with olive oil",
+        "Let pork rest before slicing"
+      ],
+      prepTime: "10 minutes",
+      cookTime: "25 minutes"
+    }
   }
 ];
