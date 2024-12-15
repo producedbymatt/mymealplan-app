@@ -50,14 +50,17 @@ export const toastAndSandwiches: Meal[] = [
         "1 tbsp butter (120 cal)"
       ],
       instructions: [
-        "Toast the English muffin halves until golden brown",
-        "In a skillet, cook 2 slices of turkey bacon over medium heat until crispy, then set aside",
+        "Split the English muffin and toast until golden brown",
+        "In a skillet over medium heat, cook 2 slices of turkey bacon until crispy (about 4-5 minutes)",
+        "Remove bacon and set aside on paper towels",
         "In the same skillet, melt 1 tablespoon of butter over medium heat",
-        "Crack 2 eggs into the skillet and cook to your desired doneness (sunny side up, over easy, etc.)",
-        "Place a slice of cheese on top of the eggs during the last minute of cooking to melt",
-        "Assemble the sandwich by placing the cooked eggs and cheese on the bottom half of the toasted English muffin",
-        "Top with crispy turkey bacon and cover with the other half of the muffin",
-        "Serve immediately while warm"
+        "Crack 2 eggs into the skillet and cook to desired doneness",
+        "Place 1 slice of cheese on top of eggs during the last minute of cooking",
+        "Place the bottom half of the English muffin on a plate",
+        "Layer with the eggs and melted cheese",
+        "Add the crispy turkey bacon",
+        "Top with the other half of the English muffin",
+        "Serve immediately while hot"
       ],
       prepTime: "5 minutes",
       cookTime: "10 minutes"
@@ -79,12 +82,21 @@ export const toastAndSandwiches: Meal[] = [
         "Hot sauce (5 cal)"
       ],
       instructions: [
-        "In a bowl, whisk together 2 eggs and season with salt and pepper",
-        "Heat a non-stick skillet over medium heat and scramble the eggs until fully cooked",
-        "Warm the tortilla in the microwave for about 10 seconds or in a dry skillet for a few seconds on each side",
-        "Layer the scrambled eggs, black beans, cheese, and sliced avocado on the tortilla",
-        "Drizzle with hot sauce to taste",
-        "Fold in the sides of the tortilla and roll it up tightly from the bottom to the top",
+        "Warm the tortilla in a dry skillet over medium heat for about 30 seconds per side",
+        "In a bowl, whisk 2 eggs with a pinch of salt and pepper",
+        "Heat a non-stick skillet over medium heat",
+        "Pour in whisked eggs and cook, stirring gently, until just set",
+        "Heat 1/4 cup black beans in a small pan or microwave",
+        "Slice 1/4 avocado",
+        "Grate 1 oz of cheese if not already shredded",
+        "Lay the warm tortilla flat on a clean surface",
+        "Place scrambled eggs in the center",
+        "Top with warm black beans",
+        "Add sliced avocado",
+        "Sprinkle with cheese",
+        "Add hot sauce to taste",
+        "Fold in the sides of the tortilla",
+        "Roll up tightly from bottom to top",
         "Serve immediately while warm"
       ],
       prepTime: "5 minutes",
@@ -92,31 +104,30 @@ export const toastAndSandwiches: Meal[] = [
     }
   },
   {
-    name: "Breakfast Quesadilla",
-    calories: 500,
-    protein: 30,
-    carbs: 45,
-    fat: 25,
+    name: "Breakfast Toast Bar",
+    calories: 440,
+    protein: 20,
+    carbs: 52,
+    fat: 20,
     recipe: {
       ingredients: [
-        "1 large tortilla (120 cal)",
-        "1 cup shredded cheese (400 cal)",
-        "1/2 cup cooked chicken (100 cal)",
-        "1/4 cup bell peppers (10 cal)",
-        "1/4 cup onions (10 cal)",
-        "Sour cream (optional)"
+        "2 slices whole grain bread (160 cal)",
+        "2 tbsp peanut butter (190 cal)",
+        "1 banana (105 cal)",
+        "1 tbsp honey (60 cal)",
+        "Chia seeds (25 cal)"
       ],
       instructions: [
-        "In a skillet, sauté 1/4 cup of diced onions and bell peppers over medium heat until softened",
-        "Add 1/2 cup of cooked chicken to the skillet and heat through",
-        "Place the tortilla in the skillet and sprinkle 1 cup of shredded cheese evenly over half of the tortilla",
-        "Add the chicken and vegetable mixture on top of the cheese",
-        "Fold the tortilla in half and cook for 2-3 minutes on each side until the cheese is melted and the tortilla is golden brown",
-        "Remove from the skillet and cut into wedges",
-        "Serve with sour cream on the side, if desired"
+        "Toast 2 slices of whole grain bread until golden brown",
+        "While bread is still warm, spread 1 tablespoon of peanut butter on each slice",
+        "Peel and slice 1 banana into thin rounds",
+        "Arrange banana slices evenly over the peanut butter",
+        "Drizzle 1/2 tablespoon of honey over each slice",
+        "Sprinkle chia seeds over the top",
+        "Serve immediately while toast is still warm"
       ],
-      prepTime: "10 minutes",
-      cookTime: "10 minutes"
+      prepTime: "5 minutes",
+      cookTime: "5 minutes"
     }
   }
 ];

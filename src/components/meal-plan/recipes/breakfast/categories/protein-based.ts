@@ -33,33 +33,6 @@ export const proteinBased: Meal[] = [
     }
   },
   {
-    name: "Breakfast Burrito",
-    calories: 520,
-    protein: 32,
-    carbs: 48,
-    fat: 24,
-    recipe: {
-      ingredients: [
-        "2 large eggs (140 cal)",
-        "1 whole wheat tortilla (120 cal)",
-        "1/4 cup black beans (60 cal)",
-        "1 oz cheese (110 cal)",
-        "2 tbsp salsa (20 cal)",
-        "1/4 avocado (80 cal)"
-      ],
-      instructions: [
-        "Scramble 2 large eggs in a non-stick skillet over medium heat until fully cooked",
-        "Warm 1/4 cup of black beans in a separate small saucepan until heated through",
-        "Heat 1 whole wheat tortilla in a dry skillet for about 30 seconds on each side until pliable",
-        "Assemble the burrito by placing the scrambled eggs, black beans, 1 oz of cheese, 2 tbsp of salsa, and 1/4 avocado on the tortilla",
-        "Roll the tortilla tightly, folding in the sides as you go to secure the filling",
-        "Serve immediately with additional salsa on the side if desired"
-      ],
-      prepTime: "10 minutes",
-      cookTime: "10 minutes"
-    }
-  },
-  {
     name: "Protein Smoothie Bowl",
     calories: 450,
     protein: 30,
@@ -74,11 +47,16 @@ export const proteinBased: Meal[] = [
         "1/4 cup granola (120 cal)"
       ],
       instructions: [
-        "In a blender, combine 1 scoop of protein powder, 1 frozen banana, 1 cup of frozen berries, and 1 cup of almond milk",
-        "Blend on high until smooth and creamy, adding more almond milk if needed to reach desired consistency",
-        "Pour the smoothie into a bowl",
-        "Top with 1/4 cup of granola and additional berries or toppings of your choice",
-        "Serve immediately with a spoon"
+        "Place 1 frozen banana (cut into chunks) in a high-powered blender",
+        "Add 1 cup of frozen mixed berries",
+        "Add 1 scoop of protein powder",
+        "Pour in 1/2 cup of almond milk to start",
+        "Blend on high speed, adding remaining almond milk gradually until desired consistency is reached",
+        "The mixture should be thicker than a smoothie but still blendable",
+        "Transfer to a serving bowl",
+        "Top with 1/4 cup of granola",
+        "Add additional fresh berries if desired",
+        "Serve immediately before it melts"
       ],
       prepTime: "5 minutes",
       cookTime: "0 minutes"
@@ -99,16 +77,88 @@ export const proteinBased: Meal[] = [
         "1 tbsp butter (120 cal)"
       ],
       instructions: [
+        "Preheat your waffle iron to medium-high heat",
         "In a mixing bowl, combine 1 cup of protein waffle mix with 1 scoop of protein powder",
-        "Add water according to the package instructions, whisking until smooth",
-        "Preheat your waffle iron according to the manufacturer's instructions",
-        "Pour the batter into the preheated waffle iron and cook until golden brown and crispy",
-        "While waffles are cooking, melt 1 tbsp of butter in a small saucepan over low heat",
-        "Once waffles are done, serve topped with melted butter, 1 tbsp of maple syrup, and 1/2 cup of mixed berries",
-        "Enjoy immediately while warm"
+        "Add water gradually while whisking until you achieve a smooth, thick batter",
+        "Lightly coat the preheated waffle iron with cooking spray",
+        "Pour the batter into the center of the waffle iron",
+        "Close the lid and cook until golden brown (about 3-4 minutes)",
+        "While waffles cook, melt 1 tablespoon of butter in a small bowl",
+        "Rinse and pat dry 1/2 cup of mixed berries",
+        "Once waffles are done, transfer to a plate",
+        "Brush with melted butter",
+        "Top with berries",
+        "Drizzle with 1 tablespoon maple syrup",
+        "Serve immediately while hot and crispy"
       ],
       prepTime: "10 minutes",
       cookTime: "15 minutes"
+    }
+  },
+  {
+    name: "Apple Cinnamon Protein Bowl",
+    calories: 380,
+    protein: 28,
+    carbs: 42,
+    fat: 14,
+    recipe: {
+      ingredients: [
+        "1 cup Greek yogurt (130 cal)",
+        "1 apple, diced (95 cal)",
+        "1/4 cup granola (120 cal)",
+        "1 scoop vanilla protein powder (120 cal)",
+        "1 tsp cinnamon (6 cal)",
+        "1 tbsp honey (60 cal)"
+      ],
+      instructions: [
+        "In a mixing bowl, combine 1 cup of Greek yogurt with 1 scoop of vanilla protein powder",
+        "Whisk until the protein powder is fully incorporated and no lumps remain",
+        "Wash and core 1 apple, then dice into small, uniform pieces",
+        "Add the diced apple to the yogurt mixture",
+        "Add 1 teaspoon of cinnamon",
+        "Stir gently to combine all ingredients",
+        "Transfer to a serving bowl",
+        "Top with 1/4 cup of granola",
+        "Drizzle 1 tablespoon of honey over the top",
+        "Serve immediately to maintain the granola's crunch"
+      ],
+      prepTime: "5 minutes",
+      cookTime: "0 minutes"
+    }
+  },
+  {
+    name: "Breakfast Power Bowl",
+    calories: 520,
+    protein: 35,
+    carbs: 45,
+    fat: 24,
+    recipe: {
+      ingredients: [
+        "3/4 cup quinoa (165 cal)",
+        "2 eggs (140 cal)",
+        "1/2 avocado (160 cal)",
+        "1/4 cup chickpeas (60 cal)",
+        "1 tbsp olive oil (120 cal)",
+        "Fresh herbs (5 cal)"
+      ],
+      instructions: [
+        "Rinse 3/4 cup quinoa thoroughly under cold water",
+        "Cook quinoa in 1.5 cups water until tender and water is absorbed (about 15 minutes)",
+        "While quinoa cooks, drain and rinse 1/4 cup chickpeas",
+        "Heat chickpeas in a small pan until warm",
+        "In a separate pan, heat 1/2 tablespoon olive oil over medium heat",
+        "Crack 2 eggs into the pan and cook to desired doneness",
+        "Cut 1/2 avocado into thin slices",
+        "Once quinoa is done, transfer to a serving bowl",
+        "Top with the cooked eggs",
+        "Add sliced avocado and warm chickpeas",
+        "Drizzle with remaining olive oil",
+        "Sprinkle with fresh herbs",
+        "Season with salt and pepper to taste",
+        "Serve immediately while warm"
+      ],
+      prepTime: "10 minutes",
+      cookTime: "20 minutes"
     }
   }
 ];
