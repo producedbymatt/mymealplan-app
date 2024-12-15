@@ -1,16 +1,14 @@
-import { chickenRecipes } from "./recipes/protein-sources/chicken";
-import { fishRecipes } from "./recipes/protein-sources/fish";
-import { beefRecipes } from "./recipes/protein-sources/beef";
-import { otherProteinRecipes } from "./recipes/protein-sources/other-proteins";
-import { vegetarianRecipes } from "./recipes/vegetarian";
-import { seafoodRecipes } from "./recipes/seafood";
+import { breakfastRecipes } from "./recipes/breakfast";
+import { lunchRecipes } from "./recipes/lunch";
+import { dinnerRecipes } from "./recipes/dinner";
 import { Meal } from "./types";
 
-export const mealOptionsPool: Meal[] = [
-  ...chickenRecipes,
-  ...fishRecipes,
-  ...beefRecipes,
-  ...otherProteinRecipes,
-  ...vegetarianRecipes,
-  ...seafoodRecipes
-];
+export const getMealOptionsForTime = (time: string): Meal[] => {
+  if (time.includes("AM")) {
+    return breakfastRecipes;
+  } else if (time.includes("12:00 PM")) {
+    return lunchRecipes;
+  } else {
+    return dinnerRecipes;
+  }
+};

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import MealTimeSlot from "./meal-plan/MealTimeSlot";
-import { mealOptionsPool } from "./meal-plan/mealData";
+import { getMealOptionsForTime } from "./meal-plan/mealData";
 import { MealTimeSlot as MealTimeSlotType, Meal } from "./meal-plan/types";
 
 interface MealPlanProps {
@@ -63,8 +63,8 @@ const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: Me
   const { toast } = useToast();
 
   // Function to generate new meal options that meet the protein requirements
-  const generateMealOptions = (caloriesPerMeal: number) => {
-    return [...mealOptionsPool]
+  const generateMealOptions = (timeSlot: string, caloriesPerMeal: number) => {
+    return [...getMealOptionsForTime(timeSlot)]
       .sort(() => Math.random() - 0.5)
       .slice(0, 3)
       .map(meal => {
@@ -85,21 +85,17 @@ const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: Me
       maxProtein
     });
 
-    const caloriesPerMeal = Math.round(dailyCalories / 3); // Divide calories by 3 meals
-    const newMealPlan = [
-      {
-        time: "7:00 AM - 9:00 AM",
-        options: generateMealOptions(caloriesPerMeal)
-      },
-      {
-        time: "12:00 PM - 2:00 PM",
-        options: generateMealOptions(caloriesPerMeal)
-      },
-      {
-        time: "6:00 PM - 8:00 PM",
-        options: generateMealOptions(caloriesPerMeal)
-      }
+    const caloriesPerMeal = Math.round(dailyCalories / 3);
+    const timeSlots = [
+      "7:00 AM - 9:00 AM",
+      "12:00 PM - 2:00 PM",
+      "6:00 PM - 8:00 PM"
     ];
+    
+    const newMealPlan = timeSlots.map(time => ({
+      time,
+      options: generateMealOptions(time, caloriesPerMeal)
+    }));
 
     setMealPlan(newMealPlan);
 
@@ -115,7 +111,7 @@ const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: Me
     
     setMealPlan((currentPlan) => {
       const newPlan = [...currentPlan];
-      const newOptions = generateMealOptions(caloriesPerMeal);
+      const newOptions = generateMealOptions(newPlan[timeSlotIndex].time, caloriesPerMeal);
       
       newPlan[timeSlotIndex] = {
         ...newPlan[timeSlotIndex],
