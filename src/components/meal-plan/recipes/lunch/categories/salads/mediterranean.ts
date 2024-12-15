@@ -1,6 +1,6 @@
-import { Meal } from "../../types";
+import { Meal } from "../../../../types";
 
-export const saladRecipes: Meal[] = [
+export const mediterraneanSaladRecipes: Meal[] = [
   {
     name: "Mediterranean Salad",
     calories: 450,

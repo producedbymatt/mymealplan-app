@@ -1,7 +1,7 @@
 import { Meal } from "../../types";
-import { sandwichRecipes } from "./sandwiches";
-import { bowlRecipes } from "./bowls";
-import { saladRecipes } from "./salads";
+import { sandwichRecipes } from "./categories/sandwiches";
+import { bowlRecipes } from "./categories/bowls";
+import { saladRecipes } from "./categories/salads";
 
 export const lunchRecipes: Meal[] = [
   ...sandwichRecipes,

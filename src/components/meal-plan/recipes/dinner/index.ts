@@ -1,12 +1,10 @@
 import { Meal } from "../../types";
-import { steakRecipes } from "./meat/steak";
-import { chickenRecipes } from "./meat/chicken";
-import { fishRecipes } from "./seafood/fish";
-import { vegetarianDinnerRecipes } from "./vegetarian";
+import { meatRecipes } from "./categories/meat";
+import { seafoodRecipes } from "./categories/seafood";
+import { vegetarianDinnerRecipes } from "./categories/vegetarian";
 
 export const dinnerRecipes: Meal[] = [
-  ...steakRecipes,
-  ...chickenRecipes,
-  ...fishRecipes,
+  ...meatRecipes,
+  ...seafoodRecipes,
   ...vegetarianDinnerRecipes
 ];
