@@ -16,11 +16,13 @@ export const asianBowlRecipes: Meal[] = [
         "1 tbsp sesame oil (120 cal)"
       ],
       instructions: [
-        "Cook noodles according to package",
-        "Pan-fry tofu until crispy",
-        "Stir-fry vegetables",
-        "Combine with sauce",
-        "Top with sesame seeds"
+        "Cook rice noodles according to package instructions, then drain and set aside",
+        "Heat sesame oil in a large pan over medium heat",
+        "Cut tofu into 1-inch cubes and pan-fry in the heated sesame oil until crispy on all sides, about 8-10 minutes",
+        "Add mixed vegetables to the same pan and stir-fry until tender-crisp, about 3-5 minutes",
+        "Return noodles to the pan and toss with the tofu and vegetables",
+        "Pour peanut sauce over everything and toss until well combined and heated through",
+        "Serve hot, garnished with sesame seeds if desired"
       ],
       prepTime: "15 minutes",
       cookTime: "20 minutes"

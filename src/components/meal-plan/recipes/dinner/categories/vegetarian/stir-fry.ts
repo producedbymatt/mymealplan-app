@@ -16,11 +16,15 @@ export const stirFryRecipes: Meal[] = [
         "1 cup brown rice (220 cal)"
       ],
       instructions: [
-        "Press and cube tofu",
-        "Stir-fry vegetables",
-        "Add sauce",
-        "Cook tofu until crispy",
-        "Serve over rice"
+        "Cook brown rice according to package instructions, then keep warm",
+        "Press tofu between paper towels for 15 minutes to remove excess moisture",
+        "Cut pressed tofu into 1-inch cubes",
+        "Heat sesame oil in a large wok or pan over medium-high heat",
+        "Add tofu cubes and cook until golden brown on all sides, about 5-7 minutes",
+        "Add mixed vegetables to the pan and stir-fry for 3-4 minutes until crisp-tender",
+        "Pour soy sauce over the tofu and vegetables, stirring to coat evenly",
+        "Cook for an additional 2 minutes until everything is well heated",
+        "Serve hot over the prepared brown rice"
       ],
       prepTime: "20 minutes",
       cookTime: "25 minutes"
