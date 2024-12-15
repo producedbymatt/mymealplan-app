@@ -129,5 +129,41 @@ export const toastAndSandwiches: Meal[] = [
       prepTime: "5 minutes",
       cookTime: "5 minutes"
     }
+  },
+  {
+    name: "Breakfast Burrito",
+    calories: 520,
+    protein: 32,
+    carbs: 48,
+    fat: 24,
+    recipe: {
+      ingredients: [
+        "2 large eggs (140 cal)",
+        "1 whole wheat tortilla (120 cal)",
+        "1/4 cup black beans (60 cal)",
+        "1 oz cheese (110 cal)",
+        "2 tbsp salsa (20 cal)",
+        "1/4 avocado (80 cal)"
+      ],
+      instructions: [
+        "Heat a non-stick skillet over medium heat",
+        "Crack 2 eggs into a bowl and whisk until well combined",
+        "Pour eggs into the heated skillet",
+        "Scramble eggs until just set but still slightly moist",
+        "In a separate pan or microwave, heat 1/4 cup black beans until warm",
+        "Warm the whole wheat tortilla in a dry skillet or microwave for 20 seconds",
+        "Layer the warm tortilla with scrambled eggs in the center",
+        "Add the heated black beans",
+        "Sprinkle 1 oz of shredded cheese over the warm eggs and beans",
+        "Add 2 tablespoons of salsa",
+        "Slice 1/4 avocado and add on top",
+        "Season with salt and pepper to taste",
+        "Fold in the sides of the tortilla",
+        "Roll from bottom to top, keeping ingredients tucked in tightly",
+        "Optional: Return the wrapped burrito to the skillet to lightly toast the outside"
+      ],
+      prepTime: "10 minutes",
+      cookTime: "10 minutes"
+    }
   }
 ];
