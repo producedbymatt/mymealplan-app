@@ -9,6 +9,41 @@ interface MealPlanProps {
   dailyCalories?: number;
 }
 
+// Helper function to scale a meal's ingredients and macros
+const scaleMeal = (originalMeal: Meal, targetCalories: number): Meal => {
+  const scaleFactor = targetCalories / originalMeal.calories;
+  
+  // Scale the ingredients
+  const scaledIngredients = originalMeal.recipe.ingredients.map(ingredient => {
+    const [amount, unit, ...rest] = ingredient.split(" ");
+    const calorieMatch = ingredient.match(/\((\d+) cal\)/);
+    if (!calorieMatch) return ingredient;
+    
+    const originalCalories = parseInt(calorieMatch[1]);
+    const scaledCalories = Math.round(originalCalories * scaleFactor);
+    const scaledAmount = parseFloat(amount) * scaleFactor;
+    
+    // Format the scaled amount to 1 decimal place if it's not a whole number
+    const formattedAmount = Number.isInteger(scaledAmount) 
+      ? scaledAmount.toString() 
+      : scaledAmount.toFixed(1);
+    
+    return `${formattedAmount} ${unit} ${rest.join(" ").replace(/\(\d+ cal\)/, `(${scaledCalories} cal)`)}`;
+  });
+
+  return {
+    ...originalMeal,
+    calories: Math.round(targetCalories),
+    protein: Math.round(originalMeal.protein * scaleFactor),
+    carbs: Math.round(originalMeal.carbs * scaleFactor),
+    fat: Math.round(originalMeal.fat * scaleFactor),
+    recipe: {
+      ...originalMeal.recipe,
+      ingredients: scaledIngredients
+    }
+  };
+};
+
 const MealPlan = ({ dailyCalories = 1200 }: MealPlanProps) => {
   const [mealPlan, setMealPlan] = useState<MealTimeSlotType[]>(() => {
     const caloriesPerMeal = dailyCalories / 2;
@@ -24,41 +59,6 @@ const MealPlan = ({ dailyCalories = 1200 }: MealPlanProps) => {
     ];
   });
   const { toast } = useToast();
-
-  // Helper function to scale a meal's ingredients and macros
-  const scaleMeal = (originalMeal: Meal, targetCalories: number): Meal => {
-    const scaleFactor = targetCalories / originalMeal.calories;
-    
-    // Scale the ingredients
-    const scaledIngredients = originalMeal.recipe.ingredients.map(ingredient => {
-      const [amount, unit, ...rest] = ingredient.split(" ");
-      const calorieMatch = ingredient.match(/\((\d+) cal\)/);
-      if (!calorieMatch) return ingredient;
-      
-      const originalCalories = parseInt(calorieMatch[1]);
-      const scaledCalories = Math.round(originalCalories * scaleFactor);
-      const scaledAmount = parseFloat(amount) * scaleFactor;
-      
-      // Format the scaled amount to 1 decimal place if it's not a whole number
-      const formattedAmount = Number.isInteger(scaledAmount) 
-        ? scaledAmount.toString() 
-        : scaledAmount.toFixed(1);
-      
-      return `${formattedAmount} ${unit} ${rest.join(" ").replace(/\(\d+ cal\)/, `(${scaledCalories} cal)`)}`;
-    });
-
-    return {
-      ...originalMeal,
-      calories: Math.round(targetCalories),
-      protein: Math.round(originalMeal.protein * scaleFactor),
-      carbs: Math.round(originalMeal.carbs * scaleFactor),
-      fat: Math.round(originalMeal.fat * scaleFactor),
-      recipe: {
-        ...originalMeal.recipe,
-        ingredients: scaledIngredients
-      }
-    };
-  };
 
   const refreshMealOptions = (timeSlotIndex: number) => {
     console.log(`Refreshing meal options for time slot ${timeSlotIndex}`);
