@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import { Heart } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -7,19 +8,48 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Meal } from "./types";
+import { useToast } from "@/components/ui/use-toast";
 
 interface MealOptionProps {
   meal: Meal;
+  showFavoritesOnly?: boolean;
 }
 
-const MealOption = ({ meal }: MealOptionProps) => {
+const MealOption = ({ meal, showFavoritesOnly }: MealOptionProps) => {
+  const [isFavorite, setIsFavorite] = useState(false);
+  const { toast } = useToast();
+
+  const toggleFavorite = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsFavorite(!isFavorite);
+    toast({
+      title: isFavorite ? "Removed from favorites" : "Added to favorites",
+      description: `${meal.name} has been ${isFavorite ? "removed from" : "added to"} your favorites.`,
+    });
+  };
+
+  // If showing favorites only and this meal isn't a favorite, don't render it
+  if (showFavoritesOnly && !isFavorite) {
+    return null;
+  }
+
   return (
     <Accordion type="single" collapsible>
       <AccordionItem value="item-1">
         <AccordionTrigger className="p-4 bg-muted rounded-lg hover:bg-muted/80 transition-colors">
           <div className="flex-1 text-left">
             <div className="flex justify-between items-start mb-2">
-              <h4 className="font-medium">{meal.name}</h4>
+              <div className="flex items-center gap-2">
+                <h4 className="font-medium">{meal.name}</h4>
+                <Heart
+                  className={`h-5 w-5 cursor-pointer transition-colors ${
+                    isFavorite
+                      ? "fill-red-500 stroke-red-500"
+                      : "stroke-gray-400 hover:stroke-red-500"
+                  }`}
+                  onClick={toggleFavorite}
+                />
+              </div>
               <Badge variant="secondary">{meal.calories} cal</Badge>
             </div>
             <div className="flex gap-4 text-sm text-gray-600">
