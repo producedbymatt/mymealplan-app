@@ -47,6 +47,9 @@ export const SignUpForm = ({ onSuccess, onToggleForm }: SignUpFormProps) => {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <h2 className="text-2xl font-bold text-center mb-6">Sign In or Sign Up for Free</h2>
+      <p className="text-gray-600 text-center mb-6">
+        Create an account to unlock all features including weight tracking, BMI calculation, and personalized meal plans.
+      </p>
       
       <FormInput
         type="text"
