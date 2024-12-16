@@ -4,6 +4,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { format, addDays, differenceInDays } from "date-fns";
 
 interface StatsCardsProps {
   metrics: {
@@ -66,6 +67,12 @@ const StatsCards = ({ metrics, recommendedCalories, hasMetrics, weightEntries = 
   const heightFeet = Math.floor(metrics.height / 12);
   const heightInches = metrics.height % 12;
 
+  // Calculate target date and days remaining
+  const startDate = new Date(); // Using current date as start date
+  const targetDate = addDays(startDate, metrics.targetDays);
+  const daysRemaining = differenceInDays(targetDate, startDate);
+  const formattedTargetDate = format(targetDate, 'dd/MM/yyyy');
+
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
       <Card>
@@ -93,9 +100,9 @@ const StatsCards = ({ metrics, recommendedCalories, hasMetrics, weightEntries = 
           <CardTitle>Days to Goal</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{metrics.targetDays} days</div>
+          <div className="text-2xl font-bold">{daysRemaining} days</div>
           <p className="text-xs text-muted-foreground mt-1">
-            {(Math.abs(mostRecentWeight - metrics.targetWeight) / metrics.targetDays).toFixed(2)} lbs/day needed
+            {formattedTargetDate} / {metrics.targetDays} day goal
           </p>
         </CardContent>
       </Card>
