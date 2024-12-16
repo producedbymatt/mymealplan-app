@@ -13,9 +13,10 @@ interface WeightEntry {
 
 interface WeightTrackerProps {
   onGoalSet?: (weight: number, days: number) => void;
+  onWeightEntriesChange?: (entries: WeightEntry[]) => void;
 }
 
-const WeightTracker = ({ onGoalSet }: WeightTrackerProps) => {
+const WeightTracker = ({ onGoalSet, onWeightEntriesChange }: WeightTrackerProps) => {
   const [entries, setEntries] = React.useState<WeightEntry[]>([]);
   const [newWeight, setNewWeight] = React.useState("");
   const [targetWeight, setTargetWeight] = React.useState("");
@@ -40,8 +41,14 @@ const WeightTracker = ({ onGoalSet }: WeightTrackerProps) => {
       weight,
     };
 
-    setEntries([...entries, newEntry]);
+    const updatedEntries = [...entries, newEntry];
+    setEntries(updatedEntries);
     setNewWeight("");
+
+    // Notify parent component of the weight entries change
+    if (onWeightEntriesChange) {
+      onWeightEntriesChange(updatedEntries);
+    }
 
     if (entries.length > 0 && targetWeight) {
       const weightLoss = entries[0].weight - weight;

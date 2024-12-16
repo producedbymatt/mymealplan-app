@@ -14,9 +14,10 @@ interface StatsCardsProps {
   };
   recommendedCalories: number;
   hasMetrics: boolean;
+  weightEntries?: { date: string; weight: number; }[];
 }
 
-const StatsCards = ({ metrics, recommendedCalories, hasMetrics }: StatsCardsProps) => {
+const StatsCards = ({ metrics, recommendedCalories, hasMetrics, weightEntries = [] }: StatsCardsProps) => {
   if (!hasMetrics) {
     return (
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
@@ -56,6 +57,11 @@ const StatsCards = ({ metrics, recommendedCalories, hasMetrics }: StatsCardsProp
     );
   }
 
+  // Get the most recent weight entry if available
+  const mostRecentWeight = weightEntries && weightEntries.length > 0 
+    ? weightEntries[weightEntries.length - 1].weight 
+    : metrics.currentWeight;
+
   // Convert height from inches to feet and inches for display
   const heightFeet = Math.floor(metrics.height / 12);
   const heightInches = metrics.height % 12;
@@ -67,7 +73,7 @@ const StatsCards = ({ metrics, recommendedCalories, hasMetrics }: StatsCardsProp
           <CardTitle>Current Weight</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{metrics.currentWeight} lbs</div>
+          <div className="text-2xl font-bold">{mostRecentWeight} lbs</div>
           <p className="text-xs text-muted-foreground mt-1">Height: {heightFeet}'{heightInches}"</p>
         </CardContent>
       </Card>
@@ -78,7 +84,7 @@ const StatsCards = ({ metrics, recommendedCalories, hasMetrics }: StatsCardsProp
         <CardContent>
           <div className="text-2xl font-bold">{metrics.targetWeight} lbs</div>
           <p className="text-xs text-muted-foreground mt-1">
-            {Math.abs(metrics.currentWeight - metrics.targetWeight)} lbs to go
+            {Math.abs(mostRecentWeight - metrics.targetWeight)} lbs to go
           </p>
         </CardContent>
       </Card>
@@ -89,7 +95,7 @@ const StatsCards = ({ metrics, recommendedCalories, hasMetrics }: StatsCardsProp
         <CardContent>
           <div className="text-2xl font-bold">{metrics.targetDays} days</div>
           <p className="text-xs text-muted-foreground mt-1">
-            {(Math.abs(metrics.currentWeight - metrics.targetWeight) / metrics.targetDays).toFixed(2)} lbs/day needed
+            {(Math.abs(mostRecentWeight - metrics.targetWeight) / metrics.targetDays).toFixed(2)} lbs/day needed
           </p>
         </CardContent>
       </Card>

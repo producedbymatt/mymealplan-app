@@ -3,6 +3,12 @@ import WeightTracker from "@/components/WeightTracker";
 import CalorieCalculator from "@/components/CalorieCalculator";
 import MealPlan from "@/components/MealPlan";
 import StatsCards from "./StatsCards";
+import { useState } from "react";
+
+interface WeightEntry {
+  date: string;
+  weight: number;
+}
 
 interface DashboardContentProps {
   userMetrics: {
@@ -26,12 +32,20 @@ const DashboardContent = ({
   onGoalSet,
   onCaloriesCalculated,
 }: DashboardContentProps) => {
+  const [weightEntries, setWeightEntries] = useState<WeightEntry[]>([]);
+
+  const handleWeightEntry = (entries: WeightEntry[]) => {
+    console.log("New weight entries:", entries);
+    setWeightEntries(entries);
+  };
+
   return (
     <div>
       <StatsCards 
         metrics={userMetrics}
         recommendedCalories={recommendedCalories}
         hasMetrics={hasMetrics}
+        weightEntries={weightEntries}
       />
       
       <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
@@ -42,7 +56,10 @@ const DashboardContent = ({
           />
         </div>
         <div className="md:col-span-2">
-          <WeightTracker onGoalSet={onGoalSet} />
+          <WeightTracker 
+            onGoalSet={onGoalSet}
+            onWeightEntriesChange={handleWeightEntry}
+          />
         </div>
       </div>
 
