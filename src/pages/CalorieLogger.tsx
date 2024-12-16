@@ -1,10 +1,6 @@
 import { useState, useEffect } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { format, startOfWeek, isWithinInterval, subWeeks } from "date-fns";
+import { format } from "date-fns";
 import { supabase } from "@/lib/supabase";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 import {
   Table,
   TableBody,
@@ -21,22 +17,15 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Pencil, Trash2 } from "lucide-react";
-
-interface MealLog {
-  id: string;
-  user_id: string;
-  meal_name: string;
-  calories: number;
-  created_at: string;
-}
+import { MealForm } from "@/components/MealForm";
+import { useMealLogs, MealLog } from "@/hooks/useMealLogs";
 
 const CalorieLogger = () => {
   const [session, setSession] = useState<any>(null);
-  const [newMeal, setNewMeal] = useState({ meal_name: "", calories: "" });
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingMeal, setEditingMeal] = useState<MealLog | null>(null);
-  const queryClient = useQueryClient();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -50,115 +39,16 @@ const CalorieLogger = () => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const { data: mealLogs = [], isLoading } = useQuery({
-    queryKey: ['meal-logs'],
-    queryFn: async () => {
-      if (!session?.user?.id) return [];
-      const oneWeekAgo = subWeeks(new Date(), 1).toISOString();
-      const { data, error } = await supabase
-        .from('meal_logs')
-        .select('*')
-        .eq('user_id', session.user.id)
-        .gte('created_at', oneWeekAgo)
-        .order('created_at', { ascending: false });
+  const { mealLogs, isLoading, addMeal, updateMeal, deleteMeal } = useMealLogs(session?.user?.id);
 
-      if (error) throw error;
-      return data as MealLog[];
-    },
-    enabled: !!session?.user?.id,
-  });
-
-  const addMealMutation = useMutation({
-    mutationFn: async (meal: { meal_name: string; calories: number }) => {
-      const { data, error } = await supabase
-        .from('meal_logs')
-        .insert([
-          {
-            user_id: session?.user?.id,
-            meal_name: meal.meal_name,
-            calories: meal.calories,
-          },
-        ])
-        .select()
-        .single();
-
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['meal-logs'] });
-      toast.success("Meal logged successfully!");
-      setNewMeal({ meal_name: "", calories: "" });
-      setIsDialogOpen(false);
-    },
-    onError: (error) => {
-      toast.error("Failed to log meal: " + error.message);
-    },
-  });
-
-  const updateMealMutation = useMutation({
-    mutationFn: async (meal: MealLog) => {
-      const { data, error } = await supabase
-        .from('meal_logs')
-        .update({
-          meal_name: meal.meal_name,
-          calories: meal.calories,
-        })
-        .eq('id', meal.id)
-        .select()
-        .single();
-
-      if (error) throw error;
-      return data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['meal-logs'] });
-      toast.success("Meal updated successfully!");
-      setEditingMeal(null);
-      setIsDialogOpen(false);
-    },
-    onError: (error) => {
-      toast.error("Failed to update meal: " + error.message);
-    },
-  });
-
-  const deleteMealMutation = useMutation({
-    mutationFn: async (mealId: string) => {
-      const { error } = await supabase
-        .from('meal_logs')
-        .delete()
-        .eq('id', mealId);
-
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['meal-logs'] });
-      toast.success("Meal deleted successfully!");
-    },
-    onError: (error) => {
-      toast.error("Failed to delete meal: " + error.message);
-    },
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newMeal.meal_name || !newMeal.calories) {
-      toast.error("Please fill in all fields");
-      return;
-    }
-
+  const handleSubmit = (meal: { meal_name: string; calories: number }) => {
     if (editingMeal) {
-      updateMealMutation.mutate({
-        ...editingMeal,
-        meal_name: newMeal.meal_name,
-        calories: parseInt(newMeal.calories),
-      });
+      updateMeal({ ...editingMeal, ...meal });
     } else {
-      addMealMutation.mutate({
-        meal_name: newMeal.meal_name,
-        calories: parseInt(newMeal.calories),
-      });
+      addMeal(meal);
     }
+    setIsDialogOpen(false);
+    setEditingMeal(null);
   };
 
   const todayCalories = mealLogs
@@ -204,26 +94,14 @@ const CalorieLogger = () => {
             <DialogHeader>
               <DialogTitle>{editingMeal ? "Edit Meal" : "Add New Meal"}</DialogTitle>
             </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <Input
-                  placeholder="Meal name"
-                  value={newMeal.meal_name}
-                  onChange={(e) => setNewMeal({ ...newMeal, meal_name: e.target.value })}
-                />
-              </div>
-              <div>
-                <Input
-                  type="number"
-                  placeholder="Calories"
-                  value={newMeal.calories}
-                  onChange={(e) => setNewMeal({ ...newMeal, calories: e.target.value })}
-                />
-              </div>
-              <Button type="submit" className="w-full">
-                {editingMeal ? "Update Meal" : "Add Meal"}
-              </Button>
-            </form>
+            <MealForm
+              onSubmit={handleSubmit}
+              initialMeal={editingMeal}
+              onCancel={() => {
+                setIsDialogOpen(false);
+                setEditingMeal(null);
+              }}
+            />
           </DialogContent>
         </Dialog>
       </div>
@@ -253,10 +131,6 @@ const CalorieLogger = () => {
                       size="icon"
                       onClick={() => {
                         setEditingMeal(log);
-                        setNewMeal({
-                          meal_name: log.meal_name,
-                          calories: log.calories.toString(),
-                        });
                         setIsDialogOpen(true);
                       }}
                     >
@@ -267,7 +141,7 @@ const CalorieLogger = () => {
                       size="icon"
                       onClick={() => {
                         if (window.confirm("Are you sure you want to delete this meal?")) {
-                          deleteMealMutation.mutate(log.id);
+                          deleteMeal(log.id);
                         }
                       }}
                     >
