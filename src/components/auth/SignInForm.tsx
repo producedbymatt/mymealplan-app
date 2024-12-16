@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { FormInput } from "./FormInput";
 import { toast } from "sonner";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface SignInFormProps {
   onSuccess: () => void;
@@ -13,6 +14,7 @@ export const SignInForm = ({ onSuccess, onToggleForm }: SignInFormProps) => {
   const [loading, setLoading] = useState(false);
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,6 +24,10 @@ export const SignInForm = ({ onSuccess, onToggleForm }: SignInFormProps) => {
       const { error } = await supabase.auth.signInWithPassword({
         email: `${phone}@placeholder.com`,
         password,
+      }, {
+        options: {
+          persistSession: rememberMe // This will determine if the session persists after browser close
+        }
       });
 
       if (error) throw error;
@@ -53,6 +59,20 @@ export const SignInForm = ({ onSuccess, onToggleForm }: SignInFormProps) => {
         onChange={(e) => setPassword(e.target.value)}
         required
       />
+
+      <div className="flex items-center space-x-2">
+        <Checkbox
+          id="rememberMe"
+          checked={rememberMe}
+          onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+        />
+        <label
+          htmlFor="rememberMe"
+          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+        >
+          Remember me
+        </label>
+      </div>
 
       <Button type="submit" className="w-full" disabled={loading}>
         {loading ? "Loading..." : "Sign In"}
