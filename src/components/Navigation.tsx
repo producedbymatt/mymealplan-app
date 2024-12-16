@@ -20,19 +20,19 @@ const Navigation = () => {
   };
 
   return (
-    <div className="relative">
+    <div className="relative z-50">
       <Button
         variant="ghost"
         size="icon"
-        className="fixed top-4 right-4 z-50"
+        className="fixed top-4 right-4"
         onClick={() => setIsOpen(!isOpen)}
       >
         {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
       </Button>
 
       {isOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-40">
-          <div className="fixed right-0 top-0 h-full w-64 bg-white shadow-lg z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-50">
+          <div className="fixed right-0 top-0 h-full w-64 bg-white shadow-lg">
             <div className="flex flex-col p-4">
               <img 
                 src="/lovable-uploads/67003c76-1908-4b2f-93d3-01ea4a4cf510.png" 
