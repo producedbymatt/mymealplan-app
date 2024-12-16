@@ -42,7 +42,15 @@ export const useMealLogs = (userId: string | undefined) => {
   const addMealMutation = useMutation({
     mutationFn: async (meal: { meal_name: string; calories: number }) => {
       console.log('Adding meal:', meal);
-      if (!userId) throw new Error('User not authenticated');
+      if (!userId) {
+        console.error('No user ID provided');
+        throw new Error('User not authenticated');
+      }
+
+      if (!meal.meal_name || !meal.calories) {
+        console.error('Invalid meal data:', meal);
+        throw new Error('Please provide both meal name and calories');
+      }
 
       const { data, error } = await supabase
         .from('meal_logs')
@@ -57,8 +65,13 @@ export const useMealLogs = (userId: string | undefined) => {
         .single();
 
       if (error) {
-        console.error('Error adding meal:', error);
-        throw new Error(error.message || 'Failed to add meal');
+        console.error('Supabase error adding meal:', error);
+        throw new Error(error.message || 'Failed to add meal to database');
+      }
+
+      if (!data) {
+        console.error('No data returned from insert');
+        throw new Error('Failed to create meal entry');
       }
 
       console.log('Added meal successfully:', data);
@@ -70,7 +83,8 @@ export const useMealLogs = (userId: string | undefined) => {
     },
     onError: (error: Error) => {
       console.error('Mutation error:', error);
-      toast.error(error.message || "Failed to log meal");
+      const errorMessage = error.message || "An unexpected error occurred while logging meal";
+      toast.error(errorMessage);
     },
   });
 
@@ -89,7 +103,7 @@ export const useMealLogs = (userId: string | undefined) => {
 
       if (error) {
         console.error('Error updating meal:', error);
-        throw new Error(error.message || 'Failed to update meal');
+        throw new Error(error.message || 'Failed to update meal in database');
       }
 
       console.log('Updated meal successfully:', data);
@@ -100,7 +114,8 @@ export const useMealLogs = (userId: string | undefined) => {
       toast.success("Meal updated successfully!");
     },
     onError: (error: Error) => {
-      toast.error(error.message || "Failed to update meal");
+      const errorMessage = error.message || "An unexpected error occurred while updating meal";
+      toast.error(errorMessage);
     },
   });
 
@@ -114,7 +129,7 @@ export const useMealLogs = (userId: string | undefined) => {
 
       if (error) {
         console.error('Error deleting meal:', error);
-        throw new Error(error.message || 'Failed to delete meal');
+        throw new Error(error.message || 'Failed to delete meal from database');
       }
     },
     onSuccess: () => {
@@ -122,7 +137,8 @@ export const useMealLogs = (userId: string | undefined) => {
       toast.success("Meal deleted successfully!");
     },
     onError: (error: Error) => {
-      toast.error(error.message || "Failed to delete meal");
+      const errorMessage = error.message || "An unexpected error occurred while deleting meal";
+      toast.error(errorMessage);
     },
   });
 
