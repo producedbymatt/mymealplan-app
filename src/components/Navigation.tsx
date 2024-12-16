@@ -29,21 +29,19 @@ const Navigation = () => {
   }, []);
 
   const handleSignOut = async () => {
-    try {
-      console.log("Attempting to sign out...");
-      const { error } = await supabase.auth.signOut();
-      if (error) {
-        console.error("Error signing out:", error);
-        toast.error("Error signing out");
-        return;
-      }
-      console.log("Sign out successful");
-      toast.success("Signed out successfully");
-      navigate("/");
-    } catch (err) {
-      console.error("Exception during sign out:", err);
-      toast.error("An unexpected error occurred");
+    console.log("Starting sign out process...");
+    
+    const { error } = await supabase.auth.signOut();
+    
+    if (error) {
+      console.error("Error signing out:", error);
+      toast.error("Error signing out");
+      return;
     }
+    
+    console.log("Sign out successful");
+    toast.success("Signed out successfully");
+    navigate("/");
   };
 
   return (
@@ -98,9 +96,9 @@ const Navigation = () => {
               <Button
                 variant={session ? "ghost" : "default"}
                 className={session ? "mt-4 text-red-600 hover:text-red-700 hover:bg-red-50" : "mt-4"}
-                onClick={() => {
+                onClick={async () => {
                   if (session) {
-                    handleSignOut();
+                    await handleSignOut();
                   } else {
                     navigate("/");
                   }
