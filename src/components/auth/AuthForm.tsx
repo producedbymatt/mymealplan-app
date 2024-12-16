@@ -7,10 +7,9 @@ import { toast } from "sonner";
 export default function AuthForm() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
   
   const handleSubmit = async (e: React.FormEvent) => {
@@ -35,7 +34,7 @@ export default function AuthForm() {
         toast.success("Account created successfully!");
       } else {
         const { data, error } = await supabase.auth.signInWithPassword({
-          email,
+          email: `${phone}@placeholder.com`,
           password,
         });
         
@@ -88,10 +87,10 @@ export default function AuthForm() {
       ) : (
         <div>
           <Input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            type="tel"
+            placeholder="Phone Number"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
             required
           />
         </div>
