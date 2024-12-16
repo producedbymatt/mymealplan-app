@@ -5,9 +5,19 @@ const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
-    persistSession: true,
     autoRefreshToken: true,
-    detectSessionInUrl: false,
-    storage: localStorage,
-  },
+    persistSession: true,
+    detectSessionInUrl: true,
+    flowType: 'pkce',
+    storage: window.localStorage,
+    storageKey: 'supabase.auth.token'
+  }
 });
+
+// Set the site URL for authentication redirects
+supabase.auth.setSession({
+  access_token: '',
+  refresh_token: '',
+});
+
+// Remove the redirect handler since React Router will handle navigation
