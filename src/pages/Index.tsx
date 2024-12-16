@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import BMICalculator from "@/components/BMICalculator";
 import WeightTracker from "@/components/WeightTracker";
 import MealPlan from "@/components/MealPlan";
 import CalorieCalculator from "@/components/CalorieCalculator";
+import AuthForm from "@/components/auth/AuthForm";
 
 const Index = () => {
   const [userMetrics, setUserMetrics] = useState({
@@ -12,10 +14,47 @@ const Index = () => {
     targetDays: 0,
   });
   const [recommendedCalories, setRecommendedCalories] = useState(1200);
+  const [session, setSession] = useState<any>(null);
+  const supabase = createClientComponentClient();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const handleBMICalculated = (bmi: number) => {
     console.log("BMI calculated:", bmi);
   };
+
+  if (!session) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="container mx-auto px-4">
+          <img 
+            src="/lovable-uploads/67003c76-1908-4b2f-93d3-01ea4a4cf510.png" 
+            alt="MyMealPlan Logo" 
+            className="mx-auto mb-6 h-24 w-auto"
+          />
+          <h1 className="text-4xl font-bold text-center mb-4">
+            MyMealPlan.App
+          </h1>
+          <p className="text-lg text-gray-600 text-center mb-8 max-w-3xl mx-auto">
+            Track your weight loss journey, calculate your recommended daily calorie and protein intake, and get a custom meal plan designed to meet your goals.
+          </p>
+          <AuthForm />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 flex flex-col">
@@ -71,16 +110,6 @@ const Index = () => {
           <MealPlan dailyCalories={recommendedCalories} />
         </div>
       </div>
-      <footer className="mt-16 py-8 bg-gray-100">
-        <div className="container mx-auto px-4 flex flex-col items-center text-center">
-          <img 
-            src="/lovable-uploads/67003c76-1908-4b2f-93d3-01ea4a4cf510.png" 
-            alt="MyMealPlan Logo" 
-            className="h-16 w-auto mb-4"
-          />
-          <p className="text-sm text-gray-600">© 2024 Matthew Campbell | MyMealPlan.App. All rights reserved.</p>
-        </div>
-      </footer>
     </div>
   );
 };
