@@ -21,7 +21,6 @@ const Index = () => {
   useEffect(() => {
     console.log('Setting up auth state listener');
     
-    // Initialize session
     const initSession = async () => {
       try {
         const { data: { session: currentSession } } = await supabase.auth.getSession();
@@ -41,7 +40,6 @@ const Index = () => {
 
     initSession();
 
-    // Set up auth state change listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       console.log('Auth state changed:', _event, 'Session:', session?.user?.id);
       setSession(session);
@@ -51,7 +49,6 @@ const Index = () => {
       }
     });
 
-    // Cleanup subscription on component unmount
     return () => {
       console.log('Cleaning up auth subscription');
       subscription.unsubscribe();
@@ -60,26 +57,61 @@ const Index = () => {
 
   const fetchUserMetrics = async (userId: string) => {
     console.log('Fetching user metrics for user:', userId);
-    const { data, error } = await supabase
-      .from('user_metrics')
-      .select('*')
-      .eq('user_id', userId)
-      .single();
+    try {
+      const { data, error } = await supabase
+        .from('user_metrics')
+        .select('*')
+        .eq('user_id', userId);
 
-    if (error) {
-      console.error('Error fetching user metrics:', error);
-      return;
-    }
+      if (error) {
+        console.error('Error fetching user metrics:', error);
+        return;
+      }
 
-    if (data) {
-      console.log('Fetched user metrics:', data);
+      // If no metrics exist, create default ones
+      if (!data || data.length === 0) {
+        console.log('No metrics found, creating defaults');
+        const defaultMetrics = {
+          user_id: userId,
+          height: 0,
+          current_weight: 0,
+          target_weight: 0,
+          target_days: 0,
+          recommended_calories: 1200,
+        };
+
+        const { error: insertError } = await supabase
+          .from('user_metrics')
+          .insert([defaultMetrics]);
+
+        if (insertError) {
+          console.error('Error creating default metrics:', insertError);
+          return;
+        }
+
+        setUserMetrics({
+          height: 0,
+          currentWeight: 0,
+          targetWeight: 0,
+          targetDays: 0,
+        });
+        setRecommendedCalories(1200);
+        return;
+      }
+
+      // Use the first row of metrics if multiple exist
+      const metrics = data[0];
+      console.log('Fetched user metrics:', metrics);
+      
       setUserMetrics({
-        height: data.height || 0,
-        currentWeight: data.current_weight || 0,
-        targetWeight: data.target_weight || 0,
-        targetDays: data.target_days || 0,
+        height: metrics.height || 0,
+        currentWeight: metrics.current_weight || 0,
+        targetWeight: metrics.target_weight || 0,
+        targetDays: metrics.target_days || 0,
       });
-      setRecommendedCalories(data.recommended_calories || 1200);
+      setRecommendedCalories(metrics.recommended_calories || 1200);
+    } catch (error) {
+      console.error('Exception in fetchUserMetrics:', error);
     }
   };
 
