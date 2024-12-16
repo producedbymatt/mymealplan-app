@@ -89,10 +89,12 @@ const Navigation = () => {
               </Link>
               <Button
                 variant={session ? "ghost" : "default"}
-                className={session ? "mt-4 text-red-600 hover:text-red-700 hover:bg-red-50" : "mt-4 bg-blue-500 hover:bg-blue-600 text-white"}
+                className={session ? "mt-4 text-red-600 hover:text-red-700 hover:bg-red-50" : "mt-4"}
                 onClick={() => {
                   if (session) {
                     handleSignOut();
+                  } else {
+                    navigate("/");
                   }
                   setIsOpen(false);
                 }}
