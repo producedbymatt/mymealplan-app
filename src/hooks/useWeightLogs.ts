@@ -143,8 +143,6 @@ export const useWeightLogs = (showMore: boolean = false) => {
         description: "Weight entry deleted successfully",
       });
 
-      // Reload the entries to ensure sync with server
-      await loadWeightLogs();
       return true;
     } catch (error) {
       console.error('Error deleting weight:', error);
