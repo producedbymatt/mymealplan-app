@@ -18,19 +18,27 @@ const Index = () => {
   const [session, setSession] = useState<any>(null);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      if (session?.user) {
-        fetchUserMetrics(session.user.id);
+    // Check for existing session on component mount
+    const initializeSession = async () => {
+      const { data: { session: currentSession } } = await supabase.auth.getSession();
+      setSession(currentSession);
+      
+      if (currentSession?.user) {
+        console.log('Found existing session, fetching metrics for user:', currentSession.user.id);
+        await fetchUserMetrics(currentSession.user.id);
       }
-    });
+    };
 
+    initializeSession();
+
+    // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      console.log('Auth state changed:', _event, 'Session:', session?.user?.id);
       setSession(session);
       if (session?.user) {
-        fetchUserMetrics(session.user.id);
+        await fetchUserMetrics(session.user.id);
       }
     });
 
