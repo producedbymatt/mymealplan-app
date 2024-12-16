@@ -38,7 +38,6 @@ const Navigation = () => {
         return;
       }
       console.log("Sign out successful");
-      setSession(null);
       toast.success("Signed out successfully");
       navigate("/");
     } catch (err) {
