@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { supabase } from "@/lib/supabase";
 import BMICalculator from "@/components/BMICalculator";
 import WeightTracker from "@/components/WeightTracker";
 import MealPlan from "@/components/MealPlan";
@@ -15,13 +15,14 @@ const Index = () => {
   });
   const [recommendedCalories, setRecommendedCalories] = useState(1200);
   const [session, setSession] = useState<any>(null);
-  const supabase = createClientComponentClient();
 
   useEffect(() => {
+    // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
     });
 
+    // Listen for auth changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
