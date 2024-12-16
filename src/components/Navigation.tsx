@@ -34,6 +34,14 @@ const Navigation = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50">
           <div className="fixed right-0 top-0 h-full w-64 bg-white shadow-lg">
             <div className="flex flex-col p-4">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute right-2 top-2"
+                onClick={() => setIsOpen(false)}
+              >
+                <X className="h-6 w-6" />
+              </Button>
               <img 
                 src="/lovable-uploads/67003c76-1908-4b2f-93d3-01ea4a4cf510.png" 
                 alt="MyMealPlan Logo" 
