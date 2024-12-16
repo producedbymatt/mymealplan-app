@@ -68,7 +68,7 @@ const Index = () => {
       return;
     }
 
-    console.log('Saving user metrics:', {
+    console.log('Attempting to save user metrics:', {
       user_id: session.user.id,
       height: userMetrics.height,
       current_weight: userMetrics.currentWeight,
@@ -77,28 +77,31 @@ const Index = () => {
       recommended_calories: recommendedCalories,
     });
 
-    const { error } = await supabase
-      .from('user_metrics')
-      .upsert({
-        user_id: session.user.id,
-        height: userMetrics.height,
-        current_weight: userMetrics.currentWeight,
-        target_weight: userMetrics.targetWeight,
-        target_days: userMetrics.targetDays,
-        recommended_calories: recommendedCalories,
-        updated_at: new Date().toISOString(),
-      }, {
-        onConflict: 'user_id'
-      });
+    try {
+      const { error } = await supabase
+        .from('user_metrics')
+        .upsert({
+          user_id: session.user.id,
+          height: userMetrics.height || 0,
+          current_weight: userMetrics.currentWeight || 0,
+          target_weight: userMetrics.targetWeight || 0,
+          target_days: userMetrics.targetDays || 0,
+          recommended_calories: recommendedCalories || 1200,
+          updated_at: new Date().toISOString(),
+        });
 
-    if (error) {
-      console.error('Error saving user metrics:', error);
-      toast.error("Failed to save your metrics");
-      return;
+      if (error) {
+        console.error('Error saving user metrics:', error);
+        toast.error("Failed to save your metrics");
+        return;
+      }
+
+      console.log('Successfully saved user metrics');
+      toast.success("Your metrics have been saved");
+    } catch (err) {
+      console.error('Exception while saving metrics:', err);
+      toast.error("An unexpected error occurred while saving your metrics");
     }
-
-    console.log('Successfully saved user metrics');
-    toast.success("Your metrics have been saved");
   };
 
   const handleBMICalculated = (bmi: number) => {
