@@ -70,6 +70,7 @@ const DashboardContent = ({
           <WeightTracker 
             onGoalSet={onGoalSet}
             onWeightEntriesChange={handleWeightEntry}
+            showGoalInputs={true}
           />
         </div>
       </div>
@@ -79,6 +80,7 @@ const DashboardContent = ({
         <WeightTracker 
           onGoalSet={onGoalSet}
           onWeightEntriesChange={handleWeightEntry}
+          showGoalInputs={false}
         />
       </div>
 

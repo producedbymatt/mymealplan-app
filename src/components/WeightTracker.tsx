@@ -14,9 +14,10 @@ interface WeightEntry {
 interface WeightTrackerProps {
   onGoalSet?: (weight: number, days: number) => void;
   onWeightEntriesChange?: (entries: WeightEntry[]) => void;
+  showGoalInputs?: boolean;
 }
 
-const WeightTracker = ({ onGoalSet, onWeightEntriesChange }: WeightTrackerProps) => {
+const WeightTracker = ({ onGoalSet, onWeightEntriesChange, showGoalInputs = false }: WeightTrackerProps) => {
   const [entries, setEntries] = React.useState<WeightEntry[]>([]);
   const [newWeight, setNewWeight] = React.useState("");
   const [targetWeight, setTargetWeight] = React.useState("");
@@ -45,7 +46,6 @@ const WeightTracker = ({ onGoalSet, onWeightEntriesChange }: WeightTrackerProps)
     setEntries(updatedEntries);
     setNewWeight("");
 
-    // Notify parent component of the weight entries change
     if (onWeightEntriesChange) {
       onWeightEntriesChange(updatedEntries);
     }
@@ -97,46 +97,46 @@ const WeightTracker = ({ onGoalSet, onWeightEntriesChange }: WeightTrackerProps)
 
   return (
     <Card className="p-6 w-full max-w-2xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">Weight Tracker</h2>
-      
-      <div className="mb-6 space-y-4">
-        <form onSubmit={setGoal} className="space-y-4">
-          <div>
-            <Input
-              type="number"
-              value={targetWeight}
-              onChange={(e) => setTargetWeight(e.target.value)}
-              placeholder="Target weight (lbs)"
-              className="w-full"
-            />
-          </div>
-          <div>
-            <Input
-              type="number"
-              value={targetDays}
-              onChange={(e) => setTargetDays(e.target.value)}
-              placeholder="Days to achieve"
-              className="w-full"
-            />
-          </div>
-          <Button type="submit" className="w-full">Set Goal</Button>
-        </form>
+      {showGoalInputs && (
+        <div className="mb-6 space-y-4">
+          <form onSubmit={setGoal} className="space-y-4">
+            <div>
+              <Input
+                type="number"
+                value={targetWeight}
+                onChange={(e) => setTargetWeight(e.target.value)}
+                placeholder="Target weight (lbs)"
+                className="w-full"
+              />
+            </div>
+            <div>
+              <Input
+                type="number"
+                value={targetDays}
+                onChange={(e) => setTargetDays(e.target.value)}
+                placeholder="Days to achieve"
+                className="w-full"
+              />
+            </div>
+            <Button type="submit" className="w-full">Set Goal</Button>
+          </form>
 
-        <Separator className="my-4" />
+          <Separator className="my-4" />
+        </div>
+      )}
 
-        <form onSubmit={addWeight} className="flex gap-4">
-          <Input
-            type="number"
-            value={newWeight}
-            onChange={(e) => setNewWeight(e.target.value)}
-            placeholder="Enter today's weight (lbs)"
-            className="flex-1"
-          />
-          <Button type="submit">Log Weight</Button>
-        </form>
-      </div>
+      <form onSubmit={addWeight} className="flex gap-4">
+        <Input
+          type="number"
+          value={newWeight}
+          onChange={(e) => setNewWeight(e.target.value)}
+          placeholder="Enter today's weight (lbs)"
+          className="flex-1"
+        />
+        <Button type="submit">Log Weight</Button>
+      </form>
 
-      <div className="h-[300px] w-full">
+      <div className="h-[300px] w-full mt-6">
         {entries.length > 0 ? (
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={entries}>
