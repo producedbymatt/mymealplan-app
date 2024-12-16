@@ -5,6 +5,7 @@ import WeightTracker from "@/components/WeightTracker";
 import MealPlan from "@/components/MealPlan";
 import CalorieCalculator from "@/components/CalorieCalculator";
 import AuthForm from "@/components/auth/AuthForm";
+import { toast } from "sonner";
 
 const Index = () => {
   const [userMetrics, setUserMetrics] = useState({
@@ -17,20 +18,74 @@ const Index = () => {
   const [session, setSession] = useState<any>(null);
 
   useEffect(() => {
-    // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
+      if (session?.user) {
+        fetchUserMetrics(session.user.id);
+      }
     });
 
-    // Listen for auth changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
+      if (session?.user) {
+        fetchUserMetrics(session.user.id);
+      }
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  const fetchUserMetrics = async (userId: string) => {
+    const { data, error } = await supabase
+      .from('user_metrics')
+      .select('*')
+      .eq('user_id', userId)
+      .single();
+
+    if (error) {
+      console.error('Error fetching user metrics:', error);
+      return;
+    }
+
+    if (data) {
+      setUserMetrics({
+        height: data.height,
+        currentWeight: data.current_weight,
+        targetWeight: data.target_weight,
+        targetDays: data.target_days,
+      });
+      setRecommendedCalories(data.recommended_calories);
+    }
+  };
+
+  const saveUserMetrics = async () => {
+    if (!session?.user) return;
+
+    const { data, error } = await supabase
+      .from('user_metrics')
+      .upsert({
+        user_id: session.user.id,
+        height: userMetrics.height,
+        current_weight: userMetrics.currentWeight,
+        target_weight: userMetrics.targetWeight,
+        target_days: userMetrics.targetDays,
+        recommended_calories: recommendedCalories,
+        updated_at: new Date().toISOString(),
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error saving user metrics:', error);
+      toast.error("Failed to save your metrics");
+      return;
+    }
+
+    console.log('Saved user metrics:', data);
+    toast.success("Your metrics have been saved");
+  };
 
   const handleBMICalculated = (bmi: number) => {
     console.log("BMI calculated:", bmi);
@@ -75,6 +130,7 @@ const Index = () => {
                       height,
                       currentWeight: weight
                     }));
+                    saveUserMetrics();
                   }}
                 />
               </div>
@@ -86,6 +142,7 @@ const Index = () => {
                       targetWeight: weight,
                       targetDays: days
                     }));
+                    saveUserMetrics();
                   }}
                 />
               </div>
@@ -97,6 +154,7 @@ const Index = () => {
                   onCaloriesCalculated={(calories: number) => {
                     console.log("Setting recommended calories:", calories);
                     setRecommendedCalories(calories);
+                    saveUserMetrics();
                   }}
                 />
               </div>

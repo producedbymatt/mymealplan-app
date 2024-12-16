@@ -26,18 +26,43 @@ const CalorieLogger = () => {
   const [session, setSession] = useState<any>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingMeal, setEditingMeal] = useState<MealLog | null>(null);
+  const [recommendedCalories, setRecommendedCalories] = useState<number | null>(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
+      if (session?.user) {
+        fetchRecommendedCalories(session.user.id);
+      }
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
+      if (session?.user) {
+        fetchRecommendedCalories(session.user.id);
+      }
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  const fetchRecommendedCalories = async (userId: string) => {
+    const { data, error } = await supabase
+      .from('user_metrics')
+      .select('recommended_calories')
+      .eq('user_id', userId)
+      .single();
+
+    if (error) {
+      console.error('Error fetching recommended calories:', error);
+      return;
+    }
+
+    if (data) {
+      console.log('Fetched recommended calories:', data.recommended_calories);
+      setRecommendedCalories(data.recommended_calories);
+    }
+  };
 
   const { mealLogs, isLoading, addMeal, updateMeal, deleteMeal } = useMealLogs(session?.user?.id);
 
@@ -76,10 +101,31 @@ const CalorieLogger = () => {
       <div className="mb-8">
         <Card>
           <CardHeader>
-            <CardTitle>Today's Total Calories</CardTitle>
+            <CardTitle>Today's Calories</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-4xl font-bold">{todayCalories}</p>
+            <div className="flex justify-between items-center">
+              <p className="text-4xl font-bold">{todayCalories}</p>
+              {recommendedCalories && (
+                <p className="text-2xl font-semibold text-green-600">
+                  Target: {recommendedCalories}
+                </p>
+              )}
+            </div>
+            {recommendedCalories && (
+              <div className="mt-2">
+                <div className="w-full bg-gray-200 rounded-full h-2.5">
+                  <div
+                    className={`h-2.5 rounded-full ${
+                      todayCalories > recommendedCalories ? 'bg-red-600' : 'bg-green-600'
+                    }`}
+                    style={{
+                      width: `${Math.min((todayCalories / recommendedCalories) * 100, 100)}%`,
+                    }}
+                  ></div>
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
