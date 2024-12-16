@@ -19,6 +19,31 @@ const CalorieLogger = () => {
   const [editingMeal, setEditingMeal] = useState<MealLog | null>(null);
   const [recommendedCalories, setRecommendedCalories] = useState<number | null>(null);
 
+  const fetchRecommendedCalories = async (userId: string) => {
+    try {
+      console.log('Fetching recommended calories for user:', userId);
+      const { data, error } = await supabase
+        .from('user_metrics')
+        .select('recommended_calories')
+        .eq('user_id', userId)
+        .order('updated_at', { ascending: false })
+        .limit(1)
+        .single();
+
+      if (error) {
+        console.error('Error fetching recommended calories:', error);
+        return;
+      }
+
+      if (data) {
+        console.log('Fetched recommended calories:', data.recommended_calories);
+        setRecommendedCalories(data.recommended_calories);
+      }
+    } catch (err) {
+      console.error('Error fetching recommended calories:', err);
+    }
+  };
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
@@ -36,24 +61,6 @@ const CalorieLogger = () => {
 
     return () => subscription.unsubscribe();
   }, []);
-
-  const fetchRecommendedCalories = async (userId: string) => {
-    const { data, error } = await supabase
-      .from('user_metrics')
-      .select('recommended_calories')
-      .eq('user_id', userId)
-      .single();
-
-    if (error) {
-      console.error('Error fetching recommended calories:', error);
-      return;
-    }
-
-    if (data) {
-      console.log('Fetched recommended calories:', data.recommended_calories);
-      setRecommendedCalories(data.recommended_calories);
-    }
-  };
 
   const { mealLogs, isLoading, addMeal, updateMeal, deleteMeal } = useMealLogs(session?.user?.id);
 
