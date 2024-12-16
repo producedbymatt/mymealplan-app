@@ -38,6 +38,7 @@ const Index = () => {
   }, []);
 
   const fetchUserMetrics = async (userId: string) => {
+    console.log('Fetching user metrics for user:', userId);
     const { data, error } = await supabase
       .from('user_metrics')
       .select('*')
@@ -50,6 +51,7 @@ const Index = () => {
     }
 
     if (data) {
+      console.log('Fetched user metrics:', data);
       setUserMetrics({
         height: data.height,
         currentWeight: data.current_weight,
@@ -61,7 +63,19 @@ const Index = () => {
   };
 
   const saveUserMetrics = async () => {
-    if (!session?.user) return;
+    if (!session?.user) {
+      toast.error("Please log in to save your metrics");
+      return;
+    }
+
+    console.log('Saving user metrics:', {
+      user_id: session.user.id,
+      height: userMetrics.height,
+      current_weight: userMetrics.currentWeight,
+      target_weight: userMetrics.targetWeight,
+      target_days: userMetrics.targetDays,
+      recommended_calories: recommendedCalories,
+    });
 
     const { data, error } = await supabase
       .from('user_metrics')
@@ -85,10 +99,6 @@ const Index = () => {
 
     console.log('Saved user metrics:', data);
     toast.success("Your metrics have been saved");
-  };
-
-  const handleBMICalculated = (bmi: number) => {
-    console.log("BMI calculated:", bmi);
   };
 
   return (
