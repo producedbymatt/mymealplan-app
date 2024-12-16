@@ -72,7 +72,6 @@ const DashboardContent = ({
       </div>
 
       <div className="mt-8">
-        <h2 className="text-2xl font-bold mb-4">Weight Tracker</h2>
         <WeightTracker 
           onWeightEntriesChange={handleWeightEntry}
           showGoalInputs={false}

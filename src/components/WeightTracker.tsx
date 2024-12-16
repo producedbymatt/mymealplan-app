@@ -60,6 +60,7 @@ const WeightTracker = ({ onWeightEntriesChange }: WeightTrackerProps) => {
 
   return (
     <Card className="p-6 w-full max-w-2xl mx-auto">
+      <h2 className="text-2xl font-bold mb-6 text-center">Weight Tracker</h2>
       <form onSubmit={addWeight} className="flex gap-4 mb-6">
         <Input
           type="number"
