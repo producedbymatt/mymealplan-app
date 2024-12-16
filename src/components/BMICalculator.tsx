@@ -10,6 +10,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 
 interface BMICalculatorProps {
   onBMICalculated: (bmi: number) => void;
@@ -20,6 +22,7 @@ const BMICalculator = ({ onBMICalculated, onMetricsUpdate }: BMICalculatorProps)
   const [feet, setFeet] = React.useState("");
   const [inches, setInches] = React.useState("");
   const [weight, setWeight] = React.useState("");
+  const [gender, setGender] = React.useState<"male" | "female">("male");
   const [bmi, setBMI] = React.useState<number | null>(null);
   const { toast } = useToast();
 
@@ -44,17 +47,41 @@ const BMICalculator = ({ onBMICalculated, onMetricsUpdate }: BMICalculatorProps)
     onMetricsUpdate(heightInInches, weightInPounds);
   };
 
-  const getBMICategory = (bmi: number) => {
-    if (bmi < 18.5) return { category: "Underweight", color: "text-blue-500" };
-    if (bmi < 25) return { category: "Normal weight", color: "text-green-500" };
-    if (bmi < 30) return { category: "Overweight", color: "text-yellow-500" };
-    return { category: "Obese", color: "text-red-500" };
+  const getBMICategory = (bmi: number, gender: "male" | "female") => {
+    if (gender === "female") {
+      if (bmi < 18.5) return { category: "Underweight", color: "text-blue-500" };
+      if (bmi < 24) return { category: "Normal weight", color: "text-green-500" };
+      if (bmi < 29) return { category: "Overweight", color: "text-yellow-500" };
+      return { category: "Obese", color: "text-red-500" };
+    } else {
+      if (bmi < 18.5) return { category: "Underweight", color: "text-blue-500" };
+      if (bmi < 25) return { category: "Normal weight", color: "text-green-500" };
+      if (bmi < 30) return { category: "Overweight", color: "text-yellow-500" };
+      return { category: "Obese", color: "text-red-500" };
+    }
   };
 
   return (
     <Card className="p-6 w-full max-w-md mx-auto">
       <h2 className="text-2xl font-bold mb-4 text-center">BMI Calculator</h2>
       <form onSubmit={calculateBMI} className="space-y-4">
+        <div className="space-y-2">
+          <label className="block text-sm font-medium mb-1">Gender</label>
+          <RadioGroup
+            defaultValue={gender}
+            onValueChange={(value) => setGender(value as "male" | "female")}
+            className="flex space-x-4"
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="male" id="male" />
+              <Label htmlFor="male">Male</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="female" id="female" />
+              <Label htmlFor="female">Female</Label>
+            </div>
+          </RadioGroup>
+        </div>
         <div className="space-y-2">
           <label className="block text-sm font-medium mb-1">Height</label>
           <div className="flex gap-4">
@@ -107,8 +134,8 @@ const BMICalculator = ({ onBMICalculated, onMetricsUpdate }: BMICalculatorProps)
           <p className="text-lg">
             Your BMI: <span className="font-bold">{bmi.toFixed(1)}</span>
           </p>
-          <p className={`${getBMICategory(bmi).color} font-medium`}>
-            Category: {getBMICategory(bmi).category}
+          <p className={`${getBMICategory(bmi, gender).color} font-medium`}>
+            Category: {getBMICategory(bmi, gender).category}
           </p>
         </div>
       )}
