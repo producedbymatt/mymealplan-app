@@ -1,14 +1,5 @@
 import { useState, useEffect } from "react";
-import { format } from "date-fns";
 import { supabase } from "@/lib/supabase";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import {
   Dialog,
   DialogContent,
@@ -16,11 +7,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash2 } from "lucide-react";
 import { MealForm } from "@/components/MealForm";
 import { useMealLogs, MealLog } from "@/hooks/useMealLogs";
+import CaloriesSummaryCard from "@/components/calories/CaloriesSummaryCard";
+import MealsTable from "@/components/calories/MealsTable";
 
 const CalorieLogger = () => {
   const [session, setSession] = useState<any>(null);
@@ -99,35 +90,10 @@ const CalorieLogger = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <Card>
-          <CardHeader>
-            <CardTitle>Today's Calories</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex justify-between items-center">
-              <p className="text-4xl font-bold">{todayCalories}</p>
-              {recommendedCalories && (
-                <p className="text-2xl font-semibold text-green-600">
-                  Target: {recommendedCalories}
-                </p>
-              )}
-            </div>
-            {recommendedCalories && (
-              <div className="mt-2">
-                <div className="w-full bg-gray-200 rounded-full h-2.5">
-                  <div
-                    className={`h-2.5 rounded-full ${
-                      todayCalories > recommendedCalories ? 'bg-red-600' : 'bg-green-600'
-                    }`}
-                    style={{
-                      width: `${Math.min((todayCalories / recommendedCalories) * 100, 100)}%`,
-                    }}
-                  ></div>
-                </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        <CaloriesSummaryCard 
+          todayCalories={todayCalories} 
+          recommendedCalories={recommendedCalories} 
+        />
       </div>
 
       <div className="flex justify-between items-center mb-6">
@@ -152,54 +118,14 @@ const CalorieLogger = () => {
         </Dialog>
       </div>
 
-      <div className="bg-white rounded-lg shadow">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Meal Name</TableHead>
-              <TableHead>Calories</TableHead>
-              <TableHead>Time</TableHead>
-              <TableHead>Date</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {mealLogs.map((log) => (
-              <TableRow key={log.id}>
-                <TableCell>{log.meal_name}</TableCell>
-                <TableCell>{log.calories}</TableCell>
-                <TableCell>{format(new Date(log.created_at), "h:mm a")}</TableCell>
-                <TableCell>{format(new Date(log.created_at), "MMM d, yyyy")}</TableCell>
-                <TableCell className="text-right">
-                  <div className="flex justify-end gap-2">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => {
-                        setEditingMeal(log);
-                        setIsDialogOpen(true);
-                      }}
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => {
-                        if (window.confirm("Are you sure you want to delete this meal?")) {
-                          deleteMeal(log.id);
-                        }
-                      }}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+      <MealsTable 
+        mealLogs={mealLogs}
+        onEdit={(meal) => {
+          setEditingMeal(meal);
+          setIsDialogOpen(true);
+        }}
+        onDelete={deleteMeal}
+      />
     </div>
   );
 };
