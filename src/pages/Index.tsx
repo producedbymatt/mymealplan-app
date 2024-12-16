@@ -16,33 +16,46 @@ const Index = () => {
   });
   const [recommendedCalories, setRecommendedCalories] = useState(1200);
   const [session, setSession] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check for existing session on component mount
-    const initializeSession = async () => {
-      const { data: { session: currentSession } } = await supabase.auth.getSession();
-      setSession(currentSession);
-      
-      if (currentSession?.user) {
-        console.log('Found existing session, fetching metrics for user:', currentSession.user.id);
-        await fetchUserMetrics(currentSession.user.id);
+    console.log('Setting up auth state listener');
+    
+    // Initialize session
+    const initSession = async () => {
+      try {
+        const { data: { session: currentSession } } = await supabase.auth.getSession();
+        console.log('Initial session check:', currentSession);
+        setSession(currentSession);
+        
+        if (currentSession?.user) {
+          console.log('Found existing session, fetching metrics for user:', currentSession.user.id);
+          await fetchUserMetrics(currentSession.user.id);
+        }
+      } catch (error) {
+        console.error('Error initializing session:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    initializeSession();
+    initSession();
 
-    // Listen for auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    // Set up auth state change listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       console.log('Auth state changed:', _event, 'Session:', session?.user?.id);
       setSession(session);
+      
       if (session?.user) {
         await fetchUserMetrics(session.user.id);
       }
     });
 
-    return () => subscription.unsubscribe();
+    // Cleanup subscription on component unmount
+    return () => {
+      console.log('Cleaning up auth subscription');
+      subscription.unsubscribe();
+    };
   }, []);
 
   const fetchUserMetrics = async (userId: string) => {
@@ -112,9 +125,9 @@ const Index = () => {
     }
   };
 
-  const handleBMICalculated = (bmi: number) => {
-    console.log("BMI calculated:", bmi);
-  };
+  if (isLoading) {
+    return <div className="flex justify-center items-center min-h-screen">Loading...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 flex flex-col">
