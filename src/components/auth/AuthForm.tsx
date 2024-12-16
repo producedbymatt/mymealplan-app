@@ -20,7 +20,7 @@ export default function AuthForm() {
     try {
       if (isSignUp) {
         const { data, error } = await supabase.auth.signUp({
-          email,
+          email: `${phone}@placeholder.com`,
           password,
           options: {
             data: {
@@ -32,7 +32,7 @@ export default function AuthForm() {
         });
         
         if (error) throw error;
-        toast.success("Check your email to confirm your account!");
+        toast.success("Account created successfully!");
       } else {
         const { data, error } = await supabase.auth.signInWithPassword({
           email,
@@ -55,7 +55,7 @@ export default function AuthForm() {
         {isSignUp ? "Create an Account" : "Welcome Back"}
       </h2>
       
-      {isSignUp && (
+      {isSignUp ? (
         <>
           <div>
             <Input
@@ -85,17 +85,17 @@ export default function AuthForm() {
             />
           </div>
         </>
+      ) : (
+        <div>
+          <Input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
       )}
-      
-      <div>
-        <Input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-      </div>
       
       <div>
         <Input
@@ -123,4 +123,4 @@ export default function AuthForm() {
       </p>
     </form>
   );
-};
+}
