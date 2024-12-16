@@ -19,16 +19,54 @@ const Index = () => {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
+      if (session?.user) {
+        loadUserMetrics(session.user.id);
+      }
     });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
+      if (session?.user) {
+        loadUserMetrics(session.user.id);
+      }
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  const loadUserMetrics = async (userId: string) => {
+    try {
+      console.log('Loading user metrics for user:', userId);
+      const { data, error } = await supabase
+        .from('user_metrics')
+        .select('*')
+        .eq('user_id', userId)
+        .order('updated_at', { ascending: false })
+        .limit(1)
+        .single();
+
+      if (error) {
+        console.error('Error loading user metrics:', error);
+        return;
+      }
+
+      if (data) {
+        console.log('Loaded user metrics:', data);
+        setUserMetrics({
+          height: data.height || 0,
+          currentWeight: data.current_weight || 0,
+          targetWeight: data.target_weight || 0,
+          targetDays: data.target_days || 0,
+        });
+        setRecommendedCalories(data.recommended_calories || 1200);
+        setHasMetrics(true);
+      }
+    } catch (err) {
+      console.error('Exception while loading metrics:', err);
+    }
+  };
 
   const saveUserMetrics = async () => {
     if (!session?.user) {
@@ -67,6 +105,9 @@ const Index = () => {
       console.log('Successfully saved user metrics');
       toast.success("Your metrics have been saved");
       setHasMetrics(true);
+      
+      // Reload metrics after saving to ensure we have the latest data
+      loadUserMetrics(session.user.id);
     } catch (err) {
       console.error('Exception while saving metrics:', err);
       toast.error("An unexpected error occurred while saving your metrics");
