@@ -77,7 +77,7 @@ const Index = () => {
       recommended_calories: recommendedCalories,
     });
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('user_metrics')
       .upsert({
         user_id: session.user.id,
@@ -88,10 +88,8 @@ const Index = () => {
         recommended_calories: recommendedCalories,
         updated_at: new Date().toISOString(),
       }, {
-        onConflict: 'user_id',
-      })
-      .select()
-      .single();
+        onConflict: 'user_id'
+      });
 
     if (error) {
       console.error('Error saving user metrics:', error);
@@ -99,7 +97,7 @@ const Index = () => {
       return;
     }
 
-    console.log('Saved user metrics:', data);
+    console.log('Successfully saved user metrics');
     toast.success("Your metrics have been saved");
   };
 
