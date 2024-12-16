@@ -3,6 +3,7 @@ import WeightTracker from "@/components/WeightTracker";
 import CalorieCalculator from "@/components/CalorieCalculator";
 import MealPlan from "@/components/MealPlan";
 import StatsCards from "./StatsCards";
+import MotivationalMessage from "./MotivationalMessage";
 import { useState } from "react";
 
 interface WeightEntry {
@@ -42,6 +43,14 @@ const DashboardContent = ({
 
   return (
     <div>
+      {hasMetrics && (
+        <MotivationalMessage
+          currentWeight={userMetrics.currentWeight}
+          targetWeight={userMetrics.targetWeight}
+          targetDays={userMetrics.targetDays}
+        />
+      )}
+      
       <StatsCards 
         metrics={userMetrics}
         recommendedCalories={recommendedCalories}
