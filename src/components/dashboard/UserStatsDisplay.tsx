@@ -55,6 +55,12 @@ const UserStatsDisplay = () => {
     fetchLatestMetrics();
   }, []);
 
+  const formatHeight = (inches: number) => {
+    const feet = Math.floor(inches / 12);
+    const remainingInches = inches % 12;
+    return `${feet}'${remainingInches}"`;
+  };
+
   if (loading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
@@ -93,7 +99,7 @@ const UserStatsDisplay = () => {
     },
     {
       title: "Height",
-      value: `${metrics.height} in`,
+      value: formatHeight(metrics.height),
       description: "Used for BMI calculation",
     },
     {
