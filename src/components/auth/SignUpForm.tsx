@@ -46,7 +46,7 @@ export const SignUpForm = ({ onSuccess, onToggleForm }: SignUpFormProps) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <h2 className="text-2xl font-bold text-center mb-6">Create an Account</h2>
+      <h2 className="text-2xl font-bold text-center mb-6">Sign In or Sign Up for Free</h2>
       
       <FormInput
         type="text"
