@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabase";
 import AuthForm from "@/components/auth/AuthForm";
 import DashboardContent from "@/components/dashboard/DashboardContent";
 import MetricsPrompt from "@/components/dashboard/MetricsPrompt";
+import Footer from "@/components/Footer";
 import { toast } from "sonner";
 
 const Index = () => {
@@ -154,6 +155,7 @@ const Index = () => {
             <AuthForm />
           </div>
         </div>
+        <Footer />
       </div>
     );
   }
@@ -204,6 +206,7 @@ const Index = () => {
           />
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
