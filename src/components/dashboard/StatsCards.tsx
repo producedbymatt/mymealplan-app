@@ -4,7 +4,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { format, addDays, differenceInDays } from "date-fns";
+import { format, addDays, differenceInDays, parseISO } from "date-fns";
 
 interface StatsCardsProps {
   metrics: {
@@ -12,6 +12,7 @@ interface StatsCardsProps {
     currentWeight: number;
     targetWeight: number;
     targetDays: number;
+    created_at?: string;
   };
   recommendedCalories: number;
   hasMetrics: boolean;
@@ -68,10 +69,18 @@ const StatsCards = ({ metrics, recommendedCalories, hasMetrics, weightEntries = 
   const heightInches = metrics.height % 12;
 
   // Calculate target date and days remaining
-  const startDate = new Date(); // Using current date as start date
+  const startDate = metrics.created_at ? parseISO(metrics.created_at) : new Date();
   const targetDate = addDays(startDate, metrics.targetDays);
-  const daysRemaining = differenceInDays(targetDate, startDate);
+  const daysRemaining = differenceInDays(targetDate, new Date());
   const formattedTargetDate = format(targetDate, 'dd/MM/yyyy');
+
+  console.log('Days to Goal Calculation:', {
+    startDate: format(startDate, 'dd/MM/yyyy'),
+    targetDate: format(targetDate, 'dd/MM/yyyy'),
+    targetDays: metrics.targetDays,
+    daysRemaining,
+    created_at: metrics.created_at
+  });
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">

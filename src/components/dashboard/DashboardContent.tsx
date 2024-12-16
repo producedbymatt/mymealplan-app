@@ -16,6 +16,7 @@ interface DashboardContentProps {
     currentWeight: number;
     targetWeight: number;
     targetDays: number;
+    created_at?: string;
   };
   recommendedCalories: number;
   hasMetrics: boolean;
