@@ -33,7 +33,12 @@ const Navigation = () => {
       {isOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-40">
           <div className="fixed right-0 top-0 h-full w-64 bg-white shadow-lg z-50">
-            <div className="flex flex-col p-4 mt-16">
+            <div className="flex flex-col p-4">
+              <img 
+                src="/lovable-uploads/67003c76-1908-4b2f-93d3-01ea4a4cf510.png" 
+                alt="MyMealPlan Logo" 
+                className="h-16 w-auto mx-auto mb-6"
+              />
               <Link
                 to="/"
                 className="px-4 py-2 hover:bg-gray-100 rounded-md"
