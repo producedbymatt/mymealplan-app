@@ -14,7 +14,7 @@ interface WeightTrackerProps {
 const WeightTracker = ({ onWeightEntriesChange }: WeightTrackerProps) => {
   const [newWeight, setNewWeight] = useState("");
   const [showMore, setShowMore] = useState(false);
-  const { entries, loadWeightLogs, addWeight, editWeight, deleteWeight } = useWeightLogs(showMore);
+  const { entries, loadWeightLogs, addWeight, editWeight } = useWeightLogs(showMore);
 
   useEffect(() => {
     loadWeightLogs();
@@ -39,13 +39,6 @@ const WeightTracker = ({ onWeightEntriesChange }: WeightTrackerProps) => {
 
   const handleEdit = async (id: string, weight: number) => {
     const success = await editWeight(id, weight);
-    if (success && onWeightEntriesChange) {
-      onWeightEntriesChange(entries);
-    }
-  };
-
-  const handleDelete = async (id: string) => {
-    const success = await deleteWeight(id);
     if (success && onWeightEntriesChange) {
       onWeightEntriesChange(entries);
     }
@@ -77,7 +70,6 @@ const WeightTracker = ({ onWeightEntriesChange }: WeightTrackerProps) => {
           showMore={showMore}
           onToggleShowMore={() => setShowMore(!showMore)}
           onEdit={handleEdit}
-          onDelete={handleDelete}
         />
       )}
     </Card>
