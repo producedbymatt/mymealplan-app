@@ -24,9 +24,7 @@ export const SignInForm = ({ onSuccess, onToggleForm }: SignInFormProps) => {
       const { error } = await supabase.auth.signInWithPassword({
         email: `${phone}@placeholder.com`,
         password,
-        options: {
-          persistSession: rememberMe // This will determine if the session persists after browser close
-        }
+        persistSession: rememberMe // Moved to root level of the configuration object
       });
 
       if (error) throw error;
