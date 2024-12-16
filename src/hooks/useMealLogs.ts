@@ -58,7 +58,7 @@ export const useMealLogs = (userId: string | undefined) => {
 
       if (error) {
         console.error('Error adding meal:', error);
-        throw new Error(error.message);
+        throw new Error(error.message || 'Failed to add meal');
       }
 
       console.log('Added meal successfully:', data);
@@ -70,7 +70,7 @@ export const useMealLogs = (userId: string | undefined) => {
     },
     onError: (error: Error) => {
       console.error('Mutation error:', error);
-      toast.error(`Failed to log meal: ${error.message}`);
+      toast.error(error.message || "Failed to log meal");
     },
   });
 
@@ -89,7 +89,7 @@ export const useMealLogs = (userId: string | undefined) => {
 
       if (error) {
         console.error('Error updating meal:', error);
-        throw new Error(error.message);
+        throw new Error(error.message || 'Failed to update meal');
       }
 
       console.log('Updated meal successfully:', data);
@@ -100,7 +100,7 @@ export const useMealLogs = (userId: string | undefined) => {
       toast.success("Meal updated successfully!");
     },
     onError: (error: Error) => {
-      toast.error(`Failed to update meal: ${error.message}`);
+      toast.error(error.message || "Failed to update meal");
     },
   });
 
@@ -114,7 +114,7 @@ export const useMealLogs = (userId: string | undefined) => {
 
       if (error) {
         console.error('Error deleting meal:', error);
-        throw new Error(error.message);
+        throw new Error(error.message || 'Failed to delete meal');
       }
     },
     onSuccess: () => {
@@ -122,7 +122,7 @@ export const useMealLogs = (userId: string | undefined) => {
       toast.success("Meal deleted successfully!");
     },
     onError: (error: Error) => {
-      toast.error(`Failed to delete meal: ${error.message}`);
+      toast.error(error.message || "Failed to delete meal");
     },
   });
 
