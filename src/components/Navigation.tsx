@@ -29,13 +29,22 @@ const Navigation = () => {
   }, []);
 
   const handleSignOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      toast.error("Error signing out");
-      return;
+    try {
+      console.log("Attempting to sign out...");
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error("Error signing out:", error);
+        toast.error("Error signing out");
+        return;
+      }
+      console.log("Sign out successful");
+      setSession(null);
+      toast.success("Signed out successfully");
+      navigate("/");
+    } catch (err) {
+      console.error("Exception during sign out:", err);
+      toast.error("An unexpected error occurred");
     }
-    toast.success("Signed out successfully");
-    navigate("/");
   };
 
   return (
