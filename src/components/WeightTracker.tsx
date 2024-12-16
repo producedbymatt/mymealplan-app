@@ -60,7 +60,7 @@ const WeightTracker = ({ onWeightEntriesChange }: WeightTrackerProps) => {
 
   return (
     <Card className="p-6 w-full max-w-2xl mx-auto">
-      <form onSubmit={addWeight} className="flex gap-4">
+      <form onSubmit={addWeight} className="flex gap-4 mb-6">
         <Input
           type="number"
           value={newWeight}
@@ -71,7 +71,7 @@ const WeightTracker = ({ onWeightEntriesChange }: WeightTrackerProps) => {
         <Button type="submit">Log Weight</Button>
       </form>
 
-      <div className="h-[300px] w-full mt-6">
+      <div className="h-[300px] w-full">
         {entries.length > 0 ? (
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={entries}>
@@ -81,9 +81,9 @@ const WeightTracker = ({ onWeightEntriesChange }: WeightTrackerProps) => {
               <Line
                 type="monotone"
                 dataKey="weight"
-                stroke="#4FD1C5"
+                stroke="#63B3ED"
                 strokeWidth={2}
-                dot={{ fill: "#4FD1C5" }}
+                dot={{ fill: "#63B3ED" }}
               />
             </LineChart>
           </ResponsiveContainer>
