@@ -20,9 +20,4 @@ supabase.auth.setSession({
   refresh_token: '',
 });
 
-// Configure the redirect URL
-supabase.auth.onAuthStateChange((event, session) => {
-  if (event === 'SIGNED_IN') {
-    window.location.href = 'https://9dab36fe-9c7d-403a-bf51-373600fdea6a.lovableproject.com';
-  }
-});
+// Remove the redirect handler since React Router will handle navigation
