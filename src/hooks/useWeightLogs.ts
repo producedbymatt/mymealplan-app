@@ -135,11 +135,15 @@ export const useWeightLogs = (showMore: boolean = false) => {
 
       if (error) throw error;
 
+      // Update the local state immediately after successful deletion
+      setEntries(prevEntries => prevEntries.filter(entry => entry.id !== id));
+
       toast({
         title: "Success",
         description: "Weight entry deleted successfully",
       });
 
+      // Reload the entries to ensure sync with server
       await loadWeightLogs();
       return true;
     } catch (error) {
