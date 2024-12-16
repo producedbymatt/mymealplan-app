@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { useToast } from "@/components/ui/use-toast";
 
 export interface WeightEntry {
+  id?: string;
   date: string;
   weight: number;
   created_at?: string;
@@ -29,6 +30,7 @@ export const useWeightLogs = (showMore: boolean = false) => {
 
       if (weightLogs) {
         const formattedLogs = weightLogs.map(log => ({
+          id: log.id,
           date: format(new Date(log.created_at), 'MM/dd/yyyy'),
           weight: log.weight,
           created_at: log.created_at
@@ -95,9 +97,67 @@ export const useWeightLogs = (showMore: boolean = false) => {
     }
   };
 
+  const editWeight = async (id: string, weight: number) => {
+    try {
+      console.log('Editing weight log:', { id, weight });
+      const { error } = await supabase
+        .from('weight_logs')
+        .update({ weight })
+        .eq('id', id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Weight updated successfully",
+      });
+
+      await loadWeightLogs();
+      return true;
+    } catch (error) {
+      console.error('Error updating weight:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update weight",
+        variant: "destructive",
+      });
+      return false;
+    }
+  };
+
+  const deleteWeight = async (id: string) => {
+    try {
+      console.log('Deleting weight log:', { id });
+      const { error } = await supabase
+        .from('weight_logs')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Weight entry deleted successfully",
+      });
+
+      await loadWeightLogs();
+      return true;
+    } catch (error) {
+      console.error('Error deleting weight:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete weight entry",
+        variant: "destructive",
+      });
+      return false;
+    }
+  };
+
   return {
     entries,
     loadWeightLogs,
-    addWeight
+    addWeight,
+    editWeight,
+    deleteWeight
   };
 };
