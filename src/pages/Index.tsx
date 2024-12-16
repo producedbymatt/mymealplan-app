@@ -101,6 +101,10 @@ const Index = () => {
     toast.success("Your metrics have been saved");
   };
 
+  const handleBMICalculated = (bmi: number) => {
+    console.log("BMI calculated:", bmi);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-8 flex flex-col">
       <div className="container mx-auto px-4 flex-grow">
