@@ -21,10 +21,15 @@ export const SignInForm = ({ onSuccess, onToggleForm }: SignInFormProps) => {
     setLoading(true);
 
     try {
+      // Set the session persistence before signing in
+      supabase.auth.setSession({
+        access_token: '',
+        refresh_token: '',
+      });
+
       const { error } = await supabase.auth.signInWithPassword({
         email: `${phone}@placeholder.com`,
         password,
-        persistSession: rememberMe // Moved to root level of the configuration object
       });
 
       if (error) throw error;

@@ -19,5 +19,3 @@ supabase.auth.setSession({
   access_token: '',
   refresh_token: '',
 });
-
-// Remove the redirect handler since React Router will handle navigation
