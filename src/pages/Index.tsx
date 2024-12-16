@@ -33,6 +33,7 @@ const Index = () => {
         }
       } catch (error) {
         console.error('Error initializing session:', error);
+        toast.error("Error loading your session");
       } finally {
         setIsLoading(false);
       }
@@ -57,6 +58,7 @@ const Index = () => {
 
   const fetchUserMetrics = async (userId: string) => {
     console.log('Fetching user metrics for user:', userId);
+    setIsLoading(true);
     try {
       const { data, error } = await supabase
         .from('user_metrics')
@@ -65,10 +67,10 @@ const Index = () => {
 
       if (error) {
         console.error('Error fetching user metrics:', error);
+        toast.error("Error loading your metrics");
         return;
       }
 
-      // If no metrics exist, create default ones
       if (!data || data.length === 0) {
         console.log('No metrics found, creating defaults');
         const defaultMetrics = {
@@ -86,6 +88,7 @@ const Index = () => {
 
         if (insertError) {
           console.error('Error creating default metrics:', insertError);
+          toast.error("Error creating your metrics");
           return;
         }
 
@@ -96,22 +99,23 @@ const Index = () => {
           targetDays: 0,
         });
         setRecommendedCalories(1200);
-        return;
+      } else {
+        const metrics = data[0];
+        console.log('Fetched user metrics:', metrics);
+        
+        setUserMetrics({
+          height: metrics.height || 0,
+          currentWeight: metrics.current_weight || 0,
+          targetWeight: metrics.target_weight || 0,
+          targetDays: metrics.target_days || 0,
+        });
+        setRecommendedCalories(metrics.recommended_calories || 1200);
       }
-
-      // Use the first row of metrics if multiple exist
-      const metrics = data[0];
-      console.log('Fetched user metrics:', metrics);
-      
-      setUserMetrics({
-        height: metrics.height || 0,
-        currentWeight: metrics.current_weight || 0,
-        targetWeight: metrics.target_weight || 0,
-        targetDays: metrics.target_days || 0,
-      });
-      setRecommendedCalories(metrics.recommended_calories || 1200);
     } catch (error) {
       console.error('Exception in fetchUserMetrics:', error);
+      toast.error("An unexpected error occurred");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -162,7 +166,12 @@ const Index = () => {
   };
 
   if (isLoading) {
-    return <div className="flex justify-center items-center min-h-screen">Loading...</div>;
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+        <span className="ml-2">Loading...</span>
+      </div>
+    );
   }
 
   return (
