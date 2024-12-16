@@ -5,6 +5,7 @@ import WeightTracker from "@/components/WeightTracker";
 import MealPlan from "@/components/MealPlan";
 import CalorieCalculator from "@/components/CalorieCalculator";
 import AuthForm from "@/components/auth/AuthForm";
+import UserStatsDisplay from "@/components/dashboard/UserStatsDisplay";
 import { toast } from "sonner";
 
 const Index = () => {
@@ -145,6 +146,7 @@ const Index = () => {
 
         {session && (
           <>
+            <UserStatsDisplay />
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 mt-8">
               <div>
                 <BMICalculator 
