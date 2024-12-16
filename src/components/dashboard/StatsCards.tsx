@@ -69,7 +69,12 @@ const StatsCards = ({ metrics, recommendedCalories, hasMetrics, weightEntries = 
   const heightInches = metrics.height % 12;
 
   // Calculate target date and days remaining
-  const startDate = metrics.created_at ? parseISO(metrics.created_at) : new Date();
+  if (!metrics.created_at) {
+    console.error('No created_at date found in user_metrics. This should not happen.');
+    return null;
+  }
+
+  const startDate = parseISO(metrics.created_at);
   const targetDate = addDays(startDate, metrics.targetDays);
   const daysRemaining = differenceInDays(targetDate, new Date());
   const formattedTargetDate = format(targetDate, 'dd/MM/yyyy');
