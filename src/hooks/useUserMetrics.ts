@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
+import { supabase } from "@/lib/supabase";
 
 interface UserMetrics {
   height: number;
@@ -18,43 +18,6 @@ export const useUserMetrics = (session: any) => {
   });
   const [recommendedCalories, setRecommendedCalories] = useState(1200);
   const [hasMetrics, setHasMetrics] = useState(false);
-
-  const fetchUserMetrics = async (userId: string) => {
-    console.log('Fetching user metrics for user:', userId);
-    try {
-      const { data, error } = await supabase
-        .from('user_metrics')
-        .select('*')
-        .eq('user_id', userId);
-
-      if (error) {
-        console.error('Error fetching user metrics:', error);
-        toast.error("Error loading your metrics");
-        return;
-      }
-
-      if (!data || data.length === 0) {
-        console.log('No metrics found');
-        setHasMetrics(false);
-        return;
-      }
-
-      const metrics = data[0];
-      console.log('Fetched user metrics:', metrics);
-      
-      setUserMetrics({
-        height: metrics.height || 0,
-        currentWeight: metrics.current_weight || 0,
-        targetWeight: metrics.target_weight || 0,
-        targetDays: metrics.target_days || 0,
-      });
-      setRecommendedCalories(metrics.recommended_calories || 1200);
-      setHasMetrics(true);
-    } catch (error) {
-      console.error('Exception in fetchUserMetrics:', error);
-      toast.error("An unexpected error occurred");
-    }
-  };
 
   const saveUserMetrics = async () => {
     if (!session?.user) {
@@ -105,7 +68,7 @@ export const useUserMetrics = (session: any) => {
     recommendedCalories,
     setRecommendedCalories,
     hasMetrics,
-    fetchUserMetrics,
+    setHasMetrics,
     saveUserMetrics,
   };
 };

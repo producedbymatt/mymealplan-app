@@ -7,6 +7,7 @@ import LoadingSpinner from "@/components/common/LoadingSpinner";
 import LandingPage from "@/components/landing/LandingPage";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { useUserMetrics } from "@/hooks/useUserMetrics";
+import AuthForm from "@/components/auth/AuthForm";
 
 const Index = () => {
   const [session, setSession] = useState<any>(null);
@@ -17,7 +18,7 @@ const Index = () => {
     recommendedCalories,
     setRecommendedCalories,
     hasMetrics,
-    fetchUserMetrics,
+    setHasMetrics,
     saveUserMetrics,
   } = useUserMetrics(session);
 
@@ -29,11 +30,6 @@ const Index = () => {
         const { data: { session: currentSession } } = await supabase.auth.getSession();
         console.log('Initial session check:', currentSession);
         setSession(currentSession);
-        
-        if (currentSession?.user) {
-          console.log('Found existing session, fetching metrics for user:', currentSession.user.id);
-          await fetchUserMetrics(currentSession.user.id);
-        }
       } catch (error) {
         console.error('Error initializing session:', error);
         toast.error("Error loading your session");
@@ -44,20 +40,16 @@ const Index = () => {
 
     initSession();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       console.log('Auth state changed:', _event, 'Session:', session?.user?.id);
       setSession(session);
-      
-      if (session?.user) {
-        await fetchUserMetrics(session.user.id);
-      }
     });
 
     return () => {
       console.log('Cleaning up auth subscription');
       subscription.unsubscribe();
     };
-  }, [fetchUserMetrics]);
+  }, []);
 
   if (isLoading) {
     return <LoadingSpinner />;
