@@ -31,8 +31,6 @@ export const SignUpForm = ({ onSuccess, onToggleForm }: SignUpFormProps) => {
             date_of_birth: dateOfBirth,
           },
           emailRedirectTo: window.location.origin,
-          // Skip email verification since we're using phone numbers
-          emailVerification: false,
         },
       });
 
