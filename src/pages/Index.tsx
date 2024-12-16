@@ -53,12 +53,12 @@ const Index = () => {
     if (data) {
       console.log('Fetched user metrics:', data);
       setUserMetrics({
-        height: data.height,
-        currentWeight: data.current_weight,
-        targetWeight: data.target_weight,
-        targetDays: data.target_days,
+        height: data.height || 0,
+        currentWeight: data.current_weight || 0,
+        targetWeight: data.target_weight || 0,
+        targetDays: data.target_days || 0,
       });
-      setRecommendedCalories(data.recommended_calories);
+      setRecommendedCalories(data.recommended_calories || 1200);
     }
   };
 
