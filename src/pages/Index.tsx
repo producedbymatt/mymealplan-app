@@ -118,9 +118,9 @@ const Index = () => {
           Track your weight loss journey, calculate your recommended daily calorie and protein intake, and get a custom meal plan designed to meet your goals.
         </p>
 
-        {!hasMetrics ? (
-          <MetricsPrompt />
-        ) : (
+        {!hasMetrics && <MetricsPrompt />}
+        
+        <div className="mt-8">
           <DashboardContent
             userMetrics={userMetrics}
             recommendedCalories={recommendedCalories}
@@ -147,7 +147,7 @@ const Index = () => {
               saveUserMetrics();
             }}
           />
-        )}
+        </div>
       </div>
     </div>
   );
