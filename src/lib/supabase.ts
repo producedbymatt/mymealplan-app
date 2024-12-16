@@ -10,7 +10,19 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     detectSessionInUrl: true,
     flowType: 'pkce',
     storage: window.localStorage,
-    storageKey: 'supabase.auth.token',
-    redirect_to: 'https://9dab36fe-9c7d-403a-bf51-373600fdea6a.lovableproject.com'
+    storageKey: 'supabase.auth.token'
+  }
+});
+
+// Set the site URL for authentication redirects
+supabase.auth.setSession({
+  access_token: '',
+  refresh_token: '',
+});
+
+// Configure the redirect URL
+supabase.auth.onAuthStateChange((event, session) => {
+  if (event === 'SIGNED_IN') {
+    window.location.href = 'https://9dab36fe-9c7d-403a-bf51-373600fdea6a.lovableproject.com';
   }
 });
