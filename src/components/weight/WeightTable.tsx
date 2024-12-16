@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Pencil } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 
@@ -18,9 +18,10 @@ interface WeightTableProps {
   showMore: boolean;
   onToggleShowMore: () => void;
   onEdit?: (id: string, weight: number) => void;
+  onDelete?: (id: string) => void;
 }
 
-const WeightTable = ({ entries, showMore, onToggleShowMore, onEdit }: WeightTableProps) => {
+const WeightTable = ({ entries, showMore, onToggleShowMore, onEdit, onDelete }: WeightTableProps) => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editWeight, setEditWeight] = useState<string>("");
 
@@ -37,6 +38,12 @@ const WeightTable = ({ entries, showMore, onToggleShowMore, onEdit }: WeightTabl
     } else {
       setEditingId(entry.id);
       setEditWeight(entry.weight.toString());
+    }
+  };
+
+  const handleDelete = (id: string) => {
+    if (window.confirm("Are you sure you want to delete this weight entry?")) {
+      onDelete?.(id);
     }
   };
 
@@ -76,6 +83,13 @@ const WeightTable = ({ entries, showMore, onToggleShowMore, onEdit }: WeightTabl
                     onClick={() => handleEdit(entry)}
                   >
                     <Pencil className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleDelete(entry.id!)}
+                  >
+                    <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
               </TableCell>
