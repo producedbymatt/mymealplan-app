@@ -125,6 +125,10 @@ const Index = () => {
     }
   };
 
+  const handleBMICalculated = (bmi: number) => {
+    console.log("BMI calculated:", bmi);
+  };
+
   if (isLoading) {
     return <div className="flex justify-center items-center min-h-screen">Loading...</div>;
   }
