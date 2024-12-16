@@ -15,6 +15,7 @@ const Index = () => {
   const [recommendedCalories, setRecommendedCalories] = useState(1200);
   const [session, setSession] = useState<any>(null);
   const [hasMetrics, setHasMetrics] = useState(false);
+  const [lastSavedMetrics, setLastSavedMetrics] = useState<string>("");
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -62,6 +63,14 @@ const Index = () => {
         });
         setRecommendedCalories(data.recommended_calories || 1200);
         setHasMetrics(true);
+        // Store the last saved state
+        setLastSavedMetrics(JSON.stringify({
+          height: data.height,
+          current_weight: data.current_weight,
+          target_weight: data.target_weight,
+          target_days: data.target_days,
+          recommended_calories: data.recommended_calories,
+        }));
       }
     } catch (err) {
       console.error('Exception while loading metrics:', err);
@@ -74,13 +83,23 @@ const Index = () => {
       return;
     }
 
-    console.log('Attempting to save user metrics:', {
-      user_id: session.user.id,
+    const currentMetrics = {
       height: userMetrics.height,
       current_weight: userMetrics.currentWeight,
       target_weight: userMetrics.targetWeight,
       target_days: userMetrics.targetDays,
       recommended_calories: recommendedCalories,
+    };
+
+    // Check if metrics have actually changed
+    if (JSON.stringify(currentMetrics) === lastSavedMetrics) {
+      console.log('Metrics unchanged, skipping save');
+      return;
+    }
+
+    console.log('Attempting to save user metrics:', {
+      user_id: session.user.id,
+      ...currentMetrics,
     });
 
     try {
@@ -105,6 +124,7 @@ const Index = () => {
       console.log('Successfully saved user metrics');
       toast.success("Your metrics have been saved");
       setHasMetrics(true);
+      setLastSavedMetrics(JSON.stringify(currentMetrics));
       
       // Reload metrics after saving to ensure we have the latest data
       loadUserMetrics(session.user.id);
