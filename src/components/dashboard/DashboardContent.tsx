@@ -43,6 +43,13 @@ const DashboardContent = ({
 
   return (
     <div>
+      <StatsCards 
+        metrics={userMetrics}
+        recommendedCalories={recommendedCalories}
+        hasMetrics={hasMetrics}
+        weightEntries={weightEntries}
+      />
+      
       {hasMetrics && (
         <MotivationalMessage
           currentWeight={userMetrics.currentWeight}
@@ -50,13 +57,6 @@ const DashboardContent = ({
           targetDays={userMetrics.targetDays}
         />
       )}
-      
-      <StatsCards 
-        metrics={userMetrics}
-        recommendedCalories={recommendedCalories}
-        hasMetrics={hasMetrics}
-        weightEntries={weightEntries}
-      />
       
       <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
         <div>
