@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -7,7 +7,26 @@ import { toast } from "sonner";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [session, setSession] = useState<any>(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Check current session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log("Navigation - Current session:", session);
+      setSession(session);
+    });
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      console.log("Navigation - Auth state changed:", session);
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut();
@@ -69,14 +88,16 @@ const Navigation = () => {
                 Profile
               </Link>
               <Button
-                variant="ghost"
-                className="mt-4 text-red-600 hover:text-red-700 hover:bg-red-50"
+                variant={session ? "ghost" : "default"}
+                className={session ? "mt-4 text-red-600 hover:text-red-700 hover:bg-red-50" : "mt-4 bg-blue-500 hover:bg-blue-600 text-white"}
                 onClick={() => {
-                  handleSignOut();
+                  if (session) {
+                    handleSignOut();
+                  }
                   setIsOpen(false);
                 }}
               >
-                Sign Out
+                {session ? "Sign Out" : "Sign In"}
               </Button>
             </div>
           </div>
