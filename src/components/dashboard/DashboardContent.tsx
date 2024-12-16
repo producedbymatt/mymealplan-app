@@ -58,19 +58,28 @@ const DashboardContent = ({
         />
       )}
       
-      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-8 md:grid-cols-2">
         <div>
           <BMICalculator
             onBMICalculated={() => {}}
             onMetricsUpdate={onMetricsUpdate}
           />
         </div>
-        <div className="md:col-span-2">
+        <div>
+          <h2 className="text-2xl font-bold mb-4">Weight Goal</h2>
           <WeightTracker 
             onGoalSet={onGoalSet}
             onWeightEntriesChange={handleWeightEntry}
           />
         </div>
+      </div>
+
+      <div className="mt-8">
+        <h2 className="text-2xl font-bold mb-4">Weight Progress Tracker</h2>
+        <WeightTracker 
+          onGoalSet={onGoalSet}
+          onWeightEntriesChange={handleWeightEntry}
+        />
       </div>
 
       {userMetrics.height > 0 && userMetrics.targetWeight > 0 && (
