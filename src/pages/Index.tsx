@@ -77,24 +77,19 @@ const Index = () => {
       recommended_calories: recommendedCalories,
     });
 
-    // Using upsert operation with ON CONFLICT DO UPDATE
     const { data, error } = await supabase
       .from('user_metrics')
-      .upsert(
-        {
-          user_id: session.user.id,
-          height: userMetrics.height,
-          current_weight: userMetrics.currentWeight,
-          target_weight: userMetrics.targetWeight,
-          target_days: userMetrics.targetDays,
-          recommended_calories: recommendedCalories,
-          updated_at: new Date().toISOString(),
-        },
-        {
-          onConflict: 'user_id',
-          ignoreDuplicates: false,
-        }
-      )
+      .upsert({
+        user_id: session.user.id,
+        height: userMetrics.height,
+        current_weight: userMetrics.currentWeight,
+        target_weight: userMetrics.targetWeight,
+        target_days: userMetrics.targetDays,
+        recommended_calories: recommendedCalories,
+        updated_at: new Date().toISOString(),
+      }, {
+        onConflict: 'user_id',
+      })
       .select()
       .single();
 
@@ -106,10 +101,6 @@ const Index = () => {
 
     console.log('Saved user metrics:', data);
     toast.success("Your metrics have been saved");
-  };
-
-  const handleBMICalculated = (bmi: number) => {
-    console.log("BMI calculated:", bmi);
   };
 
   return (
