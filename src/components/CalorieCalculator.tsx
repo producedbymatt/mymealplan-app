@@ -101,7 +101,7 @@ const CalorieCalculator = ({
   }, [dailyCalories, onCaloriesCalculated]);
 
   return (
-    <Card className="p-6 w-full max-w-md mx-auto mt-4">
+    <Card className="p-6 w-full max-w-2xl mx-auto mt-4">
       <h2 className="text-2xl font-bold mb-4 text-center">Calorie Analysis</h2>
       
       <div className="mb-6">
