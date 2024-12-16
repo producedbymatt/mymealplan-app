@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import MetricsPrompt from "@/components/dashboard/MetricsPrompt";
 import DashboardContent from "@/components/dashboard/DashboardContent";
+import AuthForm from "@/components/auth/AuthForm";
 
 const Index = () => {
   const [userMetrics, setUserMetrics] = useState({
@@ -162,14 +163,13 @@ const Index = () => {
           <p className="text-lg text-gray-600 text-center mb-8 max-w-3xl mx-auto">
             Track your weight loss journey, calculate your recommended daily calorie and protein intake, and get a custom meal plan designed to meet your goals.
           </p>
-            <div className="text-center mb-6">
-              <h2 className="text-2xl font-semibold text-gray-800">Sign Up for Free</h2>
-              <p className="text-gray-600 mt-2">
-                Create an account to unlock all features including weight tracking, BMI calculation, and personalized meal plans.
-              </p>
-            </div>
-            <AuthForm />
+          <div className="text-center mb-6">
+            <h2 className="text-2xl font-semibold text-gray-800">Sign Up for Free</h2>
+            <p className="text-gray-600 mt-2">
+              Create an account to unlock all features including weight tracking, BMI calculation, and personalized meal plans.
+            </p>
           </div>
+          <AuthForm />
         </div>
       </div>
     );
