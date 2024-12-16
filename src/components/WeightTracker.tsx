@@ -2,7 +2,6 @@ import React from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -12,16 +11,13 @@ interface WeightEntry {
 }
 
 interface WeightTrackerProps {
-  onGoalSet?: (weight: number, days: number) => void;
   onWeightEntriesChange?: (entries: WeightEntry[]) => void;
   showGoalInputs?: boolean;
 }
 
-const WeightTracker = ({ onGoalSet, onWeightEntriesChange, showGoalInputs = false }: WeightTrackerProps) => {
+const WeightTracker = ({ onWeightEntriesChange }: WeightTrackerProps) => {
   const [entries, setEntries] = React.useState<WeightEntry[]>([]);
   const [newWeight, setNewWeight] = React.useState("");
-  const [targetWeight, setTargetWeight] = React.useState("");
-  const [targetDays, setTargetDays] = React.useState("");
   const { toast } = useToast();
 
   const addWeight = (e: React.FormEvent) => {
@@ -50,10 +46,8 @@ const WeightTracker = ({ onGoalSet, onWeightEntriesChange, showGoalInputs = fals
       onWeightEntriesChange(updatedEntries);
     }
 
-    if (entries.length > 0 && targetWeight) {
+    if (entries.length > 0) {
       const weightLoss = entries[0].weight - weight;
-      const targetLoss = entries[0].weight - parseFloat(targetWeight);
-      const progressPercentage = (weightLoss / targetLoss) * 100;
       
       if (weightLoss >= 5) {
         toast({
@@ -61,70 +55,11 @@ const WeightTracker = ({ onGoalSet, onWeightEntriesChange, showGoalInputs = fals
           description: `Congratulations! You've lost ${weightLoss.toFixed(1)} lbs!`,
         });
       }
-
-      if (progressPercentage >= 50 && progressPercentage < 51) {
-        toast({
-          title: "Halfway There! 🎉",
-          description: "You're halfway to your goal weight!",
-        });
-      }
     }
-  };
-
-  const setGoal = (e: React.FormEvent) => {
-    e.preventDefault();
-    const weight = parseFloat(targetWeight);
-    const days = parseInt(targetDays);
-
-    if (isNaN(weight) || isNaN(days)) {
-      toast({
-        title: "Invalid Goal",
-        description: "Please enter valid weight and days values.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (onGoalSet) {
-      onGoalSet(weight, days);
-    }
-
-    toast({
-      title: "Goal Set!",
-      description: `Aiming to reach ${weight} lbs in ${days} days.`,
-    });
   };
 
   return (
     <Card className="p-6 w-full max-w-2xl mx-auto">
-      {showGoalInputs && (
-        <div className="mb-6 space-y-4">
-          <form onSubmit={setGoal} className="space-y-4">
-            <div>
-              <Input
-                type="number"
-                value={targetWeight}
-                onChange={(e) => setTargetWeight(e.target.value)}
-                placeholder="Target weight (lbs)"
-                className="w-full"
-              />
-            </div>
-            <div>
-              <Input
-                type="number"
-                value={targetDays}
-                onChange={(e) => setTargetDays(e.target.value)}
-                placeholder="Days to achieve"
-                className="w-full"
-              />
-            </div>
-            <Button type="submit" className="w-full">Set Goal</Button>
-          </form>
-
-          <Separator className="my-4" />
-        </div>
-      )}
-
       <form onSubmit={addWeight} className="flex gap-4">
         <Input
           type="number"

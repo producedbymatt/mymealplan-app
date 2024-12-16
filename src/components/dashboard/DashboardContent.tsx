@@ -1,5 +1,6 @@
 import BMICalculator from "@/components/BMICalculator";
 import WeightTracker from "@/components/WeightTracker";
+import WeightGoal from "@/components/WeightGoal";
 import CalorieCalculator from "@/components/CalorieCalculator";
 import MealPlan from "@/components/MealPlan";
 import StatsCards from "./StatsCards";
@@ -66,19 +67,13 @@ const DashboardContent = ({
           />
         </div>
         <div>
-          <h2 className="text-2xl font-bold mb-4">Weight Goal</h2>
-          <WeightTracker 
-            onGoalSet={onGoalSet}
-            onWeightEntriesChange={handleWeightEntry}
-            showGoalInputs={true}
-          />
+          <WeightGoal onGoalSet={onGoalSet} />
         </div>
       </div>
 
       <div className="mt-8">
         <h2 className="text-2xl font-bold mb-4">Weight Progress Tracker</h2>
         <WeightTracker 
-          onGoalSet={onGoalSet}
           onWeightEntriesChange={handleWeightEntry}
           showGoalInputs={false}
         />
