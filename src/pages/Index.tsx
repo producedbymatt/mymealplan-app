@@ -12,7 +12,9 @@ const Index = () => {
     currentWeight: 0,
     targetWeight: 0,
     targetDays: 0,
+    gender: undefined as "male" | "female" | undefined,
   });
+  
   const [recommendedCalories, setRecommendedCalories] = useState(1200);
   const [session, setSession] = useState<any>(null);
   const [hasMetrics, setHasMetrics] = useState(false);
@@ -61,6 +63,7 @@ const Index = () => {
           currentWeight: data.current_weight || 0,
           targetWeight: data.target_weight || 0,
           targetDays: data.target_days || 0,
+          gender: data.gender,
         });
         setRecommendedCalories(data.recommended_calories || 1200);
         setHasMetrics(true);
@@ -71,6 +74,7 @@ const Index = () => {
           target_weight: data.target_weight,
           target_days: data.target_days,
           recommended_calories: data.recommended_calories,
+          gender: data.gender,
         }));
       }
     } catch (err) {

@@ -20,6 +20,7 @@ interface DashboardContentProps {
     targetWeight: number;
     targetDays: number;
     created_at?: string;
+    gender?: "male" | "female";  // Added gender to the interface
   };
   recommendedCalories: number;
   hasMetrics: boolean;
@@ -61,7 +62,7 @@ const DashboardContent = ({
   return (
     <div>
       <StatsCards 
-        metrics={userMetrics}
+        metrics={userMetrics}  // Now includes gender
         recommendedCalories={recommendedCalories}
         hasMetrics={hasMetrics}
         weightEntries={weightEntries}
