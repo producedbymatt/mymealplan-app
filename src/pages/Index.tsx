@@ -178,7 +178,7 @@ const Index = () => {
           Your Goals, Your Meals, Your Plan.
         </h1>
         <p className="text-lg text-gray-600 text-center mb-8 max-w-3xl mx-auto">
-          Track your progress, calculate your recommended daily calorie and protein intake, and get a custom meal plan designed to meet your goals.
+          Calculate your recommended daily calorie and protein intake, get a custom meal plan designed to meet your goals, and track your progress.
         </p>
 
         {!session ? (
