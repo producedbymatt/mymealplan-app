@@ -16,6 +16,7 @@ const calculateWeightFromBMI = (bmi: number, height: number) => {
 const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
   const [sliderValue, setSliderValue] = React.useState([bmi]);
   const [thumbPosition, setThumbPosition] = React.useState({ x: 0, y: 0 });
+  const [isInteracting, setIsInteracting] = React.useState(false);
   const sliderRef = React.useRef<HTMLDivElement>(null);
 
   const handleSliderChange = (value: number[]) => {
@@ -38,9 +39,18 @@ const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
   const currentBMIPercentage = ((bmi - 15) / (40 - 15)) * 100;
 
   return (
-    <div className="relative pt-16" ref={sliderRef}>
+    <div 
+      className="relative pt-16" 
+      ref={sliderRef}
+      onMouseEnter={() => setIsInteracting(true)}
+      onMouseLeave={() => setIsInteracting(false)}
+      onTouchStart={() => setIsInteracting(true)}
+      onTouchEnd={() => setIsInteracting(false)}
+    >
       <Card 
-        className="absolute -top-2 left-0 p-2 bg-white shadow-lg rounded-lg z-20 w-32"
+        className={`absolute -top-2 left-0 p-2 bg-white shadow-lg rounded-lg z-20 w-32 transition-opacity duration-200 ${
+          isInteracting ? 'opacity-100' : 'opacity-0'
+        }`}
         style={{ 
           transform: `translateX(${Math.max(0, Math.min(thumbPosition.x - 48, (sliderRef.current?.offsetWidth || 0) - 128))}px)`,
           transition: "transform 0.1s ease-out"
