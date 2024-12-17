@@ -25,6 +25,7 @@ const UserDetailsForm = () => {
     date_of_birth: "",
   });
   const [newPassword, setNewPassword] = useState("");
+  const [newPhoneNumber, setNewPhoneNumber] = useState("");
 
   useEffect(() => {
     getUserDetails();
@@ -46,6 +47,9 @@ const UserDetailsForm = () => {
         email: user.email || "",
         date_of_birth: user.user_metadata?.date_of_birth || "",
       });
+
+      // Set the initial phone number without @placeholder.com
+      setNewPhoneNumber(user.email?.replace("@placeholder.com", "") || "");
     } catch (error) {
       console.error("Error fetching user details:", error);
       toast.error("Failed to load user details");
@@ -102,6 +106,32 @@ const UserDetailsForm = () => {
     }
   };
 
+  const handlePhoneNumberChange = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const { error } = await supabase.auth.updateUser({
+        email: `${newPhoneNumber}@placeholder.com`
+      });
+
+      if (error) throw error;
+
+      // Update the local state with the new email
+      setUserDetails(prev => ({
+        ...prev,
+        email: `${newPhoneNumber}@placeholder.com`
+      }));
+
+      toast.success("Phone number updated successfully. Please verify the new phone number.");
+    } catch (error) {
+      console.error("Error updating phone number:", error);
+      toast.error("Failed to update phone number");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Extract phone number from email by removing @placeholder.com
   const phoneNumber = userDetails.email?.replace("@placeholder.com", "") || "";
 
@@ -128,18 +158,6 @@ const UserDetailsForm = () => {
               />
             </div>
             <div>
-              <label htmlFor="phone" className="block text-sm font-medium mb-1">
-                Phone Number
-              </label>
-              <Input
-                id="phone"
-                type="tel"
-                value={phoneNumber}
-                disabled
-                className="bg-gray-50"
-              />
-            </div>
-            <div>
               <label htmlFor="dob" className="block text-sm font-medium mb-1">
                 Date of Birth
               </label>
@@ -154,6 +172,44 @@ const UserDetailsForm = () => {
             </div>
             <Button type="submit" disabled={loading}>
               {loading ? "Updating..." : "Update Profile"}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Update Phone Number</CardTitle>
+          <CardDescription>Change your phone number</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handlePhoneNumberChange} className="space-y-4">
+            <div>
+              <label htmlFor="currentPhone" className="block text-sm font-medium mb-1">
+                Current Phone Number
+              </label>
+              <Input
+                id="currentPhone"
+                type="tel"
+                value={phoneNumber}
+                disabled
+                className="bg-gray-50"
+              />
+            </div>
+            <div>
+              <label htmlFor="newPhone" className="block text-sm font-medium mb-1">
+                New Phone Number
+              </label>
+              <Input
+                id="newPhone"
+                type="tel"
+                value={newPhoneNumber}
+                onChange={(e) => setNewPhoneNumber(e.target.value)}
+                placeholder="Enter new phone number"
+              />
+            </div>
+            <Button type="submit" disabled={loading}>
+              {loading ? "Updating..." : "Update Phone Number"}
             </Button>
           </form>
         </CardContent>
