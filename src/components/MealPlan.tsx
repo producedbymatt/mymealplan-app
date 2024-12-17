@@ -171,55 +171,9 @@ const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: Me
     });
   };
 
-  // Organize favorite meals by category
-  const getFavoriteMealsByCategory = () => {
+  const getAllFavorites = () => {
     const caloriesPerMeal = Math.round(dailyCalories / 3);
-    const scaledFavorites = favoriteMeals.map(meal => scaleMeal(meal, caloriesPerMeal));
-    
-    const categories = {
-      Breakfast: scaledFavorites.filter(meal => 
-        meal.name.toLowerCase().includes('breakfast') || 
-        meal.name.toLowerCase().includes('pancake') || 
-        meal.name.toLowerCase().includes('waffle') ||
-        meal.name.toLowerCase().includes('oatmeal') ||
-        meal.name.toLowerCase().includes('smoothie')
-      ),
-      Lunch: scaledFavorites.filter(meal => 
-        meal.name.toLowerCase().includes('lunch') ||
-        meal.name.toLowerCase().includes('sandwich') ||
-        meal.name.toLowerCase().includes('salad') ||
-        meal.name.toLowerCase().includes('wrap')
-      ),
-      Dinner: scaledFavorites.filter(meal => 
-        meal.name.toLowerCase().includes('dinner') ||
-        meal.name.toLowerCase().includes('steak') ||
-        meal.name.toLowerCase().includes('chicken') ||
-        meal.name.toLowerCase().includes('fish')
-      ),
-    };
-
-    // Add remaining meals to "Other" category
-    const categorizedMeals = new Set([
-      ...categories.Breakfast,
-      ...categories.Lunch,
-      ...categories.Dinner
-    ]);
-    
-    const otherMeals = scaledFavorites.filter(meal => 
-      ![...categorizedMeals].some(catMeal => catMeal.name === meal.name)
-    );
-
-    if (otherMeals.length > 0) {
-      categories['Other'] = otherMeals;
-    }
-
-    return Object.entries(categories)
-      .filter(([_, meals]) => meals.length > 0)
-      .map(([category, meals], index, array) => ({
-        time: category,
-        meals,
-        isLast: index === array.length - 1
-      }));
+    return favoriteMeals.map(meal => scaleMeal(meal, caloriesPerMeal));
   };
 
   if (favoritesLoading) {
@@ -260,14 +214,11 @@ const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: Me
       </div>
 
       {showFavoritesOnly ? (
-        getFavoriteMealsByCategory().map(({ time, meals, isLast }) => (
-          <FavoritesList
-            key={time}
-            time={time}
-            meals={meals}
-            isLast={isLast}
-          />
-        ))
+        <FavoritesList
+          time="Favorite Meals"
+          meals={getAllFavorites()}
+          isLast={true}
+        />
       ) : (
         mealPlan.map((slot, index) => (
           <MealTimeSlot
