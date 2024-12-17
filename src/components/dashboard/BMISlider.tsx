@@ -2,6 +2,7 @@ import React from "react";
 import { Slider } from "@/components/ui/slider";
 import { Card } from "@/components/ui/card";
 import { ChevronDown } from "lucide-react";
+import BMICategories from "./BMICategories";
 
 interface BMISliderProps {
   bmi: number;
@@ -26,6 +27,11 @@ const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
   const [isInteracting, setIsInteracting] = React.useState(false);
   const sliderRef = React.useRef<HTMLDivElement>(null);
   const resetTimeoutRef = React.useRef<NodeJS.Timeout>();
+
+  // Calculate weights for BMI categories
+  const underweightWeight = calculateWeightFromBMI(18.5, height);
+  const normalWeight = calculateWeightFromBMI(24, height);
+  const overweightWeight = calculateWeightFromBMI(29, height);
 
   const handleSliderChange = (value: number[]) => {
     setSliderValue(value);
@@ -86,6 +92,14 @@ const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
       onTouchStart={startInteraction}
       onTouchEnd={endInteraction}
     >
+      <div className="mb-8">
+        <BMICategories
+          underweightWeight={underweightWeight}
+          normalWeight={normalWeight}
+          overweightWeight={overweightWeight}
+        />
+      </div>
+
       <Card 
         className={`absolute -top-2 left-0 p-2 bg-white shadow-lg rounded-lg z-20 w-36 transition-opacity duration-200 ${
           isInteracting ? 'opacity-100' : 'opacity-0'
