@@ -13,14 +13,16 @@ import {
 
 interface UserDetails {
   full_name: string | null;
-  phone: string | null;
+  email: string | null;
+  date_of_birth: string | null;
 }
 
 const UserDetailsForm = () => {
   const [loading, setLoading] = useState(false);
   const [userDetails, setUserDetails] = useState<UserDetails>({
     full_name: "",
-    phone: "",
+    email: "",
+    date_of_birth: "",
   });
   const [newPassword, setNewPassword] = useState("");
 
@@ -41,7 +43,8 @@ const UserDetailsForm = () => {
       
       setUserDetails({
         full_name: user.user_metadata?.full_name || "",
-        phone: user.phone || "",
+        email: user.email || "",
+        date_of_birth: user.user_metadata?.date_of_birth || "",
       });
     } catch (error) {
       console.error("Error fetching user details:", error);
@@ -61,7 +64,10 @@ const UserDetailsForm = () => {
       }
 
       const { error } = await supabase.auth.updateUser({
-        data: { full_name: userDetails.full_name }
+        data: { 
+          full_name: userDetails.full_name,
+          date_of_birth: userDetails.date_of_birth
+        }
       });
 
       if (error) throw error;
@@ -96,6 +102,9 @@ const UserDetailsForm = () => {
     }
   };
 
+  // Extract phone number from email by removing @placeholder.com
+  const phoneNumber = userDetails.email?.replace("@placeholder.com", "") || "";
+
   return (
     <div className="space-y-6">
       <Card>
@@ -125,8 +134,22 @@ const UserDetailsForm = () => {
               <Input
                 id="phone"
                 type="tel"
-                value={userDetails.phone || ""}
+                value={phoneNumber}
                 disabled
+                className="bg-gray-50"
+              />
+            </div>
+            <div>
+              <label htmlFor="dob" className="block text-sm font-medium mb-1">
+                Date of Birth
+              </label>
+              <Input
+                id="dob"
+                type="date"
+                value={userDetails.date_of_birth || ""}
+                onChange={(e) =>
+                  setUserDetails({ ...userDetails, date_of_birth: e.target.value })
+                }
               />
             </div>
             <Button type="submit" disabled={loading}>
