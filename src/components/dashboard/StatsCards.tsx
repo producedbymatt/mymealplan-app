@@ -22,15 +22,15 @@ interface StatsCardsProps {
 
 const getBMICategory = (bmi: number, gender: "male" | "female" = "male") => {
   if (gender === "female") {
-    if (bmi < 18.5) return { category: "Underweight", color: "text-blue-500" };
-    if (bmi < 24) return { category: "Normal weight", color: "text-green-500" };
-    if (bmi < 29) return { category: "Overweight", color: "text-yellow-500" };
-    return { category: "Obese", color: "text-red-500" };
+    if (bmi < 18.5) return { category: "Underweight", color: "text-blue-500", gradient: "bg-gradient-to-r from-blue-50 to-indigo-50" };
+    if (bmi < 24) return { category: "Normal weight", color: "text-green-500", gradient: "bg-gradient-to-r from-green-50 to-emerald-50" };
+    if (bmi < 29) return { category: "Overweight", color: "text-yellow-500", gradient: "bg-gradient-to-r from-yellow-50 to-amber-50" };
+    return { category: "Obese", color: "text-red-500", gradient: "bg-gradient-to-r from-red-50 to-orange-50" };
   } else {
-    if (bmi < 18.5) return { category: "Underweight", color: "text-blue-500" };
-    if (bmi < 25) return { category: "Normal weight", color: "text-green-500" };
-    if (bmi < 30) return { category: "Overweight", color: "text-yellow-500" };
-    return { category: "Obese", color: "text-red-500" };
+    if (bmi < 18.5) return { category: "Underweight", color: "text-blue-500", gradient: "bg-gradient-to-r from-blue-50 to-indigo-50" };
+    if (bmi < 25) return { category: "Normal weight", color: "text-green-500", gradient: "bg-gradient-to-r from-green-50 to-emerald-50" };
+    if (bmi < 30) return { category: "Overweight", color: "text-yellow-500", gradient: "bg-gradient-to-r from-yellow-50 to-amber-50" };
+    return { category: "Obese", color: "text-red-500", gradient: "bg-gradient-to-r from-red-50 to-orange-50" };
   }
 };
 
@@ -102,7 +102,7 @@ const StatsCards = ({ metrics, recommendedCalories, hasMetrics, weightEntries = 
 
   return (
     <div className="space-y-4">
-      <Card className="w-full">
+      <Card className={`w-full border-none ${bmiCategory.gradient}`}>
         <CardHeader>
           <CardTitle>Current BMI</CardTitle>
         </CardHeader>
