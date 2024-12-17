@@ -125,15 +125,12 @@ const StatsCards = ({ metrics, recommendedCalories, hasMetrics, weightEntries = 
 
           <div className="mt-6 space-y-6">
             <div className="relative pt-6">
-              <div className="absolute w-full h-2 rounded-full overflow-hidden" style={{
-                background: 'linear-gradient(to right, #63B3ED, #68D391, #F6E05E, #FC8181)'
-              }} />
               <Slider
                 defaultValue={[bmi]}
                 max={40}
                 min={15}
                 step={0.1}
-                className="z-10"
+                className="z-10 [&_.relative]:before:absolute [&_.relative]:before:inset-0 [&_.relative]:before:h-2 [&_.relative]:before:rounded-full [&_.relative]:before:bg-gradient-to-r [&_.relative]:before:from-blue-400 [&_.relative]:before:via-green-400 [&_.relative]:before:via-yellow-400 [&_.relative]:before:to-red-400"
               />
             </div>
             
