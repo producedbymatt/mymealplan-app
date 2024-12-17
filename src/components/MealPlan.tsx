@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import MealTimeSlot from "./meal-plan/MealTimeSlot";
 import { getMealOptionsForTime } from "./meal-plan/mealData";
 import { MealTimeSlot as MealTimeSlotType, Meal } from "./meal-plan/types";
+import { useAllFavoriteMeals } from "@/hooks/useAllFavoriteMeals";
+import { supabase } from "@/lib/supabase";
 
 interface MealPlanProps {
   dailyCalories?: number;
@@ -60,7 +62,18 @@ const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: Me
   const [mealPlan, setMealPlan] = useState<MealTimeSlotType[]>([]);
   const [usedRecipes, setUsedRecipes] = useState<Set<string>>(new Set());
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+  const [userId, setUserId] = useState<string | undefined>();
   const { toast } = useToast();
+  const { favoriteMeals, isLoading: favoritesLoading } = useAllFavoriteMeals(userId);
+
+  // Get current user on mount
+  useEffect(() => {
+    const loadUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setUserId(session?.user?.id);
+    };
+    loadUser();
+  }, []);
 
   const generateMealOptions = (timeSlot: string, caloriesPerMeal: number, excludeNames: Set<string>) => {
     const allOptions = getMealOptionsForTime(timeSlot);
@@ -104,11 +117,7 @@ const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: Me
     });
 
     const caloriesPerMeal = Math.round(dailyCalories / 3);
-    const timeSlots = [
-      "Breakfast",
-      "Lunch",
-      "Dinner"
-    ];
+    const timeSlots = ["Breakfast", "Lunch", "Dinner"];
     
     setUsedRecipes(new Set());
     
@@ -161,12 +170,30 @@ const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: Me
     });
   };
 
+  // If showing favorites, create a meal plan with all favorite meals
+  const displayedMealPlan = showFavoritesOnly ? [
+    {
+      time: "Favorite Meals",
+      options: favoriteMeals.map(meal => scaleMeal(meal, Math.round(dailyCalories / 3)))
+    }
+  ] : mealPlan;
+
+  if (favoritesLoading) {
+    return (
+      <Card className="p-6 w-full max-w-2xl mx-auto">
+        <div>Loading favorites...</div>
+      </Card>
+    );
+  }
+
   return (
     <Card className="p-6 w-full max-w-2xl mx-auto">
       <div className="flex justify-between items-center mb-4">
         <div>
           <h2 className="text-2xl font-bold">Today's Meal Plan</h2>
-          <p className="text-gray-600">Three balanced meals throughout the day</p>
+          <p className="text-gray-600">
+            {showFavoritesOnly ? 'Your favorite meals' : 'Three balanced meals throughout the day'}
+          </p>
         </div>
         <Button
           variant="outline"
@@ -187,13 +214,13 @@ const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: Me
           )}
         </Button>
       </div>
-      {mealPlan.map((slot, index) => (
+      {displayedMealPlan.map((slot, index) => (
         <MealTimeSlot
           key={slot.time}
           time={slot.time}
           options={slot.options}
           onRefresh={() => refreshMealOptions(index)}
-          isLast={index === mealPlan.length - 1}
+          isLast={index === displayedMealPlan.length - 1}
           showFavoritesOnly={showFavoritesOnly}
         />
       ))}
