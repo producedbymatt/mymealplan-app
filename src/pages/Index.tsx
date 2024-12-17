@@ -4,6 +4,7 @@ import AuthForm from "@/components/auth/AuthForm";
 import DashboardContent from "@/components/dashboard/DashboardContent";
 import MetricsPrompt from "@/components/dashboard/MetricsPrompt";
 import Footer from "@/components/Footer";
+import Header from "@/components/Header";
 import { toast } from "sonner";
 
 const Index = () => {
@@ -145,11 +146,7 @@ const Index = () => {
     return (
       <div className="min-h-screen bg-gray-50 py-8 flex flex-col">
         <div className="container mx-auto px-4 flex-grow">
-          <img 
-            src="/lovable-uploads/67003c76-1908-4b2f-93d3-01ea4a4cf510.png" 
-            alt="MyMealPlan Logo" 
-            className="mx-auto mb-6 h-24 w-auto"
-          />
+          <Header />
           <h1 className="text-4xl font-bold text-center mb-4">
             Your Goals, Your Meals, Your Plan.
           </h1>
@@ -169,11 +166,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-8 flex flex-col">
       <div className="container mx-auto px-4 flex-grow">
-        <img 
-          src="/lovable-uploads/67003c76-1908-4b2f-93d3-01ea4a4cf510.png" 
-          alt="MyMealPlan Logo" 
-          className="mx-auto mb-6 h-24 w-auto"
-        />
+        <Header />
         <h1 className="text-4xl font-bold text-center mb-4">
           Your Goals, Your Meals, Your Plan.
         </h1>
