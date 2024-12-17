@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Heart } from "lucide-react";
 import {
@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/accordion";
 import { Meal } from "./types";
 import { useToast } from "@/components/ui/use-toast";
+import { supabase } from "@/lib/supabase";
 
 interface MealOptionProps {
   meal: Meal;
@@ -19,12 +20,81 @@ const MealOption = ({ meal, showFavoritesOnly }: MealOptionProps) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const { toast } = useToast();
 
-  const toggleFavorite = (e: React.MouseEvent) => {
+  useEffect(() => {
+    const loadFavoriteStatus = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) return;
+
+      const { data, error } = await supabase
+        .from('favorite_meals')
+        .select('*')
+        .eq('user_id', session.user.id)
+        .eq('meal_name', meal.name)
+        .single();
+
+      if (error && error.code !== 'PGRST116') {
+        console.error('Error loading favorite status:', error);
+        return;
+      }
+
+      setIsFavorite(!!data);
+    };
+
+    loadFavoriteStatus();
+  }, [meal.name]);
+
+  const toggleFavorite = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsFavorite(!isFavorite);
+    
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user) {
+      toast({
+        title: "Please log in",
+        description: "You need to be logged in to save favorites.",
+      });
+      return;
+    }
+
+    const newFavoriteStatus = !isFavorite;
+
+    if (newFavoriteStatus) {
+      const { error } = await supabase
+        .from('favorite_meals')
+        .insert({
+          user_id: session.user.id,
+          meal_name: meal.name,
+          meal_data: meal
+        });
+
+      if (error) {
+        console.error('Error saving favorite:', error);
+        toast({
+          title: "Error",
+          description: "Failed to save favorite. Please try again.",
+        });
+        return;
+      }
+    } else {
+      const { error } = await supabase
+        .from('favorite_meals')
+        .delete()
+        .eq('user_id', session.user.id)
+        .eq('meal_name', meal.name);
+
+      if (error) {
+        console.error('Error removing favorite:', error);
+        toast({
+          title: "Error",
+          description: "Failed to remove favorite. Please try again.",
+        });
+        return;
+      }
+    }
+
+    setIsFavorite(newFavoriteStatus);
     toast({
-      title: isFavorite ? "Removed from favorites" : "Added to favorites",
-      description: `${meal.name} has been ${isFavorite ? "removed from" : "added to"} your favorites.`,
+      title: newFavoriteStatus ? "Added to favorites" : "Removed from favorites",
+      description: `${meal.name} has been ${newFavoriteStatus ? "added to" : "removed from"} your favorites.`,
     });
   };
 
