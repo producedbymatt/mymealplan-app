@@ -2,7 +2,7 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <footer className="mt-auto py-6 text-center">
+    <footer className="mt-auto py-6 text-center mx-8">
       <img 
         src="/lovable-uploads/67003c76-1908-4b2f-93d3-01ea4a4cf510.png" 
         alt="MyMealPlan Logo" 
