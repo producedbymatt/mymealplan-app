@@ -22,6 +22,11 @@ const UserMetricsCard = ({ metrics, onMetricsUpdate }: UserMetricsCardProps) => 
   const heightFeet = Math.floor(metrics.height / 12);
   const heightInches = metrics.height % 12;
 
+  const capitalizeGender = (gender?: string) => {
+    if (!gender) return "Not specified";
+    return gender.charAt(0).toUpperCase() + gender.slice(1);
+  };
+
   if (isEditing) {
     return (
       <Card>
@@ -57,7 +62,7 @@ const UserMetricsCard = ({ metrics, onMetricsUpdate }: UserMetricsCardProps) => 
       <CardContent className="space-y-2">
         <p><strong>Height:</strong> {heightFeet}'{heightInches}"</p>
         <p><strong>Current Weight:</strong> {metrics.current_weight} lbs</p>
-        <p><strong>Gender:</strong> {metrics.gender || "Not specified"}</p>
+        <p><strong>Gender:</strong> {capitalizeGender(metrics.gender)}</p>
       </CardContent>
     </Card>
   );
