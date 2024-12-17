@@ -22,103 +22,127 @@ CREATE TABLE IF NOT EXISTS recipes (
 INSERT INTO recipes (name, calories, protein, carbs, fat, prep_time, cook_time, ingredients, instructions, meal_type, category, difficulty_level) 
 VALUES 
 
--- Oatmeal and Bowls
+-- Egg-Based Breakfasts
 (
-    'Classic Oatmeal with Berries',
-    450,
-    15,
-    65,
-    12,
-    '5 minutes',
+    'Spinach and Feta Omelette',
+    380,
+    24,
+    8,
+    28,
+    '10 minutes',
     '10 minutes',
     '[
-        "1 cup rolled oats (300 cal)",
-        "1 cup mixed berries (85 cal)",
-        "1 tbsp honey (60 cal)",
-        "1/4 cup almonds (160 cal)",
-        "1 cup almond milk (30 cal)"
+        "3 large eggs (210 cal)",
+        "1 cup fresh spinach (7 cal)",
+        "1 oz feta cheese (74 cal)",
+        "1 tbsp olive oil (120 cal)",
+        "Salt and pepper to taste (0 cal)"
     ]'::jsonb,
     '[
-        "In a medium saucepan, bring 1 cup of almond milk to a gentle simmer over medium heat",
-        "Add 1 cup of rolled oats to the simmering almond milk, stirring immediately to combine",
-        "Reduce heat to low and cook for 5-7 minutes, stirring occasionally until oats are creamy",
-        "While oats are cooking, rinse 1 cup of mixed berries and roughly chop any larger berries",
-        "Coarsely chop 1/4 cup of almonds into smaller pieces",
-        "Once oats are cooked, remove from heat and let stand for 1 minute",
-        "Transfer oats to a serving bowl",
-        "Top with the prepared mixed berries",
-        "Drizzle 1 tablespoon of honey evenly over the berries",
-        "Sprinkle the chopped almonds on top",
-        "Serve immediately while hot"
+        "Crack 3 eggs into a bowl and whisk until well combined",
+        "Season with salt and pepper",
+        "Heat olive oil in a non-stick pan over medium heat",
+        "Add fresh spinach and cook until wilted (about 1 minute)",
+        "Pour in whisked eggs",
+        "As eggs begin to set, lift edges to allow uncooked egg to flow underneath",
+        "When eggs are mostly set, sprinkle crumbled feta over one half",
+        "Fold omelette in half over the cheese",
+        "Cook for another minute until cheese begins to melt",
+        "Slide onto a plate and serve immediately"
     ]'::jsonb,
     'breakfast',
-    'oatmeal-and-bowls',
+    'egg-based',
+    'medium'
+),
+
+-- Breakfast Bowls
+(
+    'Acai Breakfast Bowl',
+    420,
+    8,
+    62,
+    18,
+    '10 minutes',
+    '0 minutes',
+    '[
+        "2 acai berry packets (200 cal)",
+        "1 banana (105 cal)",
+        "1/4 cup granola (60 cal)",
+        "1 tbsp honey (60 cal)",
+        "2 tbsp mixed seeds (95 cal)"
+    ]'::jsonb,
+    '[
+        "Break frozen acai packets into chunks",
+        "Blend acai with half a banana until smooth",
+        "Pour into a serving bowl",
+        "Slice remaining banana half",
+        "Top with sliced banana",
+        "Add granola",
+        "Drizzle with honey",
+        "Sprinkle mixed seeds on top",
+        "Serve immediately while cold"
+    ]'::jsonb,
+    'breakfast',
+    'breakfast-bowls',
     'easy'
 ),
 
+-- Healthy Toast Options
 (
-    'Breakfast Quinoa Bowl',
-    430,
-    16,
-    62,
+    'Ricotta Fig Toast',
+    340,
     14,
+    42,
+    16,
     '5 minutes',
-    '20 minutes',
+    '5 minutes',
     '[
-        "1 cup cooked quinoa (220 cal)",
-        "1 cup almond milk (30 cal)",
+        "2 slices whole grain bread (160 cal)",
+        "1/2 cup ricotta cheese (100 cal)",
+        "2 fresh figs (74 cal)",
         "1 tbsp honey (60 cal)",
-        "1/2 cup mixed berries (40 cal)",
-        "1 tbsp almonds (80 cal)"
+        "Fresh thyme (2 cal)"
     ]'::jsonb,
     '[
-        "Rinse 1 cup of quinoa thoroughly under cold water using a fine-mesh strainer",
-        "In a medium saucepan, combine the rinsed quinoa with 2 cups of water",
-        "Bring to a boil, then reduce heat to low and cover",
-        "Simmer for 15-20 minutes until quinoa is tender and water is absorbed",
-        "While quinoa is still hot, stir in 1 cup of almond milk to create a creamy consistency",
-        "Drizzle 1 tablespoon of honey and stir to combine",
-        "Rinse and pat dry 1/2 cup of mixed berries",
-        "Roughly chop 1 tablespoon of almonds",
-        "Transfer quinoa mixture to a serving bowl",
-        "Top with the prepared berries and chopped almonds",
+        "Toast bread slices until golden brown",
+        "Spread ricotta cheese evenly on each slice",
+        "Slice figs thinly",
+        "Arrange fig slices on top of ricotta",
+        "Drizzle with honey",
+        "Sprinkle with fresh thyme leaves",
+        "Serve immediately"
+    ]'::jsonb,
+    'breakfast',
+    'toast',
+    'easy'
+),
+
+-- Breakfast Sandwiches
+(
+    'Mediterranean Breakfast Pita',
+    420,
+    18,
+    48,
+    22,
+    '10 minutes',
+    '5 minutes',
+    '[
+        "1 whole wheat pita (170 cal)",
+        "2 scrambled eggs (140 cal)",
+        "1/4 cup hummus (100 cal)",
+        "Handful mixed greens (5 cal)",
+        "2 tbsp olive tapenade (45 cal)"
+    ]'::jsonb,
+    '[
+        "Warm pita bread in toaster or oven",
+        "Scramble eggs with salt and pepper",
+        "Spread hummus inside warmed pita",
+        "Add scrambled eggs",
+        "Top with mixed greens",
+        "Add olive tapenade",
         "Serve while warm"
     ]'::jsonb,
     'breakfast',
-    'oatmeal-and-bowls',
+    'sandwiches',
     'easy'
-),
-
--- Protein-Based Breakfasts
-(
-    'Protein Pancakes',
-    480,
-    28,
-    55,
-    18,
-    '10 minutes',
-    '15 minutes',
-    '[
-        "1 cup protein pancake mix (200 cal)",
-        "1 scoop protein powder (120 cal)",
-        "1 medium banana (105 cal)",
-        "1 tbsp maple syrup (55 cal)"
-    ]'::jsonb,
-    '[
-        "In a large mixing bowl, combine 1 cup of protein pancake mix with 1 scoop of protein powder",
-        "In a separate bowl, thoroughly mash 1 medium banana until very few lumps remain",
-        "Add the mashed banana to the dry ingredients",
-        "Add water gradually, about 3/4 cup, while whisking until you achieve a smooth, pourable batter",
-        "Heat a non-stick griddle or pan over medium heat",
-        "Once hot, lightly coat with cooking spray",
-        "Pour 1/4 cup portions of batter onto the griddle",
-        "Cook until bubbles form on the surface (about 2-3 minutes)",
-        "Flip pancakes and cook for another 1-2 minutes until golden brown",
-        "Transfer to a serving plate",
-        "Drizzle 1 tablespoon of maple syrup evenly over the pancakes",
-        "Serve immediately while hot"
-    ]'::jsonb,
-    'breakfast',
-    'protein-based',
-    'medium'
 );
