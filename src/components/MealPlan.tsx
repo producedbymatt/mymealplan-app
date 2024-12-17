@@ -4,6 +4,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Filter, FilterX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import MealTimeSlot from "./meal-plan/MealTimeSlot";
+import FavoritesList from "./meal-plan/FavoritesList";
 import { getMealOptionsForTime } from "./meal-plan/mealData";
 import { MealTimeSlot as MealTimeSlotType, Meal } from "./meal-plan/types";
 import { useAllFavoriteMeals } from "@/hooks/useAllFavoriteMeals";
@@ -170,13 +171,56 @@ const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: Me
     });
   };
 
-  // If showing favorites, create a meal plan with all favorite meals
-  const displayedMealPlan = showFavoritesOnly ? [
-    {
-      time: "Favorite Meals",
-      options: favoriteMeals.map(meal => scaleMeal(meal, Math.round(dailyCalories / 3)))
+  // Organize favorite meals by category
+  const getFavoriteMealsByCategory = () => {
+    const caloriesPerMeal = Math.round(dailyCalories / 3);
+    const scaledFavorites = favoriteMeals.map(meal => scaleMeal(meal, caloriesPerMeal));
+    
+    const categories = {
+      Breakfast: scaledFavorites.filter(meal => 
+        meal.name.toLowerCase().includes('breakfast') || 
+        meal.name.toLowerCase().includes('pancake') || 
+        meal.name.toLowerCase().includes('waffle') ||
+        meal.name.toLowerCase().includes('oatmeal') ||
+        meal.name.toLowerCase().includes('smoothie')
+      ),
+      Lunch: scaledFavorites.filter(meal => 
+        meal.name.toLowerCase().includes('lunch') ||
+        meal.name.toLowerCase().includes('sandwich') ||
+        meal.name.toLowerCase().includes('salad') ||
+        meal.name.toLowerCase().includes('wrap')
+      ),
+      Dinner: scaledFavorites.filter(meal => 
+        meal.name.toLowerCase().includes('dinner') ||
+        meal.name.toLowerCase().includes('steak') ||
+        meal.name.toLowerCase().includes('chicken') ||
+        meal.name.toLowerCase().includes('fish')
+      ),
+    };
+
+    // Add remaining meals to "Other" category
+    const categorizedMeals = new Set([
+      ...categories.Breakfast,
+      ...categories.Lunch,
+      ...categories.Dinner
+    ]);
+    
+    const otherMeals = scaledFavorites.filter(meal => 
+      ![...categorizedMeals].some(catMeal => catMeal.name === meal.name)
+    );
+
+    if (otherMeals.length > 0) {
+      categories['Other'] = otherMeals;
     }
-  ] : mealPlan;
+
+    return Object.entries(categories)
+      .filter(([_, meals]) => meals.length > 0)
+      .map(([category, meals], index, array) => ({
+        time: category,
+        meals,
+        isLast: index === array.length - 1
+      }));
+  };
 
   if (favoritesLoading) {
     return (
@@ -214,16 +258,28 @@ const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: Me
           )}
         </Button>
       </div>
-      {displayedMealPlan.map((slot, index) => (
-        <MealTimeSlot
-          key={slot.time}
-          time={slot.time}
-          options={slot.options}
-          onRefresh={() => refreshMealOptions(index)}
-          isLast={index === displayedMealPlan.length - 1}
-          showFavoritesOnly={showFavoritesOnly}
-        />
-      ))}
+
+      {showFavoritesOnly ? (
+        getFavoriteMealsByCategory().map(({ time, meals, isLast }) => (
+          <FavoritesList
+            key={time}
+            time={time}
+            meals={meals}
+            isLast={isLast}
+          />
+        ))
+      ) : (
+        mealPlan.map((slot, index) => (
+          <MealTimeSlot
+            key={slot.time}
+            time={slot.time}
+            options={slot.options}
+            onRefresh={() => refreshMealOptions(index)}
+            isLast={index === mealPlan.length - 1}
+            showFavoritesOnly={showFavoritesOnly}
+          />
+        ))
+      )}
     </Card>
   );
 };
