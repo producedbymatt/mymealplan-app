@@ -112,7 +112,7 @@ const CalorieCalculator = ({
           min={1.2}
           max={1.9}
           step={0.025}
-          className="mb-2"
+          className="mb-2 [&_.relative]:before:absolute [&_.relative]:before:inset-0 [&_.relative]:before:h-2 [&_.relative]:before:rounded-full [&_.relative]:before:bg-gradient-to-r [&_.relative]:before:from-blue-400 [&_.relative]:before:via-green-400 [&_.relative]:before:via-yellow-400 [&_.relative]:before:to-red-400 [&_[role=slider]]:z-20 [&_.relative]:bg-transparent [&_[class*=SliderRange]]:bg-transparent"
         />
         <p className="text-sm text-muted-foreground">
           {getActivityLevelLabel(activityLevel[0])}
