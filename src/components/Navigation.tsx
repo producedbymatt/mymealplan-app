@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Menu, X, Weight } from "lucide-react";
+import { Menu, X, Weight, Gauge, ClipboardList, UserCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
@@ -78,16 +78,18 @@ const Navigation = () => {
               />
               <Link
                 to="/"
-                className="px-4 py-2 hover:bg-gray-100 rounded-md"
+                className="px-4 py-2 hover:bg-gray-100 rounded-md flex items-center gap-2"
                 onClick={() => setIsOpen(false)}
               >
+                <Gauge className="h-4 w-4" />
                 Dashboard
               </Link>
               <Link
                 to="/calorie-logger"
-                className="px-4 py-2 hover:bg-gray-100 rounded-md"
+                className="px-4 py-2 hover:bg-gray-100 rounded-md flex items-center gap-2"
                 onClick={() => setIsOpen(false)}
               >
+                <ClipboardList className="h-4 w-4" />
                 Calorie Logger
               </Link>
               <Link
@@ -100,9 +102,10 @@ const Navigation = () => {
               </Link>
               <Link
                 to="/profile"
-                className="px-4 py-2 hover:bg-gray-100 rounded-md"
+                className="px-4 py-2 hover:bg-gray-100 rounded-md flex items-center gap-2"
                 onClick={() => setIsOpen(false)}
               >
+                <UserCircle className="h-4 w-4" />
                 Profile
               </Link>
               <Button
