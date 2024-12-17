@@ -18,10 +18,17 @@ VALUES
         "1 cup almond milk (30 cal)"
     ]'::jsonb,
     '[
-        "Cook oats with almond milk",
-        "Top with mixed berries",
-        "Drizzle with honey",
-        "Sprinkle almonds on top"
+        "In a medium saucepan, bring 1 cup of almond milk to a gentle simmer over medium heat",
+        "Add 1 cup of rolled oats to the simmering almond milk, stirring immediately to combine",
+        "Reduce heat to low and cook for 5-7 minutes, stirring occasionally until oats are creamy",
+        "While oats are cooking, rinse 1 cup of mixed berries and roughly chop any larger berries",
+        "Coarsely chop 1/4 cup of almonds into smaller pieces",
+        "Once oats are cooked, remove from heat and let stand for 1 minute",
+        "Transfer oats to a serving bowl",
+        "Top with the prepared mixed berries",
+        "Drizzle 1 tablespoon of honey evenly over the berries",
+        "Sprinkle the chopped almonds on top",
+        "Serve immediately while hot"
     ]'::jsonb,
     'breakfast',
     'oatmeal-and-bowls',
@@ -43,10 +50,17 @@ VALUES
         "1 tbsp almonds (80 cal)"
     ]'::jsonb,
     '[
-        "Cook quinoa according to package",
-        "Add almond milk and honey",
-        "Heat until warm",
-        "Top with berries and almonds"
+        "Rinse 1 cup of quinoa thoroughly under cold water using a fine-mesh strainer",
+        "In a medium saucepan, combine the rinsed quinoa with 2 cups of water",
+        "Bring to a boil, then reduce heat to low and cover",
+        "Simmer for 15-20 minutes until quinoa is tender and water is absorbed",
+        "While quinoa is still hot, stir in 1 cup of almond milk to create a creamy consistency",
+        "Drizzle 1 tablespoon of honey and stir to combine",
+        "Rinse and pat dry 1/2 cup of mixed berries",
+        "Roughly chop 1 tablespoon of almonds",
+        "Transfer quinoa mixture to a serving bowl",
+        "Top with the prepared berries and chopped almonds",
+        "Serve while warm"
     ]'::jsonb,
     'breakfast',
     'oatmeal-and-bowls',
@@ -69,10 +83,18 @@ VALUES
         "1 tbsp maple syrup (55 cal)"
     ]'::jsonb,
     '[
-        "Mix pancake mix with protein powder",
-        "Mash banana and add to mixture",
-        "Cook pancakes on griddle",
-        "Top with maple syrup"
+        "In a large mixing bowl, combine 1 cup of protein pancake mix with 1 scoop of protein powder",
+        "In a separate bowl, thoroughly mash 1 medium banana until very few lumps remain",
+        "Add the mashed banana to the dry ingredients",
+        "Add water gradually, about 3/4 cup, while whisking until you achieve a smooth, pourable batter",
+        "Heat a non-stick griddle or pan over medium heat",
+        "Once hot, lightly coat with cooking spray",
+        "Pour 1/4 cup portions of batter onto the griddle",
+        "Cook until bubbles form on the surface (about 2-3 minutes)",
+        "Flip pancakes and cook for another 1-2 minutes until golden brown",
+        "Transfer to a serving plate",
+        "Drizzle 1 tablespoon of maple syrup evenly over the pancakes",
+        "Serve immediately while hot"
     ]'::jsonb,
     'breakfast',
     'protein-based',
@@ -98,10 +120,23 @@ VALUES
         "2 tbsp olive oil (240 cal)"
     ]'::jsonb,
     '[
-        "Prepare all ingredients",
-        "Combine in a bowl",
-        "Drizzle with olive oil",
-        "Toss and serve"
+        "Pat chicken breast dry with paper towels",
+        "Season chicken with 1 tsp each of dried oregano, salt, and black pepper",
+        "Heat grill or grill pan over medium-high heat",
+        "Grill chicken for 6-7 minutes per side until internal temperature reaches 165°F",
+        "While chicken cooks, thoroughly wash and dry mixed greens",
+        "Drain and rinse chickpeas, pat dry with paper towels",
+        "Slice kalamata olives in half if desired",
+        "Let chicken rest for 5 minutes after cooking",
+        "Slice chicken against the grain into thin strips",
+        "In a large serving bowl, arrange mixed greens as the base",
+        "Add chickpeas in a section of the bowl",
+        "Arrange sliced grilled chicken in another section",
+        "Crumble feta cheese over the entire salad",
+        "Place kalamata olives around the bowl",
+        "Just before serving, drizzle olive oil evenly over all ingredients",
+        "Optional: add fresh cracked black pepper and dried oregano",
+        "Toss gently to combine all ingredients when ready to eat"
     ]'::jsonb,
     'lunch',
     'salads',
@@ -126,11 +161,19 @@ VALUES
         "Lemon and herbs (10 cal)"
     ]'::jsonb,
     '[
-        "Season cod with herbs and lemon",
-        "Bake cod until flaky",
-        "Cook quinoa according to package",
-        "Roast vegetables with olive oil",
-        "Serve cod over quinoa with vegetables"
+        "Preheat oven to 400°F (200°C)",
+        "Rinse quinoa thoroughly and cook according to package instructions",
+        "Pat cod fillet dry with paper towels",
+        "Season cod with salt, pepper, and fresh herbs",
+        "Cut mixed vegetables into uniform pieces",
+        "Toss vegetables with half the olive oil",
+        "Place vegetables on a baking sheet and roast for 15 minutes",
+        "Drizzle remaining olive oil over cod",
+        "Place cod on the baking sheet with vegetables",
+        "Bake for 10-12 minutes until fish flakes easily",
+        "Squeeze fresh lemon juice over fish",
+        "Fluff quinoa with a fork",
+        "Serve cod over quinoa with roasted vegetables"
     ]'::jsonb,
     'dinner',
     'seafood',
