@@ -139,11 +139,7 @@ const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
           value={sliderValue}
           onValueChange={handleSliderChange}
           className="z-10 [&_.relative]:before:absolute [&_.relative]:before:inset-0 [&_.relative]:before:h-2 [&_.relative]:before:rounded-full [&_.relative]:before:bg-gradient-to-r [&_.relative]:before:from-blue-400 [&_.relative]:before:via-green-400 [&_.relative]:before:via-yellow-400 [&_.relative]:before:to-red-400 [&_[role=slider]]:z-20 [&_.relative]:bg-transparent [&_[class*=SliderRange]]:bg-transparent"
-        >
-          <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2">
-            <ChevronDown className="h-4 w-4 text-primary" />
-          </div>
-        </Slider>
+        />
       </div>
     </div>
   );
