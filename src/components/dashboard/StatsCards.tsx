@@ -110,9 +110,9 @@ const StatsCards = ({ metrics, recommendedCalories, hasMetrics, weightEntries = 
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="text-center">
-            <div className="text-3xl font-bold">{simulatedBMI?.toFixed(1) || bmi.toFixed(1)}</div>
+            <div className="text-3xl font-bold">{bmi.toFixed(1)}</div>
             <p className={`text-sm ${bmiCategory.color} font-semibold`}>
-              Category: {getBMICategory(simulatedBMI || bmi, metrics.gender).category}
+              Category: {getBMICategory(bmi, metrics.gender).category}
             </p>
             <p className="text-xs text-muted-foreground mt-1">
               Based on current weight: {mostRecentWeight} lbs, height: {heightFeet}'{heightInches}"
