@@ -13,6 +13,13 @@ const calculateWeightFromBMI = (bmi: number, height: number) => {
   return Math.round((bmi * height * height) / 703);
 };
 
+const getBMICategory = (bmi: number) => {
+  if (bmi < 18.5) return { category: "Underweight", color: "text-blue-500" };
+  if (bmi < 24) return { category: "Normal", color: "text-green-500" };
+  if (bmi < 29) return { category: "Overweight", color: "text-yellow-500" };
+  return { category: "Obese", color: "text-red-500" };
+};
+
 const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
   const [sliderValue, setSliderValue] = React.useState([bmi]);
   const [thumbPosition, setThumbPosition] = React.useState({ x: 0, y: 0 });
@@ -65,6 +72,7 @@ const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
   }, []);
 
   const simulatedWeight = calculateWeightFromBMI(sliderValue[0], height);
+  const bmiCategory = getBMICategory(sliderValue[0]);
   
   // Calculate the position for the current BMI marker
   const currentBMIPercentage = ((bmi - 15) / (40 - 15)) * 100;
@@ -79,17 +87,20 @@ const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
       onTouchEnd={endInteraction}
     >
       <Card 
-        className={`absolute -top-2 left-0 p-2 bg-white shadow-lg rounded-lg z-20 w-32 transition-opacity duration-200 ${
+        className={`absolute -top-2 left-0 p-2 bg-white shadow-lg rounded-lg z-20 w-36 transition-opacity duration-200 ${
           isInteracting ? 'opacity-100' : 'opacity-0'
         }`}
         style={{ 
-          transform: `translateX(${Math.max(0, Math.min(thumbPosition.x - 48, (sliderRef.current?.offsetWidth || 0) - 128))}px)`,
+          transform: `translateX(${Math.max(0, Math.min(thumbPosition.x - 48, (sliderRef.current?.offsetWidth || 0) - 144))}px)`,
           transition: "transform 0.1s ease-out"
         }}
       >
         <div className="text-center text-sm">
           <div className="font-semibold">BMI: {sliderValue[0].toFixed(1)}</div>
           <div className="text-muted-foreground">{simulatedWeight} lbs</div>
+          <div className={`text-xs font-medium ${bmiCategory.color}`}>
+            {bmiCategory.category}
+          </div>
         </div>
       </Card>
       <div className="relative">
