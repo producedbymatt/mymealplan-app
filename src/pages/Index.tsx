@@ -151,10 +151,10 @@ const Index = () => {
             className="mx-auto mb-6 h-24 w-auto"
           />
           <h1 className="text-4xl font-bold text-center mb-4">
-            Track Your Health Journey
+            Your Goals, Your Meals, Your Plan.
           </h1>
           <p className="text-lg text-gray-600 text-center mb-8 max-w-3xl mx-auto">
-            Track your progress, calculate your recommended daily calorie and protein intake, and get a custom meal plan designed to meet your goals.
+            Calculate your recommended daily calorie and protein intake, get a custom meal plan designed to meet your goals, and track your progress.
           </p>
 
           <div className="mb-12 bg-white rounded-lg shadow-md p-6">
