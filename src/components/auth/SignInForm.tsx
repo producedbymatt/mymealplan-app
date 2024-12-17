@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { FormInput } from "./FormInput";
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Eye, EyeOff } from "lucide-react";
 
 interface SignInFormProps {
   onSuccess: () => void;
@@ -15,7 +14,6 @@ export const SignInForm = ({ onSuccess, onToggleForm }: SignInFormProps) => {
   const [loading, setLoading] = useState(false);
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -59,28 +57,13 @@ export const SignInForm = ({ onSuccess, onToggleForm }: SignInFormProps) => {
         required
       />
       
-      <div className="relative">
-        <FormInput
-          type={showPassword ? "text" : "password"}
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          className="absolute right-2 top-1/2 -translate-y-1/2"
-          onClick={() => setShowPassword(!showPassword)}
-        >
-          {showPassword ? (
-            <EyeOff className="h-4 w-4 text-gray-500" />
-          ) : (
-            <Eye className="h-4 w-4 text-gray-500" />
-          )}
-        </Button>
-      </div>
+      <FormInput
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        required
+      />
 
       <div className="flex items-center space-x-2">
         <Checkbox

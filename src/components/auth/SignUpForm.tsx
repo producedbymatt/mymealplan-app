@@ -3,7 +3,6 @@ import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { FormInput } from "./FormInput";
 import { toast } from "sonner";
-import { Eye, EyeOff } from "lucide-react";
 
 interface SignUpFormProps {
   onSuccess: () => void;
@@ -14,7 +13,6 @@ export const SignUpForm = ({ onSuccess, onToggleForm }: SignUpFormProps) => {
   const [loading, setLoading] = useState(false);
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [name, setName] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [passwordError, setPasswordError] = useState("");
@@ -94,9 +92,9 @@ export const SignUpForm = ({ onSuccess, onToggleForm }: SignUpFormProps) => {
         required
       />
       
-      <div className="relative space-y-1">
+      <div className="space-y-1">
         <FormInput
-          type={showPassword ? "text" : "password"}
+          type="password"
           placeholder="Password (min. 6 characters)"
           value={password}
           onChange={(e) => {
@@ -105,19 +103,6 @@ export const SignUpForm = ({ onSuccess, onToggleForm }: SignUpFormProps) => {
           }}
           required
         />
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          className="absolute right-2 top-1/2 -translate-y-1/2"
-          onClick={() => setShowPassword(!showPassword)}
-        >
-          {showPassword ? (
-            <EyeOff className="h-4 w-4 text-gray-500" />
-          ) : (
-            <Eye className="h-4 w-4 text-gray-500" />
-          )}
-        </Button>
         {passwordError && (
           <p className="text-sm text-red-500">{passwordError}</p>
         )}
