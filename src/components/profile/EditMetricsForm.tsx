@@ -42,9 +42,9 @@ const EditMetricsForm = ({ metrics, onCancel, onSave }: EditMetricsFormProps) =>
           user_id: user.id,
           height: formData.height,
           current_weight: formData.current_weight,
-          target_weight: formData.target_weight,
-          target_days: formData.target_days,
-          recommended_calories: formData.recommended_calories,
+          target_weight: formData.target_weight, // Keep in database
+          target_days: formData.target_days, // Keep in database
+          recommended_calories: formData.recommended_calories, // Keep in database
           gender: formData.gender,
           updated_at: new Date().toISOString(),
         });
@@ -78,33 +78,6 @@ const EditMetricsForm = ({ metrics, onCancel, onSave }: EditMetricsFormProps) =>
           type="number"
           value={formData.current_weight}
           onChange={(e) => setFormData({ ...formData, current_weight: Number(e.target.value) })}
-          required
-        />
-      </div>
-      <div>
-        <label className="block text-sm font-medium mb-1">Target Weight (lbs)</label>
-        <Input
-          type="number"
-          value={formData.target_weight}
-          onChange={(e) => setFormData({ ...formData, target_weight: Number(e.target.value) })}
-          required
-        />
-      </div>
-      <div>
-        <label className="block text-sm font-medium mb-1">Target Days</label>
-        <Input
-          type="number"
-          value={formData.target_days}
-          onChange={(e) => setFormData({ ...formData, target_days: Number(e.target.value) })}
-          required
-        />
-      </div>
-      <div>
-        <label className="block text-sm font-medium mb-1">Daily Calories Goal</label>
-        <Input
-          type="number"
-          value={formData.recommended_calories}
-          onChange={(e) => setFormData({ ...formData, recommended_calories: Number(e.target.value) })}
           required
         />
       </div>

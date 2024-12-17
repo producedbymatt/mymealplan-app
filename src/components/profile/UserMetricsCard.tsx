@@ -57,9 +57,6 @@ const UserMetricsCard = ({ metrics, onMetricsUpdate }: UserMetricsCardProps) => 
       <CardContent className="space-y-2">
         <p><strong>Height:</strong> {heightFeet}'{heightInches}"</p>
         <p><strong>Current Weight:</strong> {metrics.current_weight} lbs</p>
-        <p><strong>Target Weight:</strong> {metrics.target_weight} lbs</p>
-        <p><strong>Target Days:</strong> {metrics.target_days} days</p>
-        <p><strong>Daily Calories Goal:</strong> {metrics.recommended_calories} calories</p>
         <p><strong>Gender:</strong> {metrics.gender || "Not specified"}</p>
       </CardContent>
     </Card>
