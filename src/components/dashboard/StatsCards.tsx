@@ -1,12 +1,13 @@
+import React from "react";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Slider } from "@/components/ui/slider";
 import { format, addDays, differenceInDays, parseISO } from "date-fns";
-import { ChevronDown } from "lucide-react";
+import BMISlider from "./BMISlider";
+import BMICategories from "./BMICategories";
 
 interface StatsCardsProps {
   metrics: {
@@ -40,11 +41,9 @@ const calculateWeightForBMI = (height: number, targetBMI: number) => {
   return Math.round((targetBMI * height * height) / 703);
 };
 
-const calculateWeightFromBMI = (bmi: number, height: number) => {
-  return Math.round((bmi * height * height) / 703);
-};
-
 const StatsCards = ({ metrics, recommendedCalories, hasMetrics, weightEntries = [] }: StatsCardsProps) => {
+  const [simulatedBMI, setSimulatedBMI] = React.useState<number | null>(null);
+
   if (!hasMetrics) {
     return (
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
@@ -88,13 +87,6 @@ const StatsCards = ({ metrics, recommendedCalories, hasMetrics, weightEntries = 
     ? weightEntries[0].weight 
     : metrics.currentWeight;
 
-  console.log('Weight data:', {
-    weightEntries,
-    mostRecentWeight,
-    initialWeight: metrics.currentWeight,
-    height: metrics.height
-  });
-
   const bmi = (mostRecentWeight * 703) / (metrics.height * metrics.height);
   const bmiCategory = getBMICategory(bmi, metrics.gender);
 
@@ -118,9 +110,9 @@ const StatsCards = ({ metrics, recommendedCalories, hasMetrics, weightEntries = 
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="text-center">
-            <div className="text-3xl font-bold">{bmi.toFixed(1)}</div>
+            <div className="text-3xl font-bold">{simulatedBMI?.toFixed(1) || bmi.toFixed(1)}</div>
             <p className={`text-sm ${bmiCategory.color} font-semibold`}>
-              Category: {bmiCategory.category}
+              Category: {getBMICategory(simulatedBMI || bmi, metrics.gender).category}
             </p>
             <p className="text-xs text-muted-foreground mt-1">
               Based on current weight: {mostRecentWeight} lbs, height: {heightFeet}'{heightInches}"
@@ -128,47 +120,17 @@ const StatsCards = ({ metrics, recommendedCalories, hasMetrics, weightEntries = 
           </div>
 
           <div className="mt-6 space-y-6">
-            <div className="relative pt-12">
-              <Slider
-                defaultValue={[bmi]}
-                max={40}
-                min={15}
-                step={0.1}
-                className="z-10 [&_.relative]:before:absolute [&_.relative]:before:inset-0 [&_.relative]:before:h-2 [&_.relative]:before:rounded-full [&_.relative]:before:bg-gradient-to-r [&_.relative]:before:from-blue-400 [&_.relative]:before:via-green-400 [&_.relative]:before:via-yellow-400 [&_.relative]:before:to-red-400 [&_[role=slider]]:z-20 [&_.relative]:bg-transparent [&_[class*=SliderRange]]:bg-transparent [&_[role=slider]]:flex [&_[role=slider]]:flex-col [&_[role=slider]]:items-center"
-                onValueChange={(value) => {
-                  console.log("Current BMI:", value[0]);
-                }}
-              >
-                <div className="absolute bottom-full mb-2 -translate-x-1/2 text-center whitespace-nowrap">
-                  <div className="text-sm font-medium">
-                    BMI: {bmi.toFixed(1)}
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    {calculateWeightFromBMI(bmi, metrics.height)} lbs
-                  </div>
-                </div>
-                <ChevronDown className="h-4 w-4" />
-              </Slider>
-            </div>
+            <BMISlider 
+              bmi={bmi} 
+              height={metrics.height}
+              onBMIChange={(value) => setSimulatedBMI(value[0])}
+            />
             
-            <div className="grid grid-cols-4 text-xs text-center gap-1">
-              <div>
-                <p className="text-blue-500 font-semibold">Underweight</p>
-                <p className="text-muted-foreground">&lt;{underweightWeight}lbs</p>
-              </div>
-              <div>
-                <p className="text-green-500 font-semibold">Normal</p>
-                <p className="text-muted-foreground">{underweightWeight}-{normalWeight}lbs</p>
-              </div>
-              <div>
-                <p className="text-yellow-500 font-semibold">Overweight</p>
-                <p className="text-muted-foreground">{normalWeight}-{overweightWeight}lbs</p>
-              </div>
-              <div>
-                <p className="text-red-500 font-semibold">Obese</p>
-                <p className="text-muted-foreground">&gt;{overweightWeight}lbs</p>
-              </div>
-            </div>
+            <BMICategories
+              underweightWeight={underweightWeight}
+              normalWeight={normalWeight}
+              overweightWeight={overweightWeight}
+            />
           </div>
         </CardContent>
       </Card>
