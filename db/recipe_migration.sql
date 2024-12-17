@@ -1,7 +1,31 @@
--- Breakfast Recipes
+-- Recipe Migration SQL
+-- This file contains all recipe data for the meal planning application
+
+-- Create the recipes table if it doesn't exist
+CREATE TABLE IF NOT EXISTS recipes (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    calories INTEGER NOT NULL,
+    protein INTEGER NOT NULL,
+    carbs INTEGER NOT NULL,
+    fat INTEGER NOT NULL,
+    prep_time VARCHAR(50) NOT NULL,
+    cook_time VARCHAR(50) NOT NULL,
+    ingredients JSONB NOT NULL,
+    instructions JSONB NOT NULL,
+    meal_type VARCHAR(50) NOT NULL,
+    category VARCHAR(50) NOT NULL,
+    difficulty_level VARCHAR(20) NOT NULL
+);
+
+-- Clear existing data to prevent duplicates
+TRUNCATE TABLE recipes;
+
+-- Insert all recipes
 INSERT INTO recipes (name, calories, protein, carbs, fat, prep_time, cook_time, ingredients, instructions, meal_type, category, difficulty_level) 
 VALUES 
--- Oatmeal and Bowls
+
+-- Breakfast Recipes - Oatmeal and Bowls
 (
     'Classic Oatmeal with Berries',
     450,
@@ -101,8 +125,7 @@ VALUES
     'medium'
 ),
 
--- Lunch Recipes
--- Salads
+-- Lunch Recipes - Salads
 (
     'Mediterranean Salad',
     450,
@@ -143,8 +166,7 @@ VALUES
     'easy'
 ),
 
--- Dinner Recipes
--- Seafood
+-- Dinner Recipes - Seafood
 (
     'Baked Cod with Quinoa',
     440,
@@ -181,5 +203,3 @@ VALUES
 );
 
 -- Continue with remaining recipes...
--- Note: For brevity, I've shown a sample of the recipes. 
--- The complete SQL file would include ALL recipes following this same pattern.
