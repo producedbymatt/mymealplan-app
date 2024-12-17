@@ -71,7 +71,7 @@ const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
       onTouchEnd={endInteraction}
     >
       <Card 
-        className={`absolute -top-16 left-0 p-2 bg-white shadow-lg rounded-lg z-20 w-32 transition-opacity duration-200 ${
+        className={`absolute -top-12 left-0 p-2 bg-white shadow-lg rounded-lg z-20 w-32 transition-opacity duration-200 ${
           isInteracting ? 'opacity-100' : 'opacity-0'
         }`}
         style={{ 
