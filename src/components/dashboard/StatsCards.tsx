@@ -115,7 +115,7 @@ const StatsCards = ({ metrics, recommendedCalories, hasMetrics, weightEntries = 
               Category: {getBMICategory(bmi, metrics.gender).category}
             </p>
             <p className="text-xs text-muted-foreground mt-1">
-              Based on current weight: {mostRecentWeight} lbs, height: {heightFeet}'{heightInches}", gender: {metrics.gender || "not specified"}
+              Based on current weight: {mostRecentWeight} lbs, height: {heightFeet}'{heightInches}", {metrics.gender ? metrics.gender.charAt(0).toUpperCase() + metrics.gender.slice(1) : "not specified"}
             </p>
           </div>
 
