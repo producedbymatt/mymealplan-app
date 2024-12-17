@@ -18,84 +18,130 @@ interface MealOptionProps {
 
 const MealOption = ({ meal, showFavoritesOnly }: MealOptionProps) => {
   const [isFavorite, setIsFavorite] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
     const loadFavoriteStatus = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.user) return;
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session?.user) {
+          setIsLoading(false);
+          return;
+        }
 
-      const { data, error } = await supabase
-        .from('favorite_meals')
-        .select('*')
-        .eq('user_id', session.user.id)
-        .eq('meal_name', meal.name)
-        .single();
+        console.log('Checking favorite status for:', {
+          user_id: session.user.id,
+          meal_name: meal.name
+        });
 
-      if (error && error.code !== 'PGRST116') {
-        console.error('Error loading favorite status:', error);
-        return;
+        const { data, error } = await supabase
+          .from('favorite_meals')
+          .select('*')
+          .eq('user_id', session.user.id)
+          .eq('meal_name', meal.name)
+          .single();
+
+        if (error) {
+          if (error.code === 'PGRST116') {
+            // No data found - not a favorite
+            setIsFavorite(false);
+          } else {
+            console.error('Error loading favorite status:', error);
+            toast({
+              title: "Error",
+              description: "Failed to load favorite status. Please try again.",
+            });
+          }
+        } else {
+          console.log('Favorite status loaded:', data);
+          setIsFavorite(!!data);
+        }
+      } catch (err) {
+        console.error('Exception while loading favorite status:', err);
+      } finally {
+        setIsLoading(false);
       }
-
-      setIsFavorite(!!data);
     };
 
     loadFavoriteStatus();
-  }, [meal.name]);
+  }, [meal.name, toast]);
 
   const toggleFavorite = async (e: React.MouseEvent) => {
     e.stopPropagation();
     
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session?.user) {
-      toast({
-        title: "Please log in",
-        description: "You need to be logged in to save favorites.",
-      });
-      return;
-    }
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) {
+        toast({
+          title: "Please log in",
+          description: "You need to be logged in to save favorites.",
+        });
+        return;
+      }
 
-    const newFavoriteStatus = !isFavorite;
+      const newFavoriteStatus = !isFavorite;
+      setIsLoading(true);
 
-    if (newFavoriteStatus) {
-      const { error } = await supabase
-        .from('favorite_meals')
-        .insert({
+      if (newFavoriteStatus) {
+        console.log('Adding favorite:', {
           user_id: session.user.id,
           meal_name: meal.name,
           meal_data: meal
         });
 
-      if (error) {
-        console.error('Error saving favorite:', error);
-        toast({
-          title: "Error",
-          description: "Failed to save favorite. Please try again.",
-        });
-        return;
-      }
-    } else {
-      const { error } = await supabase
-        .from('favorite_meals')
-        .delete()
-        .eq('user_id', session.user.id)
-        .eq('meal_name', meal.name);
+        const { error } = await supabase
+          .from('favorite_meals')
+          .insert({
+            user_id: session.user.id,
+            meal_name: meal.name,
+            meal_data: meal
+          });
 
-      if (error) {
-        console.error('Error removing favorite:', error);
-        toast({
-          title: "Error",
-          description: "Failed to remove favorite. Please try again.",
+        if (error) {
+          console.error('Error saving favorite:', error);
+          toast({
+            title: "Error",
+            description: "Failed to save favorite. Please try again.",
+          });
+          return;
+        }
+      } else {
+        console.log('Removing favorite:', {
+          user_id: session.user.id,
+          meal_name: meal.name
         });
-        return;
+
+        const { error } = await supabase
+          .from('favorite_meals')
+          .delete()
+          .eq('user_id', session.user.id)
+          .eq('meal_name', meal.name);
+
+        if (error) {
+          console.error('Error removing favorite:', error);
+          toast({
+            title: "Error",
+            description: "Failed to remove favorite. Please try again.",
+          });
+          return;
+        }
       }
+
+      setIsFavorite(newFavoriteStatus);
+      toast({
+        title: newFavoriteStatus ? "Added to favorites" : "Removed from favorites",
+        description: `${meal.name} has been ${newFavoriteStatus ? "added to" : "removed from"} your favorites.`,
+      });
+    } catch (err) {
+      console.error('Exception while toggling favorite:', err);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred. Please try again.",
+      });
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsFavorite(newFavoriteStatus);
-    toast({
-      title: newFavoriteStatus ? "Added to favorites" : "Removed from favorites",
-      description: `${meal.name} has been ${newFavoriteStatus ? "added to" : "removed from"} your favorites.`,
-    });
   };
 
   if (showFavoritesOnly && !isFavorite) {
@@ -113,6 +159,8 @@ const MealOption = ({ meal, showFavoritesOnly }: MealOptionProps) => {
                   <h4 className="font-medium break-words">{meal.name}</h4>
                   <Heart
                     className={`h-5 w-5 cursor-pointer transition-colors flex-shrink-0 ${
+                      isLoading ? "opacity-50" : ""
+                    } ${
                       isFavorite
                         ? "fill-red-500 stroke-red-500"
                         : "stroke-gray-400 hover:stroke-red-500"
