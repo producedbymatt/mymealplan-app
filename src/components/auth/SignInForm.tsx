@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { FormInput } from "./FormInput";
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Eye, EyeOff } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface SignInFormProps {
   onSuccess: () => void;
@@ -15,10 +17,13 @@ export const SignInForm = ({ onSuccess, onToggleForm }: SignInFormProps) => {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setAuthError(null);
 
     try {
       // Set the session persistence before signing in
@@ -32,11 +37,19 @@ export const SignInForm = ({ onSuccess, onToggleForm }: SignInFormProps) => {
         password,
       });
 
-      if (error) throw error;
+      if (error) {
+        if (error.message.includes("Invalid login credentials")) {
+          setAuthError("Incorrect phone number or password. Please try again.");
+        } else {
+          setAuthError(error.message);
+        }
+        return;
+      }
+
       toast.success("Successfully logged in!");
       onSuccess();
     } catch (error: any) {
-      toast.error(error.message);
+      setAuthError(error.message);
     } finally {
       setLoading(false);
     }
@@ -57,13 +70,28 @@ export const SignInForm = ({ onSuccess, onToggleForm }: SignInFormProps) => {
         required
       />
       
-      <FormInput
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        required
-      />
+      <div className="relative">
+        <FormInput
+          type={showPassword ? "text" : "password"}
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+        <button
+          type="button"
+          onClick={() => setShowPassword(!showPassword)}
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+        >
+          {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+        </button>
+      </div>
+
+      {authError && (
+        <Alert variant="destructive">
+          <AlertDescription>{authError}</AlertDescription>
+        </Alert>
+      )}
 
       <div className="flex items-center space-x-2">
         <Checkbox
