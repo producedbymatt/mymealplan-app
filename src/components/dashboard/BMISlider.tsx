@@ -54,13 +54,14 @@ const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
       <div className="relative">
         {/* Current BMI Marker */}
         <div 
-          className="absolute top-1/2 -translate-y-1/2 w-0.5 h-6 bg-primary z-10"
+          className="absolute top-1/2 -translate-y-1/2 w-1 h-8 bg-primary z-10 shadow-md"
           style={{ 
             left: `${currentBMIPercentage}%`,
-            marginTop: "-2px"
+            marginTop: "-2px",
+            background: "linear-gradient(to bottom, #63B3ED, #4299E1)"
           }}
         >
-          <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-xs text-primary font-medium whitespace-nowrap">
+          <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-primary text-white px-2 py-0.5 rounded text-xs font-medium whitespace-nowrap shadow-sm">
             Current: {bmi.toFixed(1)}
           </div>
         </div>
