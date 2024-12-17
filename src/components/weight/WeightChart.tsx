@@ -60,7 +60,7 @@ const WeightChart = ({ entries, height = 60 }: WeightChartProps) => {
               tick={{ fontSize: 12 }}
             />
             <YAxis 
-              domain={['auto', 'auto']}
+              domain={[80, 'auto']}
               tick={{ fontSize: 12 }}
             />
             <Tooltip content={<CustomTooltip />} />
