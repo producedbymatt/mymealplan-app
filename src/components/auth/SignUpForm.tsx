@@ -15,9 +15,26 @@ export const SignUpForm = ({ onSuccess, onToggleForm }: SignUpFormProps) => {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+
+  const validatePassword = (password: string) => {
+    if (password.length < 6) {
+      setPasswordError("Password must be at least 6 characters long");
+      return false;
+    }
+    setPasswordError("");
+    return true;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate password before submission
+    if (!validatePassword(password)) {
+      toast.error("Please fix the password errors before submitting");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -75,15 +92,23 @@ export const SignUpForm = ({ onSuccess, onToggleForm }: SignUpFormProps) => {
         required
       />
       
-      <FormInput
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        required
-      />
+      <div className="space-y-1">
+        <FormInput
+          type="password"
+          placeholder="Password (min. 6 characters)"
+          value={password}
+          onChange={(e) => {
+            setPassword(e.target.value);
+            validatePassword(e.target.value);
+          }}
+          required
+        />
+        {passwordError && (
+          <p className="text-sm text-red-500">{passwordError}</p>
+        )}
+      </div>
 
-      <Button type="submit" className="w-full" disabled={loading}>
+      <Button type="submit" className="w-full" disabled={loading || !!passwordError}>
         {loading ? "Loading..." : "Sign Up"}
       </Button>
 
