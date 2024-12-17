@@ -63,7 +63,7 @@ const Index = () => {
           currentWeight: data.current_weight || 0,
           targetWeight: data.target_weight || 0,
           targetDays: data.target_days || 0,
-          gender: data.gender,
+          gender: data.gender as "male" | "female" | undefined,
         });
         setRecommendedCalories(data.recommended_calories || 1200);
         setHasMetrics(true);
@@ -94,6 +94,7 @@ const Index = () => {
       target_weight: userMetrics.targetWeight,
       target_days: userMetrics.targetDays,
       recommended_calories: recommendedCalories,
+      gender: userMetrics.gender,
     };
 
     // Check if metrics have actually changed
@@ -117,6 +118,7 @@ const Index = () => {
           target_weight: userMetrics.targetWeight || 0,
           target_days: userMetrics.targetDays || 0,
           recommended_calories: recommendedCalories || 1200,
+          gender: userMetrics.gender,
           updated_at: new Date().toISOString(),
         });
 
@@ -130,9 +132,6 @@ const Index = () => {
       toast.success("Your metrics have been saved");
       setHasMetrics(true);
       setLastSavedMetrics(JSON.stringify(currentMetrics));
-      
-      // Reload metrics after saving to ensure we have the latest data
-      loadUserMetrics(session.user.id);
     } catch (err) {
       console.error('Exception while saving metrics:', err);
       toast.error("An unexpected error occurred while saving your metrics");
