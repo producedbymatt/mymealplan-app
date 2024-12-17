@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -26,8 +26,15 @@ const BMICalculator = ({ onBMICalculated, onMetricsUpdate }: BMICalculatorProps)
   const [weight, setWeight] = React.useState("");
   const [gender, setGender] = React.useState<"male" | "female">("male");
   const [bmi, setBMI] = React.useState<number | null>(null);
-  const [isOpen, setIsOpen] = React.useState(true);
+  const [isOpen, setIsOpen] = React.useState(() => {
+    const stored = localStorage.getItem("bmiCalculatorOpen");
+    return stored === null ? true : stored === "true";
+  });
   const { toast } = useToast();
+
+  useEffect(() => {
+    localStorage.setItem("bmiCalculatorOpen", isOpen.toString());
+  }, [isOpen]);
 
   const calculateBMI = (e: React.FormEvent) => {
     e.preventDefault();

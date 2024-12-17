@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -13,8 +13,15 @@ interface WeightGoalProps {
 const WeightGoal = ({ onGoalSet }: WeightGoalProps) => {
   const [targetWeight, setTargetWeight] = React.useState("");
   const [targetDays, setTargetDays] = React.useState("");
-  const [isOpen, setIsOpen] = React.useState(true);
+  const [isOpen, setIsOpen] = React.useState(() => {
+    const stored = localStorage.getItem("weightGoalOpen");
+    return stored === null ? true : stored === "true";
+  });
   const { toast } = useToast();
+
+  useEffect(() => {
+    localStorage.setItem("weightGoalOpen", isOpen.toString());
+  }, [isOpen]);
 
   const setGoal = (e: React.FormEvent) => {
     e.preventDefault();
