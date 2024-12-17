@@ -42,9 +42,11 @@ const MetricCards = ({
           <CardTitle>Target Weight</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{targetWeight} lbs</div>
+          <div className="text-2xl font-bold">
+            {targetWeight ? `${targetWeight} lbs` : "Not Set"}
+          </div>
           <p className="text-xs text-muted-foreground mt-1">
-            {Math.abs(mostRecentWeight - targetWeight)} lbs to go
+            {targetWeight ? `${Math.abs(mostRecentWeight - targetWeight)} lbs to go` : "Set a goal to track progress"}
           </p>
         </CardContent>
       </Card>
@@ -53,9 +55,11 @@ const MetricCards = ({
           <CardTitle>Days to Goal</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{daysRemaining} days</div>
+          <div className="text-2xl font-bold">
+            {targetDays ? `${daysRemaining} days` : "Not Set"}
+          </div>
           <p className="text-xs text-muted-foreground mt-1">
-            {formattedTargetDate} / {targetDays} day goal
+            {targetDays ? `${formattedTargetDate} / ${targetDays} day goal` : "Set a timeline for your goal"}
           </p>
         </CardContent>
       </Card>

@@ -7,6 +7,16 @@ interface MotivationalMessageProps {
 }
 
 const MotivationalMessage = ({ currentWeight, targetWeight, targetDays }: MotivationalMessageProps) => {
+  if (!targetWeight || !targetDays) {
+    return (
+      <Card className="p-4 mb-8 bg-gradient-to-r from-blue-50 to-green-50 border-none">
+        <p className="text-center text-lg font-medium text-gray-700">
+          Set your weight goal and timeline to get personalized motivation and tracking! 🎯
+        </p>
+      </Card>
+    );
+  }
+
   const weightToLose = currentWeight - targetWeight;
   const weeksToGoal = targetDays / 7;
   const poundsPerWeek = weightToLose / weeksToGoal;
