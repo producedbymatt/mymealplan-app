@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
-import Footer from "@/components/Footer";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import Footer from "@/components/Footer";
+import UserMetricsCard from "@/components/profile/UserMetricsCard";
 
 interface UserMetrics {
   height: number;
@@ -130,9 +130,6 @@ const Profile = () => {
     );
   }
 
-  const heightFeet = userMetrics ? Math.floor(userMetrics.height / 12) : 0;
-  const heightInches = userMetrics ? userMetrics.height % 12 : 0;
-
   return (
     <div className="min-h-screen flex flex-col">
       <div className="container mx-auto px-4 py-8 flex-grow">
@@ -140,70 +137,66 @@ const Profile = () => {
         
         <div className="grid gap-8 md:grid-cols-2">
           {userMetrics && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Your Metrics</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <p><strong>Height:</strong> {heightFeet}'{heightInches}"</p>
-                <p><strong>Current Weight:</strong> {userMetrics.current_weight} lbs</p>
-                <p><strong>Target Weight:</strong> {userMetrics.target_weight} lbs</p>
-                <p><strong>Target Days:</strong> {userMetrics.target_days} days</p>
-                <p><strong>Daily Calories Goal:</strong> {userMetrics.recommended_calories} calories</p>
-                <p><strong>Gender:</strong> {userMetrics.gender || "Not specified"}</p>
-              </CardContent>
-            </Card>
+            <UserMetricsCard
+              metrics={userMetrics}
+              onMetricsUpdate={(updatedMetrics) => {
+                setUserMetrics(updatedMetrics);
+                console.log('Metrics updated:', updatedMetrics);
+              }}
+            />
           )}
 
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold mb-4">Update Profile</h2>
-            <form onSubmit={handleProfileUpdate} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-1">Full Name</label>
-                <Input
-                  type="text"
-                  value={profile.full_name}
-                  onChange={(e) => setProfile({ ...profile, full_name: e.target.value })}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Phone Number</label>
-                <Input
-                  type="tel"
-                  value={profile.phone_number}
-                  onChange={(e) => setProfile({ ...profile, phone_number: e.target.value })}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Date of Birth</label>
-                <Input
-                  type="date"
-                  value={profile.date_of_birth}
-                  onChange={(e) => setProfile({ ...profile, date_of_birth: e.target.value })}
-                />
-              </div>
-              <Button type="submit" disabled={loading}>
-                {loading ? "Updating..." : "Update Profile"}
-              </Button>
-            </form>
-          </div>
+          <div className="space-y-8">
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <h2 className="text-xl font-semibold mb-4">Update Profile</h2>
+              <form onSubmit={handleProfileUpdate} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Full Name</label>
+                  <Input
+                    type="text"
+                    value={profile.full_name}
+                    onChange={(e) => setProfile({ ...profile, full_name: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Phone Number</label>
+                  <Input
+                    type="tel"
+                    value={profile.phone_number}
+                    onChange={(e) => setProfile({ ...profile, phone_number: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Date of Birth</label>
+                  <Input
+                    type="date"
+                    value={profile.date_of_birth}
+                    onChange={(e) => setProfile({ ...profile, date_of_birth: e.target.value })}
+                  />
+                </div>
+                <Button type="submit" disabled={loading}>
+                  {loading ? "Updating..." : "Update Profile"}
+                </Button>
+              </form>
+            </div>
 
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold mb-4">Change Password</h2>
-            <form onSubmit={handlePasswordChange} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-1">New Password</label>
-                <Input
-                  type="password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  minLength={6}
-                />
-              </div>
-              <Button type="submit" disabled={loading}>
-                {loading ? "Updating..." : "Change Password"}
-              </Button>
-            </form>
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <h2 className="text-xl font-semibold mb-4">Change Password</h2>
+              <form onSubmit={handlePasswordChange} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">New Password</label>
+                  <Input
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    minLength={6}
+                  />
+                </div>
+                <Button type="submit" disabled={loading}>
+                  {loading ? "Updating..." : "Change Password"}
+                </Button>
+              </form>
+            </div>
           </div>
         </div>
       </div>
