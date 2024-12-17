@@ -1,7 +1,6 @@
 import React from "react";
 import { Slider } from "@/components/ui/slider";
 import { Card } from "@/components/ui/card";
-import { ChevronDown } from "lucide-react";
 
 interface BMISliderProps {
   bmi: number;
@@ -29,7 +28,7 @@ const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
       const slider = sliderRef.current;
       const sliderRect = slider.getBoundingClientRect();
       const percentage = (value[0] - 15) / (40 - 15); // normalize value between min (15) and max (40)
-      const x = (percentage * sliderRect.width) - 64; // Subtract half the tooltip width (128/2 = 64) to center it
+      const x = percentage * sliderRect.width; // Remove the offset to center the tooltip
       setThumbPosition({ x, y: sliderRect.top });
     }
 
@@ -79,11 +78,11 @@ const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
       onTouchEnd={endInteraction}
     >
       <Card 
-        className={`absolute -top-2 left-0 p-2 bg-white shadow-lg rounded-lg z-20 w-32 transition-opacity duration-200 ${
+        className={`absolute -top-2 left-1/2 p-2 bg-white shadow-lg rounded-lg z-20 w-32 transition-opacity duration-200 ${
           isInteracting ? 'opacity-100' : 'opacity-0'
         }`}
         style={{ 
-          transform: `translateX(${Math.max(0, Math.min(thumbPosition.x, (sliderRef.current?.offsetWidth || 0) - 128))}px)`,
+          transform: `translateX(calc(-50% + ${Math.max(0, Math.min(thumbPosition.x, (sliderRef.current?.offsetWidth || 0)))}px))`,
           transition: "transform 0.1s ease-out"
         }}
       >
@@ -97,7 +96,8 @@ const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
         <div 
           className="absolute top-1/2 -translate-y-1/2 w-1 h-8 bg-primary z-10 shadow-md"
           style={{ 
-            left: `calc(${currentBMIPercentage}% - 0.5px)`, // Center the marker by offsetting half its width
+            left: `${currentBMIPercentage}%`,
+            transform: 'translateX(-50%)', // Center the marker
             marginTop: "-2px",
             background: "linear-gradient(to bottom, #63B3ED, #4299E1)"
           }}
