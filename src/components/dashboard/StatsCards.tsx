@@ -102,6 +102,11 @@ const StatsCards = ({ metrics, recommendedCalories, hasMetrics, weightEntries = 
   const normalWeight = calculateWeightForBMI(metrics.height, 24);
   const overweightWeight = calculateWeightForBMI(metrics.height, 29);
 
+  // Format gender display text
+  const genderDisplay = metrics.gender 
+    ? metrics.gender.charAt(0).toUpperCase() + metrics.gender.slice(1) 
+    : "Not specified";
+
   return (
     <div className="space-y-4">
       <Card className={`w-full border-none ${bmiCategory.gradient}`}>
@@ -115,7 +120,7 @@ const StatsCards = ({ metrics, recommendedCalories, hasMetrics, weightEntries = 
               Category: {getBMICategory(bmi, metrics.gender).category}
             </p>
             <p className="text-xs text-muted-foreground mt-1">
-              Based on current weight: {mostRecentWeight} lbs, height: {heightFeet}'{heightInches}", {metrics.gender ? metrics.gender.charAt(0).toUpperCase() + metrics.gender.slice(1) : "not specified"}
+              Based on current weight: {mostRecentWeight} lbs, height: {heightFeet}'{heightInches}", Gender: {genderDisplay}
             </p>
           </div>
 
