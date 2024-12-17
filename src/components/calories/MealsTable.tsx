@@ -9,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Separator } from "@/components/ui/separator";
 import { MealLog } from "@/hooks/useMealLogs";
 
 interface MealsTableProps {
@@ -18,6 +19,19 @@ interface MealsTableProps {
 }
 
 const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
+  // Group meals by date
+  const groupedMeals = mealLogs.reduce((groups: { [key: string]: MealLog[] }, meal) => {
+    const date = format(new Date(meal.created_at), "yyyy-MM-dd");
+    if (!groups[date]) {
+      groups[date] = [];
+    }
+    groups[date].push(meal);
+    return groups;
+  }, {});
+
+  // Sort dates in descending order
+  const sortedDates = Object.keys(groupedMeals).sort((a, b) => b.localeCompare(a));
+
   return (
     <div className="bg-white rounded-lg shadow">
       <Table>
@@ -31,35 +45,46 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {mealLogs.map((log) => (
-            <TableRow key={log.id}>
-              <TableCell>{log.meal_name}</TableCell>
-              <TableCell>{log.calories}</TableCell>
-              <TableCell>{format(new Date(log.created_at), "h:mm a")}</TableCell>
-              <TableCell>{format(new Date(log.created_at), "MMM d, yyyy")}</TableCell>
-              <TableCell className="text-right">
-                <div className="flex justify-end gap-2">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => onEdit(log)}
-                  >
-                    <Pencil className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => {
-                      if (window.confirm("Are you sure you want to delete this meal?")) {
-                        onDelete(log.id);
-                      }
-                    }}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              </TableCell>
-            </TableRow>
+          {sortedDates.map((date, dateIndex) => (
+            <React.Fragment key={date}>
+              {dateIndex > 0 && (
+                <TableRow>
+                  <TableCell colSpan={5} className="p-0">
+                    <Separator className="my-2" />
+                  </TableCell>
+                </TableRow>
+              )}
+              {groupedMeals[date].map((log) => (
+                <TableRow key={log.id}>
+                  <TableCell>{log.meal_name}</TableCell>
+                  <TableCell>{log.calories}</TableCell>
+                  <TableCell>{format(new Date(log.created_at), "h:mm a")}</TableCell>
+                  <TableCell>{format(new Date(log.created_at), "MMM d, yyyy")}</TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end gap-2">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => onEdit(log)}
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          if (window.confirm("Are you sure you want to delete this meal?")) {
+                            onDelete(log.id);
+                          }
+                        }}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </React.Fragment>
           ))}
         </TableBody>
       </Table>
