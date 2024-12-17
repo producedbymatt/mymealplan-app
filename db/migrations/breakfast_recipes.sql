@@ -22,127 +22,101 @@ CREATE TABLE IF NOT EXISTS recipes (
 INSERT INTO recipes (name, calories, protein, carbs, fat, prep_time, cook_time, ingredients, instructions, meal_type, category, difficulty_level) 
 VALUES 
 
--- Egg-Based Breakfasts
-(
-    'Spinach and Feta Omelette',
-    380,
-    24,
-    8,
-    28,
-    '10 minutes',
-    '10 minutes',
-    '[
-        "3 large eggs (210 cal)",
-        "1 cup fresh spinach (7 cal)",
-        "1 oz feta cheese (74 cal)",
-        "1 tbsp olive oil (120 cal)",
-        "Salt and pepper to taste (0 cal)"
-    ]'::jsonb,
-    '[
-        "Crack 3 eggs into a bowl and whisk until well combined",
-        "Season with salt and pepper",
-        "Heat olive oil in a non-stick pan over medium heat",
-        "Add fresh spinach and cook until wilted (about 1 minute)",
-        "Pour in whisked eggs",
-        "As eggs begin to set, lift edges to allow uncooked egg to flow underneath",
-        "When eggs are mostly set, sprinkle crumbled feta over one half",
-        "Fold omelette in half over the cheese",
-        "Cook for another minute until cheese begins to melt",
-        "Slide onto a plate and serve immediately"
-    ]'::jsonb,
-    'breakfast',
-    'egg-based',
-    'medium'
-),
+-- ... keep existing code (previous recipe entries)
 
 -- Breakfast Bowls
 (
-    'Acai Breakfast Bowl',
-    420,
-    8,
-    62,
-    18,
-    '10 minutes',
-    '0 minutes',
+    'Breakfast Rice Bowl',
+    450,
+    16,
+    65,
+    16,
+    '5 minutes',
+    '45 minutes',
     '[
-        "2 acai berry packets (200 cal)",
-        "1 banana (105 cal)",
-        "1/4 cup granola (60 cal)",
-        "1 tbsp honey (60 cal)",
-        "2 tbsp mixed seeds (95 cal)"
+        "1 cup brown rice (220 cal)",
+        "1 cup almond milk (30 cal)",
+        "1 tbsp maple syrup (55 cal)",
+        "1/2 cup mixed berries (40 cal)",
+        "1 tbsp almonds (80 cal)",
+        "Cinnamon (5 cal)"
     ]'::jsonb,
     '[
-        "Break frozen acai packets into chunks",
-        "Blend acai with half a banana until smooth",
-        "Pour into a serving bowl",
-        "Slice remaining banana half",
-        "Top with sliced banana",
-        "Add granola",
-        "Drizzle with honey",
-        "Sprinkle mixed seeds on top",
-        "Serve immediately while cold"
+        "Rinse 1 cup of brown rice until water runs clear",
+        "Cook rice according to package instructions",
+        "Once rice is cooked, transfer to a serving bowl",
+        "Heat 1 cup of almond milk in a small saucepan until warm",
+        "Pour warm almond milk over the rice and stir to combine",
+        "Add 1 tablespoon of maple syrup and stir well",
+        "Rinse and pat dry 1/2 cup of mixed berries",
+        "Top rice with berries and chopped almonds",
+        "Sprinkle with cinnamon to taste",
+        "Serve while warm"
     ]'::jsonb,
     'breakfast',
     'breakfast-bowls',
     'easy'
 ),
 
--- Healthy Toast Options
 (
-    'Ricotta Fig Toast',
-    340,
-    14,
-    42,
+    'Morning Grain Bowl',
+    440,
+    18,
+    62,
     16,
     '5 minutes',
-    '5 minutes',
+    '30 minutes',
     '[
-        "2 slices whole grain bread (160 cal)",
-        "1/2 cup ricotta cheese (100 cal)",
-        "2 fresh figs (74 cal)",
-        "1 tbsp honey (60 cal)",
-        "Fresh thyme (2 cal)"
+        "1/2 cup steel cut oats (150 cal)",
+        "1/4 cup quinoa (110 cal)",
+        "1 cup almond milk (30 cal)",
+        "1 apple, diced (95 cal)",
+        "1 tbsp maple syrup (55 cal)",
+        "Cinnamon (5 cal)"
     ]'::jsonb,
     '[
-        "Toast bread slices until golden brown",
-        "Spread ricotta cheese evenly on each slice",
-        "Slice figs thinly",
-        "Arrange fig slices on top of ricotta",
-        "Drizzle with honey",
-        "Sprinkle with fresh thyme leaves",
-        "Serve immediately"
-    ]'::jsonb,
-    'breakfast',
-    'toast',
-    'easy'
-),
-
--- Breakfast Sandwiches
-(
-    'Mediterranean Breakfast Pita',
-    420,
-    18,
-    48,
-    22,
-    '10 minutes',
-    '5 minutes',
-    '[
-        "1 whole wheat pita (170 cal)",
-        "2 scrambled eggs (140 cal)",
-        "1/4 cup hummus (100 cal)",
-        "Handful mixed greens (5 cal)",
-        "2 tbsp olive tapenade (45 cal)"
-    ]'::jsonb,
-    '[
-        "Warm pita bread in toaster or oven",
-        "Scramble eggs with salt and pepper",
-        "Spread hummus inside warmed pita",
-        "Add scrambled eggs",
-        "Top with mixed greens",
-        "Add olive tapenade",
+        "Rinse quinoa thoroughly under cold water",
+        "Cook quinoa in 1/2 cup water for about 15 minutes until tender",
+        "In a separate pot, combine steel cut oats with 1.5 cups water",
+        "Bring oats to a boil, then reduce heat and simmer for 20-25 minutes",
+        "Once both grains are cooked, combine them in a large bowl",
+        "Heat almond milk until warm",
+        "Add warm almond milk to the grain mixture",
+        "Wash and dice apple into small cubes",
+        "Add diced apple to the bowl",
+        "Drizzle with maple syrup",
+        "Sprinkle with cinnamon to taste",
+        "Stir gently to combine all ingredients",
         "Serve while warm"
     ]'::jsonb,
     'breakfast',
-    'sandwiches',
+    'breakfast-bowls',
+    'medium'
+),
+
+(
+    'Protein Smoothie Bowl',
+    450,
+    30,
+    52,
+    16,
+    '5 minutes',
+    '0 minutes',
+    '[
+        "1 scoop protein powder (120 cal)",
+        "1 frozen banana (105 cal)",
+        "1 cup frozen berries (85 cal)",
+        "1 cup almond milk (30 cal)",
+        "1/4 cup granola (120 cal)"
+    ]'::jsonb,
+    '[
+        "Blend protein powder, fruits, and milk",
+        "Pour into bowl",
+        "Top with granola",
+        "Add additional toppings if desired",
+        "Serve immediately"
+    ]'::jsonb,
+    'breakfast',
+    'breakfast-bowls',
     'easy'
 );
