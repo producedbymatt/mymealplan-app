@@ -7,9 +7,6 @@ import StatsCards from "./StatsCards";
 import MotivationalMessage from "./MotivationalMessage";
 import { useState, useEffect } from "react";
 import { useWeightLogs } from "@/hooks/useWeightLogs";
-import { Button } from "@/components/ui/button";
-import { RefreshCw } from "lucide-react";
-import { toast } from "sonner";
 
 interface WeightEntry {
   date: string;
@@ -40,7 +37,6 @@ const DashboardContent = ({
   onCaloriesCalculated,
 }: DashboardContentProps) => {
   const [weightEntries, setWeightEntries] = useState<WeightEntry[]>([]);
-  const [isRefreshing, setIsRefreshing] = useState(false);
   const { loadWeightLogs } = useWeightLogs(false);
 
   const loadEntries = async () => {
@@ -62,20 +58,6 @@ const DashboardContent = ({
     setWeightEntries(entries);
   };
 
-  const handleRefresh = async () => {
-    setIsRefreshing(true);
-    console.log("Refreshing stats...");
-    try {
-      await loadEntries();
-      toast.success("Stats refreshed successfully");
-    } catch (error) {
-      console.error("Error refreshing stats:", error);
-      toast.error("Failed to refresh stats");
-    } finally {
-      setIsRefreshing(false);
-    }
-  };
-
   return (
     <div>
       <StatsCards 
@@ -84,18 +66,6 @@ const DashboardContent = ({
         hasMetrics={hasMetrics}
         weightEntries={weightEntries}
       />
-      
-      <div className="flex justify-center mt-8 mb-8">
-        <Button
-          variant="outline"
-          onClick={handleRefresh}
-          disabled={isRefreshing}
-          className="gap-2"
-        >
-          <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-          Refresh Stats
-        </Button>
-      </div>
       
       {hasMetrics && (
         <MotivationalMessage
