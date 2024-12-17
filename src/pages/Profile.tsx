@@ -3,6 +3,7 @@ import UserMetricsCard from "@/components/profile/UserMetricsCard";
 import UserDetailsForm from "@/components/profile/UserDetailsForm";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
+import { toast } from "sonner";
 
 const Profile = () => {
   const [metrics, setMetrics] = useState({
@@ -27,18 +28,24 @@ const Profile = () => {
         return;
       }
 
+      console.log("Fetching metrics for user:", user.id);
+
       const { data, error } = await supabase
         .from("user_metrics")
         .select("*")
         .eq("user_id", user.id)
+        .order('created_at', { ascending: false })
+        .limit(1)
         .single();
 
       if (error) {
         console.error("Error loading metrics:", error);
+        toast.error("Failed to load user metrics");
         return;
       }
 
       if (data) {
+        console.log("Loaded user metrics:", data);
         setMetrics({
           height: data.height || 0,
           current_weight: data.current_weight || 0,
@@ -50,6 +57,7 @@ const Profile = () => {
       }
     } catch (error) {
       console.error("Exception loading metrics:", error);
+      toast.error("Failed to load user metrics");
     }
   };
 
