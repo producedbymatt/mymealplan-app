@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { MealForm } from "@/components/MealForm";
 import MealsTable from "@/components/calories/MealsTable";
 import CaloriesSummaryCard from "@/components/calories/CaloriesSummaryCard";
@@ -10,8 +10,17 @@ import { supabase } from "@/lib/supabase";
 
 const CalorieLogger = () => {
   const [editingMeal, setEditingMeal] = useState<any>(null);
-  const { data: session } = await supabase.auth.getSession();
-  const { mealLogs, addMeal, updateMeal, deleteMeal } = useMealLogs(session?.session?.user?.id);
+  const [userId, setUserId] = useState<string | undefined>(undefined);
+  const { mealLogs, addMeal, updateMeal, deleteMeal } = useMealLogs(userId);
+
+  useEffect(() => {
+    const getSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setUserId(session?.user?.id);
+    };
+    
+    getSession();
+  }, []);
 
   const handleSubmit = async (meal: { meal_name: string; calories: number }) => {
     try {
