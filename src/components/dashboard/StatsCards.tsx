@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { format, addDays, differenceInDays, parseISO } from "date-fns";
-import { ChevronDown } from "lucide-react"; // Import the chevron icon
+import { ChevronDown } from "lucide-react";
 
 interface StatsCardsProps {
   metrics: {
@@ -40,7 +40,6 @@ const calculateWeightForBMI = (height: number, targetBMI: number) => {
   return Math.round((targetBMI * height * height) / 703);
 };
 
-// Calculate weight for a given BMI value
 const calculateWeightFromBMI = (bmi: number, height: number) => {
   return Math.round((bmi * height * height) / 703);
 };
@@ -107,7 +106,6 @@ const StatsCards = ({ metrics, recommendedCalories, hasMetrics, weightEntries = 
   const daysRemaining = differenceInDays(targetDate, new Date());
   const formattedTargetDate = format(targetDate, 'dd/MM/yyyy');
 
-  // Calculate weights for different BMI values
   const underweightWeight = calculateWeightForBMI(metrics.height, 18.5);
   const normalWeight = calculateWeightForBMI(metrics.height, 24);
   const overweightWeight = calculateWeightForBMI(metrics.height, 29);
@@ -136,11 +134,10 @@ const StatsCards = ({ metrics, recommendedCalories, hasMetrics, weightEntries = 
                 max={40}
                 min={15}
                 step={0.1}
-                className="z-10 [&_.relative]:before:absolute [&_.relative]:before:inset-0 [&_.relative]:before:h-2 [&_.relative]:before:rounded-full [&_.relative]:before:bg-gradient-to-r [&_.relative]:before:from-blue-400 [&_.relative]:before:via-green-400 [&_.relative]:before:via-yellow-400 [&_.relative]:before:to-red-400 [&_[role=slider]]:z-20 [&_.relative]:bg-transparent [&_[class*=SliderRange]]:bg-transparent"
+                className="z-10 [&_.relative]:before:absolute [&_.relative]:before:inset-0 [&_.relative]:before:h-2 [&_.relative]:before:rounded-full [&_.relative]:before:bg-gradient-to-r [&_.relative]:before:from-blue-400 [&_.relative]:before:via-green-400 [&_.relative]:before:via-yellow-400 [&_.relative]:before:to-red-400 [&_[role=slider]]:z-20 [&_.relative]:bg-transparent [&_[class*=SliderRange]]:bg-transparent [&_[role=slider]]:flex [&_[role=slider]]:flex-col [&_[role=slider]]:items-center"
                 onValueChange={(value) => {
                   console.log("Current BMI:", value[0]);
                 }}
-                thumbClassName="relative flex flex-col items-center"
               >
                 <div className="absolute bottom-full mb-2 -translate-x-1/2 text-center whitespace-nowrap">
                   <div className="text-sm font-medium">
