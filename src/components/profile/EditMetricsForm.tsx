@@ -114,10 +114,10 @@ const EditMetricsForm = ({ metrics, onCancel, onSave }: EditMetricsFormProps) =>
           value={formData.gender}
           onValueChange={(value: 'male' | 'female') => setFormData({ ...formData, gender: value })}
         >
-          <SelectTrigger>
+          <SelectTrigger className="bg-white">
             <SelectValue placeholder="Select gender" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-white">
             <SelectItem value="male">Male</SelectItem>
             <SelectItem value="female">Female</SelectItem>
           </SelectContent>
