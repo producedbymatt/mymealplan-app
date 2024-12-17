@@ -29,7 +29,7 @@ const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
       const slider = sliderRef.current;
       const sliderRect = slider.getBoundingClientRect();
       const percentage = (value[0] - 15) / (40 - 15); // normalize value between min (15) and max (40)
-      const x = percentage * sliderRect.width;
+      const x = (percentage * sliderRect.width) - 64; // Subtract half the tooltip width (128/2 = 64) to center it
       setThumbPosition({ x, y: sliderRect.top });
     }
 
@@ -83,7 +83,7 @@ const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
           isInteracting ? 'opacity-100' : 'opacity-0'
         }`}
         style={{ 
-          transform: `translateX(${Math.max(0, Math.min(thumbPosition.x - 48, (sliderRef.current?.offsetWidth || 0) - 128))}px)`,
+          transform: `translateX(${Math.max(0, Math.min(thumbPosition.x, (sliderRef.current?.offsetWidth || 0) - 128))}px)`,
           transition: "transform 0.1s ease-out"
         }}
       >
