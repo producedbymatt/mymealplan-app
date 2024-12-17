@@ -27,6 +27,10 @@ const MetricCards = ({
   targetDays,
   recommendedCalories,
 }: MetricCardsProps) => {
+  // Parse the date string correctly (assuming it comes in as dd/MM/yyyy)
+  const [day, month, year] = formattedTargetDate.split('/').map(Number);
+  const targetDate = new Date(year, month - 1, day); // month is 0-based in JS Date
+
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       <Card>
@@ -60,7 +64,9 @@ const MetricCards = ({
             {targetDays ? `${daysRemaining} days` : "Not Set"}
           </div>
           <p className="text-xs text-muted-foreground mt-1">
-            {targetDays ? `${format(new Date(formattedTargetDate), 'MM/dd/yyyy')} / ${targetDays} day goal` : "Set a timeline for your goal"}
+            {targetDays 
+              ? `${format(targetDate, 'MM/dd/yyyy')} / ${targetDays} day goal` 
+              : "Set a timeline for your goal"}
           </p>
         </CardContent>
       </Card>
