@@ -4,6 +4,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Slider } from "@/components/ui/slider";
 import { format, addDays, differenceInDays, parseISO } from "date-fns";
 
 interface StatsCardsProps {
@@ -32,6 +33,10 @@ const getBMICategory = (bmi: number, gender: "male" | "female" = "male") => {
     if (bmi < 30) return { category: "Overweight", color: "text-yellow-500", gradient: "bg-gradient-to-r from-yellow-50 to-amber-50" };
     return { category: "Obese", color: "text-red-500", gradient: "bg-gradient-to-r from-red-50 to-orange-50" };
   }
+};
+
+const calculateWeightForBMI = (height: number, targetBMI: number) => {
+  return Math.round((targetBMI * height * height) / 703);
 };
 
 const StatsCards = ({ metrics, recommendedCalories, hasMetrics, weightEntries = [] }: StatsCardsProps) => {
@@ -74,7 +79,6 @@ const StatsCards = ({ metrics, recommendedCalories, hasMetrics, weightEntries = 
     );
   }
 
-  // Get the most recent weight entry if available, otherwise use the initial weight
   const mostRecentWeight = weightEntries && weightEntries.length > 0 
     ? weightEntries[0].weight 
     : metrics.currentWeight;
@@ -86,34 +90,72 @@ const StatsCards = ({ metrics, recommendedCalories, hasMetrics, weightEntries = 
     height: metrics.height
   });
 
-  // Calculate BMI using the formula: (weight in pounds * 703) / (height in inches)²
   const bmi = (mostRecentWeight * 703) / (metrics.height * metrics.height);
   const bmiCategory = getBMICategory(bmi, metrics.gender);
 
-  // Convert height from inches to feet and inches for display
   const heightFeet = Math.floor(metrics.height / 12);
   const heightInches = metrics.height % 12;
 
-  // Calculate target date and days remaining
   const startDate = metrics.created_at ? parseISO(metrics.created_at) : new Date();
   const targetDate = addDays(startDate, metrics.targetDays);
   const daysRemaining = differenceInDays(targetDate, new Date());
   const formattedTargetDate = format(targetDate, 'dd/MM/yyyy');
 
+  // Calculate weights for different BMI values
+  const underweightWeight = calculateWeightForBMI(metrics.height, 18.5);
+  const normalWeight = calculateWeightForBMI(metrics.height, 24);
+  const overweightWeight = calculateWeightForBMI(metrics.height, 29);
+
   return (
     <div className="space-y-4">
       <Card className={`w-full border-none ${bmiCategory.gradient}`}>
-        <CardHeader>
+        <CardHeader className="text-center">
           <CardTitle>Current BMI</CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">{bmi.toFixed(1)}</div>
-          <p className={`text-sm ${bmiCategory.color}`}>
-            Category: {bmiCategory.category}
-          </p>
-          <p className="text-xs text-muted-foreground mt-1">
-            Based on current weight: {mostRecentWeight} lbs, height: {heightFeet}'{heightInches}"
-          </p>
+        <CardContent className="space-y-4">
+          <div className="text-center">
+            <div className="text-3xl font-bold">{bmi.toFixed(1)}</div>
+            <p className={`text-sm ${bmiCategory.color} font-semibold`}>
+              Category: {bmiCategory.category}
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Based on current weight: {mostRecentWeight} lbs, height: {heightFeet}'{heightInches}"
+            </p>
+          </div>
+
+          <div className="mt-6 space-y-6">
+            <div className="relative pt-6">
+              <div className="absolute w-full h-2 rounded-full overflow-hidden" style={{
+                background: 'linear-gradient(to right, #63B3ED, #68D391, #F6E05E, #FC8181)'
+              }} />
+              <Slider
+                defaultValue={[bmi]}
+                max={40}
+                min={15}
+                step={0.1}
+                className="z-10"
+              />
+            </div>
+            
+            <div className="grid grid-cols-4 text-xs text-center gap-1">
+              <div>
+                <p className="text-blue-500 font-semibold">Underweight</p>
+                <p className="text-muted-foreground">&lt;{underweightWeight}lbs</p>
+              </div>
+              <div>
+                <p className="text-green-500 font-semibold">Normal</p>
+                <p className="text-muted-foreground">{underweightWeight}-{normalWeight}lbs</p>
+              </div>
+              <div>
+                <p className="text-yellow-500 font-semibold">Overweight</p>
+                <p className="text-muted-foreground">{normalWeight}-{overweightWeight}lbs</p>
+              </div>
+              <div>
+                <p className="text-red-500 font-semibold">Obese</p>
+                <p className="text-muted-foreground">&gt;{overweightWeight}lbs</p>
+              </div>
+            </div>
+          </div>
         </CardContent>
       </Card>
 
