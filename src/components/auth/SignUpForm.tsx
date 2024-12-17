@@ -29,6 +29,7 @@ export const SignUpForm = ({ onSuccess, onToggleForm }: SignUpFormProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Validate password before submission
     if (!validatePassword(password)) {
       toast.error("Please fix the password errors before submitting");
       return;
@@ -37,21 +38,13 @@ export const SignUpForm = ({ onSuccess, onToggleForm }: SignUpFormProps) => {
     setLoading(true);
 
     try {
-      console.log("Attempting to sign up with phone:", phone);
-      
-      // Format phone number to ensure consistent format
-      const formattedPhone = phone.startsWith('+') ? phone : `+${phone}`;
-      const email = `${formattedPhone.replace(/\+/g, '')}@phone.mymealplan.app`;
-      
-      console.log("Using formatted email:", email);
-
       const { error } = await supabase.auth.signUp({
-        email,
+        email: `${phone}@placeholder.com`,
         password,
         options: {
           data: {
             full_name: name,
-            phone_number: formattedPhone,
+            phone_number: phone,
             date_of_birth: dateOfBirth,
           },
           emailRedirectTo: window.location.origin,
@@ -59,12 +52,9 @@ export const SignUpForm = ({ onSuccess, onToggleForm }: SignUpFormProps) => {
       });
 
       if (error) throw error;
-      
-      console.log("Sign up successful");
       toast.success("Account created successfully!");
       onSuccess();
     } catch (error: any) {
-      console.error("Sign up error:", error);
       toast.error(error.message);
     } finally {
       setLoading(false);
@@ -88,7 +78,7 @@ export const SignUpForm = ({ onSuccess, onToggleForm }: SignUpFormProps) => {
       
       <FormInput
         type="tel"
-        placeholder="Phone Number (e.g. +1234567890)"
+        placeholder="Phone Number"
         value={phone}
         onChange={(e) => setPhone(e.target.value)}
         required

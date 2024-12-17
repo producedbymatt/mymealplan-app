@@ -21,29 +21,21 @@ export const SignInForm = ({ onSuccess, onToggleForm }: SignInFormProps) => {
     setLoading(true);
 
     try {
-      console.log("Attempting to sign in with phone:", phone);
-      
-      // Format phone number to ensure consistent format
-      const formattedPhone = phone.startsWith('+') ? phone : `+${phone}`;
-      const email = `${formattedPhone.replace(/\+/g, '')}@phone.mymealplan.app`;
-      
-      console.log("Using formatted email:", email);
+      // Set the session persistence before signing in
+      supabase.auth.setSession({
+        access_token: '',
+        refresh_token: '',
+      });
 
       const { error } = await supabase.auth.signInWithPassword({
-        email,
+        email: `${phone}@placeholder.com`,
         password,
       });
 
-      if (error) {
-        console.error("Sign in error:", error);
-        throw error;
-      }
-      
-      console.log("Sign in successful");
+      if (error) throw error;
       toast.success("Successfully logged in!");
       onSuccess();
     } catch (error: any) {
-      console.error("Sign in error:", error);
       toast.error(error.message);
     } finally {
       setLoading(false);
@@ -59,7 +51,7 @@ export const SignInForm = ({ onSuccess, onToggleForm }: SignInFormProps) => {
       
       <FormInput
         type="tel"
-        placeholder="Phone Number (e.g. +1234567890)"
+        placeholder="Phone Number"
         value={phone}
         onChange={(e) => setPhone(e.target.value)}
         required
