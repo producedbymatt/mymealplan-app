@@ -19,14 +19,10 @@ const CalorieCalculator = ({
 }: CalorieCalculatorProps) => {
   const [activityLevel, setActivityLevel] = useState([1.2]); // Default to sedentary
 
-  // Calculate BMR using Harris-Benedict equation (for standard units)
   const calculateBMR = () => {
-    // Converting weight to kg and height to cm for the formula
     const weightInKg = currentWeight * 0.453592;
     const heightInCm = height * 2.54;
-    
-    // BMR formula for adults
-    const bmr = 10 * weightInKg + 6.25 * heightInCm - 5 * 30 + 5; // Assuming age 30 for simplicity
+    const bmr = 10 * weightInKg + 6.25 * heightInCm - 5 * 30 + 5;
     console.log("Calculated BMR:", bmr);
     return bmr;
   };
@@ -35,25 +31,24 @@ const CalorieCalculator = ({
     const bmr = calculateBMR();
     const tdee = bmr * activityLevel[0];
     
-    // Calculate required deficit for weight loss
-    const weightToLose = currentWeight - targetWeight;
-    const totalCaloriesNeeded = weightToLose * 3500; // 3500 calories per pound
-    const dailyDeficit = totalCaloriesNeeded / targetDays;
+    // Calculate required surplus/deficit based on weight goal
+    const weightDifference = targetWeight - currentWeight;
+    const isGainingWeight = weightDifference > 0;
+    const totalCaloriesNeeded = Math.abs(weightDifference) * 3500;
+    const dailyCalorieAdjustment = totalCaloriesNeeded / targetDays;
     
-    // Calculate target calories with deficit
-    const targetCalories = tdee - dailyDeficit;
+    // Calculate target calories with surplus or deficit
+    const targetCalories = tdee + (isGainingWeight ? dailyCalorieAdjustment : -dailyCalorieAdjustment);
     
     console.log("TDEE:", tdee);
     console.log("Activity Level:", activityLevel[0]);
-    console.log("Daily deficit needed:", dailyDeficit);
+    console.log("Daily calorie adjustment:", dailyCalorieAdjustment);
     console.log("Target daily calories:", targetCalories);
     
     return Math.max(1200, Math.round(targetCalories));
   };
 
   const calculateProteinNeeds = () => {
-    // Adjust protein needs based on activity level
-    // More active individuals need more protein
     const baseProteinMultiplier = activityLevel[0] >= 1.55 ? 1.0 : 0.8;
     const maxProteinMultiplier = activityLevel[0] >= 1.55 ? 1.4 : 1.2;
     
@@ -72,29 +67,31 @@ const CalorieCalculator = ({
   };
 
   const dailyCalories = calculateDailyCalories();
-  const weightLossPerWeek = ((currentWeight - targetWeight) / targetDays) * 7;
+  const weightDifference = targetWeight - currentWeight;
+  const isGainingWeight = weightDifference > 0;
+  const weeklyChange = Math.abs((weightDifference / targetDays) * 7);
   const { minProtein, maxProtein } = calculateProteinNeeds();
 
-  const getWeightLossWarning = (weeklyLoss: number) => {
-    if (weeklyLoss > 2) {
+  const getWeightChangeWarning = (weeklyChange: number) => {
+    if (weeklyChange > 2) {
       return {
-        message: "Your target may be too aggressive. A safe weight loss rate is 1-2 pounds per week.",
+        message: `Your target may be too aggressive. A safe weight ${isGainingWeight ? 'gain' : 'loss'} rate is 1-2 pounds per week.`,
         color: "text-red-500"
       };
     }
-    if (weeklyLoss < 0) {
+    if (weeklyChange === 0) {
       return {
-        message: "This plan will result in weight gain. Adjust if weight loss is your goal.",
-        color: "text-yellow-500"
+        message: "Your current weight matches your target weight.",
+        color: "text-green-500"
       };
     }
     return {
-      message: "Your target is within a healthy weight loss range of 1-2 pounds per week.",
+      message: `Your target is within a healthy weight ${isGainingWeight ? 'gain' : 'loss'} range of 1-2 pounds per week.`,
       color: "text-green-500"
     };
   };
 
-  const weightLossWarning = getWeightLossWarning(weightLossPerWeek);
+  const weightChangeWarning = getWeightChangeWarning(weeklyChange);
 
   useEffect(() => {
     onCaloriesCalculated?.(dailyCalories);
@@ -136,11 +133,11 @@ const CalorieCalculator = ({
 
         <div className="bg-muted p-4 rounded-lg">
           <p className="text-sm text-center">
-            To reach your goal weight of {targetWeight} lbs in {targetDays} days, you should aim to lose approximately{" "}
-            <span className="font-semibold">{weightLossPerWeek.toFixed(1)} lbs per week</span>
+            To reach your goal weight of {targetWeight} lbs in {targetDays} days, you should aim to {isGainingWeight ? 'gain' : 'lose'} approximately{" "}
+            <span className="font-semibold">{weeklyChange.toFixed(1)} lbs per week</span>
           </p>
-          <p className={`text-sm text-center mt-2 ${weightLossWarning.color}`}>
-            {weightLossWarning.message}
+          <p className={`text-sm text-center mt-2 ${weightChangeWarning.color}`}>
+            {weightChangeWarning.message}
           </p>
         </div>
 

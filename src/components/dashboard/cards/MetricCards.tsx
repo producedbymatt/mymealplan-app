@@ -4,6 +4,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { format } from "date-fns";
 
 interface MetricCardsProps {
   mostRecentWeight: number;
@@ -59,7 +60,7 @@ const MetricCards = ({
             {targetDays ? `${daysRemaining} days` : "Not Set"}
           </div>
           <p className="text-xs text-muted-foreground mt-1">
-            {targetDays ? `${formattedTargetDate} / ${targetDays} day goal` : "Set a timeline for your goal"}
+            {targetDays ? `${format(new Date(formattedTargetDate), 'MM/dd/yyyy')} / ${targetDays} day goal` : "Set a timeline for your goal"}
           </p>
         </CardContent>
       </Card>

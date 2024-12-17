@@ -17,26 +17,34 @@ const MotivationalMessage = ({ currentWeight, targetWeight, targetDays }: Motiva
     );
   }
 
-  const weightToLose = currentWeight - targetWeight;
+  const weightDifference = targetWeight - currentWeight;
+  const isGainingWeight = weightDifference > 0;
   const weeksToGoal = targetDays / 7;
-  const poundsPerWeek = weightToLose / weeksToGoal;
+  const poundsPerWeek = Math.abs(weightDifference / weeksToGoal);
 
   const getMessage = () => {
     console.log('Calculating motivational message:', {
-      weightToLose,
+      weightDifference,
       weeksToGoal,
-      poundsPerWeek
+      poundsPerWeek,
+      isGainingWeight
     });
 
-    if (poundsPerWeek <= 0) {
-      return "You're already at or below your target weight! Keep up the good work! 🎉";
+    if (weightDifference === 0) {
+      return "You're already at your target weight! Keep maintaining those healthy habits! 🎉";
     }
 
-    if (poundsPerWeek > 2) {
-      return `To reach your goal, you'll need to lose ${poundsPerWeek.toFixed(1)} lbs per week. Consider extending your timeline for a more sustainable approach of 1-2 lbs per week. 🎯`;
+    if (isGainingWeight) {
+      if (poundsPerWeek > 2) {
+        return `To reach your goal, you'll need to gain ${poundsPerWeek.toFixed(1)} lbs per week. Consider extending your timeline for a more sustainable approach of 1-2 lbs per week. 🎯`;
+      }
+      return `You're aiming to gain ${poundsPerWeek.toFixed(1)} lbs per week - that's a healthy and achievable goal! Keep going! 💪`;
+    } else {
+      if (poundsPerWeek > 2) {
+        return `To reach your goal, you'll need to lose ${poundsPerWeek.toFixed(1)} lbs per week. Consider extending your timeline for a more sustainable approach of 1-2 lbs per week. 🎯`;
+      }
+      return `You're aiming to lose ${poundsPerWeek.toFixed(1)} lbs per week - that's a healthy and achievable goal! Keep going! 💪`;
     }
-
-    return `You're aiming to lose ${poundsPerWeek.toFixed(1)} lbs per week - that's a healthy and achievable goal! Keep going! 💪`;
   };
 
   return (
