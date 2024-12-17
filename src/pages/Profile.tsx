@@ -4,10 +4,21 @@ import Footer from "@/components/Footer";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+
+interface UserMetrics {
+  height: number;
+  current_weight: number;
+  target_weight: number;
+  target_days: number;
+  recommended_calories: number;
+  gender?: 'male' | 'female';
+}
 
 const Profile = () => {
   const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const [userMetrics, setUserMetrics] = useState<UserMetrics | null>(null);
   const [profile, setProfile] = useState({
     full_name: "",
     phone_number: "",
@@ -20,6 +31,7 @@ const Profile = () => {
       setSession(session);
       if (session) {
         fetchProfile();
+        fetchUserMetrics(session.user.id);
       }
     });
 
@@ -29,6 +41,31 @@ const Profile = () => {
 
     return () => subscription.unsubscribe();
   }, []);
+
+  const fetchUserMetrics = async (userId: string) => {
+    try {
+      console.log('Fetching user metrics for user:', userId);
+      const { data, error } = await supabase
+        .from('user_metrics')
+        .select('*')
+        .eq('user_id', userId)
+        .order('updated_at', { ascending: false })
+        .limit(1)
+        .single();
+
+      if (error) {
+        console.error('Error fetching user metrics:', error);
+        return;
+      }
+
+      if (data) {
+        console.log('Loaded user metrics:', data);
+        setUserMetrics(data);
+      }
+    } catch (err) {
+      console.error('Exception while fetching metrics:', err);
+    }
+  };
 
   const fetchProfile = async () => {
     try {
@@ -93,12 +130,31 @@ const Profile = () => {
     );
   }
 
+  const heightFeet = userMetrics ? Math.floor(userMetrics.height / 12) : 0;
+  const heightInches = userMetrics ? userMetrics.height % 12 : 0;
+
   return (
     <div className="min-h-screen flex flex-col">
       <div className="container mx-auto px-4 py-8 flex-grow">
         <h1 className="text-3xl font-bold mb-6">Profile Settings</h1>
         
         <div className="grid gap-8 md:grid-cols-2">
+          {userMetrics && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Your Metrics</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <p><strong>Height:</strong> {heightFeet}'{heightInches}"</p>
+                <p><strong>Current Weight:</strong> {userMetrics.current_weight} lbs</p>
+                <p><strong>Target Weight:</strong> {userMetrics.target_weight} lbs</p>
+                <p><strong>Target Days:</strong> {userMetrics.target_days} days</p>
+                <p><strong>Daily Calories Goal:</strong> {userMetrics.recommended_calories} calories</p>
+                <p><strong>Gender:</strong> {userMetrics.gender || "Not specified"}</p>
+              </CardContent>
+            </Card>
+          )}
+
           <div className="bg-white rounded-lg shadow-md p-6">
             <h2 className="text-xl font-semibold mb-4">Update Profile</h2>
             <form onSubmit={handleProfileUpdate} className="space-y-4">
