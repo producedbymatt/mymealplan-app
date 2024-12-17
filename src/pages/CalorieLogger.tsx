@@ -6,18 +6,24 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { useMealLogs } from "@/hooks/useMealLogs";
 import { toast } from "sonner";
+import { supabase } from "@/lib/supabase";
 
 const CalorieLogger = () => {
-  const { mealLogs, addMealLog, updateMealLog, deleteMealLog } = useMealLogs();
   const [editingMeal, setEditingMeal] = useState<any>(null);
+  const { data: session } = await supabase.auth.getSession();
+  const { mealLogs, addMeal, updateMeal, deleteMeal } = useMealLogs(session?.session?.user?.id);
 
   const handleSubmit = async (meal: { meal_name: string; calories: number }) => {
     try {
       if (editingMeal) {
-        await updateMealLog(editingMeal.id, meal);
+        await updateMeal({
+          ...editingMeal,
+          meal_name: meal.meal_name,
+          calories: meal.calories
+        });
         toast.success("Meal updated successfully");
       } else {
-        await addMealLog(meal);
+        await addMeal(meal);
         toast.success("Meal added successfully");
       }
       setEditingMeal(null);
@@ -62,7 +68,7 @@ const CalorieLogger = () => {
           <MealsTable
             mealLogs={mealLogs}
             onEdit={setEditingMeal}
-            onDelete={deleteMealLog}
+            onDelete={deleteMeal}
           />
         </div>
       </div>
