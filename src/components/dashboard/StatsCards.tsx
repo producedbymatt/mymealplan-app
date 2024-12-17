@@ -59,10 +59,16 @@ const StatsCards = ({ metrics, recommendedCalories, hasMetrics, weightEntries = 
     );
   }
 
-  // Get the most recent weight entry if available
+  // Get the most recent weight entry if available, otherwise use the initial weight
   const mostRecentWeight = weightEntries && weightEntries.length > 0 
-    ? weightEntries[weightEntries.length - 1].weight 
+    ? weightEntries[0].weight 
     : metrics.currentWeight;
+
+  console.log('Weight data:', {
+    weightEntries,
+    mostRecentWeight,
+    initialWeight: metrics.currentWeight
+  });
 
   // Convert height from inches to feet and inches for display
   const heightFeet = Math.floor(metrics.height / 12);
@@ -73,14 +79,6 @@ const StatsCards = ({ metrics, recommendedCalories, hasMetrics, weightEntries = 
   const targetDate = addDays(startDate, metrics.targetDays);
   const daysRemaining = differenceInDays(targetDate, new Date());
   const formattedTargetDate = format(targetDate, 'dd/MM/yyyy');
-
-  console.log('Days to Goal Calculation:', {
-    startDate: format(startDate, 'dd/MM/yyyy'),
-    targetDate: format(targetDate, 'dd/MM/yyyy'),
-    targetDays: metrics.targetDays,
-    daysRemaining,
-    created_at: metrics.created_at
-  });
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
