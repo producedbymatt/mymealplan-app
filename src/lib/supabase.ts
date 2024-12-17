@@ -13,9 +13,3 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     storageKey: 'supabase.auth.token'
   }
 });
-
-// Set the site URL for authentication redirects
-supabase.auth.setSession({
-  access_token: '',
-  refresh_token: '',
-});
