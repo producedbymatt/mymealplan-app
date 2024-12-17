@@ -85,7 +85,7 @@ const DashboardContent = ({
         weightEntries={weightEntries}
       />
       
-      <div className="flex justify-center mb-8">
+      <div className="flex justify-center mt-8 mb-8">
         <Button
           variant="outline"
           onClick={handleRefresh}
