@@ -18,6 +18,7 @@ const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
   const [thumbPosition, setThumbPosition] = React.useState({ x: 0, y: 0 });
   const [isInteracting, setIsInteracting] = React.useState(false);
   const sliderRef = React.useRef<HTMLDivElement>(null);
+  const resetTimeoutRef = React.useRef<NodeJS.Timeout>();
 
   const handleSliderChange = (value: number[]) => {
     setSliderValue(value);
@@ -31,7 +32,37 @@ const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
       const x = percentage * sliderRect.width;
       setThumbPosition({ x, y: sliderRect.top });
     }
+
+    // Clear any existing reset timeout
+    if (resetTimeoutRef.current) {
+      clearTimeout(resetTimeoutRef.current);
+    }
   };
+
+  const startInteraction = () => {
+    setIsInteracting(true);
+    if (resetTimeoutRef.current) {
+      clearTimeout(resetTimeoutRef.current);
+    }
+  };
+
+  const endInteraction = () => {
+    setIsInteracting(false);
+    // Set a timeout to reset the slider value
+    resetTimeoutRef.current = setTimeout(() => {
+      setSliderValue([bmi]);
+      onBMIChange([bmi]);
+    }, 1000); // Reset after 1 second of no interaction
+  };
+
+  // Cleanup timeout on unmount
+  React.useEffect(() => {
+    return () => {
+      if (resetTimeoutRef.current) {
+        clearTimeout(resetTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const simulatedWeight = calculateWeightFromBMI(sliderValue[0], height);
   
@@ -42,10 +73,10 @@ const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
     <div 
       className="relative pt-16" 
       ref={sliderRef}
-      onMouseEnter={() => setIsInteracting(true)}
-      onMouseLeave={() => setIsInteracting(false)}
-      onTouchStart={() => setIsInteracting(true)}
-      onTouchEnd={() => setIsInteracting(false)}
+      onMouseEnter={startInteraction}
+      onMouseLeave={endInteraction}
+      onTouchStart={startInteraction}
+      onTouchEnd={endInteraction}
     >
       <Card 
         className={`absolute -top-2 left-0 p-2 bg-white shadow-lg rounded-lg z-20 w-32 transition-opacity duration-200 ${
