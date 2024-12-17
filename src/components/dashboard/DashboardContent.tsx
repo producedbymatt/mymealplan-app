@@ -5,7 +5,8 @@ import CalorieCalculator from "@/components/CalorieCalculator";
 import MealPlan from "@/components/MealPlan";
 import StatsCards from "./StatsCards";
 import MotivationalMessage from "./MotivationalMessage";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useWeightLogs } from "@/hooks/useWeightLogs";
 
 interface WeightEntry {
   date: string;
@@ -36,6 +37,20 @@ const DashboardContent = ({
   onCaloriesCalculated,
 }: DashboardContentProps) => {
   const [weightEntries, setWeightEntries] = useState<WeightEntry[]>([]);
+  const { loadWeightLogs } = useWeightLogs(false);
+
+  // Load weight entries when component mounts
+  useEffect(() => {
+    const loadEntries = async () => {
+      console.log("Loading initial weight entries...");
+      const entries = await loadWeightLogs();
+      if (entries) {
+        console.log("Initial weight entries loaded:", entries);
+        setWeightEntries(entries);
+      }
+    };
+    loadEntries();
+  }, []);
 
   const handleWeightEntry = (entries: WeightEntry[]) => {
     console.log("New weight entries:", entries);
