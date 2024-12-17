@@ -45,30 +45,35 @@ const Navigation = () => {
     navigate("/");
   };
 
+  const handleClose = () => {
+    console.log("Closing navigation menu");
+    setIsOpen(false);
+  };
+
   return (
     <div className="relative z-50">
       <NavigationButton isOpen={isOpen} onClick={() => setIsOpen(!isOpen)} />
 
       {isOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50">
-          <div className="fixed right-0 top-0 h-full w-64 bg-white shadow-lg">
+          <div className="fixed right-0 top-0 h-full w-64 bg-white shadow-lg mt-16">
             <Button
               variant="ghost"
               size="icon"
-              className="absolute right-2 top-2"
-              onClick={() => setIsOpen(false)}
+              className="absolute right-2 top-2 z-50"
+              onClick={handleClose}
             >
               <X className="h-6 w-6" />
             </Button>
             
             <NavigationHeader 
               userEmail={session?.user?.email} 
-              onClose={() => setIsOpen(false)} 
+              onClose={handleClose} 
             />
             
             <NavigationMenu
               session={session}
-              onClose={() => setIsOpen(false)}
+              onClose={handleClose}
               onSignOut={handleSignOut}
             />
           </div>
