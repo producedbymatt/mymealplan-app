@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Weight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
@@ -89,6 +89,14 @@ const Navigation = () => {
                 onClick={() => setIsOpen(false)}
               >
                 Calorie Logger
+              </Link>
+              <Link
+                to="/weight-tracking"
+                className="px-4 py-2 hover:bg-gray-100 rounded-md flex items-center gap-2"
+                onClick={() => setIsOpen(false)}
+              >
+                <Weight className="h-4 w-4" />
+                Weight Tracking
               </Link>
               <Link
                 to="/profile"

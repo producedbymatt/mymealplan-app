@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import Navigation from "./components/Navigation";
 import Index from "./pages/Index";
 import CalorieLogger from "./pages/CalorieLogger";
+import WeightTracking from "./pages/WeightTracking";
 import Profile from "./pages/Profile";
 import AuthOverlay from "./components/auth/AuthOverlay";
 import { supabase } from "@/lib/supabase";
@@ -63,6 +64,14 @@ const App = () => (
             element={
               <ProtectedRoute>
                 <CalorieLogger />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/weight-tracking"
+            element={
+              <ProtectedRoute>
+                <WeightTracking />
               </ProtectedRoute>
             }
           />

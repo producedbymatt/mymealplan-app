@@ -1,5 +1,4 @@
 import BMICalculator from "@/components/BMICalculator";
-import WeightTracker from "@/components/WeightTracker";
 import WeightGoal from "@/components/WeightGoal";
 import CalorieCalculator from "@/components/CalorieCalculator";
 import MealPlan from "@/components/MealPlan";
@@ -20,7 +19,7 @@ interface DashboardContentProps {
     targetWeight: number;
     targetDays: number;
     created_at?: string;
-    gender?: "male" | "female";  // Added gender to the interface
+    gender?: "male" | "female";
   };
   recommendedCalories: number;
   hasMetrics: boolean;
@@ -49,20 +48,14 @@ const DashboardContent = ({
     }
   };
 
-  // Load weight entries when component mounts
   useEffect(() => {
     loadEntries();
   }, []);
 
-  const handleWeightEntry = (entries: WeightEntry[]) => {
-    console.log("New weight entries:", entries);
-    setWeightEntries(entries);
-  };
-
   return (
     <div>
       <StatsCards 
-        metrics={userMetrics}  // Now includes gender
+        metrics={userMetrics}
         recommendedCalories={recommendedCalories}
         hasMetrics={hasMetrics}
         weightEntries={weightEntries}
@@ -88,13 +81,6 @@ const DashboardContent = ({
         <div>
           <WeightGoal onGoalSet={onGoalSet} />
         </div>
-      </div>
-
-      <div className="mt-8">
-        <WeightTracker 
-          onWeightEntriesChange={handleWeightEntry}
-          showGoalInputs={false}
-        />
       </div>
 
       {userMetrics.height > 0 && userMetrics.targetWeight > 0 && (
