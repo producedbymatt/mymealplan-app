@@ -6,6 +6,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { format } from "date-fns";
 
 interface WeightGoalProps {
   onGoalSet: (weight: number, days: number) => void;
@@ -14,6 +15,7 @@ interface WeightGoalProps {
 const WeightGoal = ({ onGoalSet }: WeightGoalProps) => {
   const [targetWeight, setTargetWeight] = React.useState("");
   const [targetDays, setTargetDays] = React.useState("");
+  const [lastUpdated, setLastUpdated] = React.useState<string | null>(null);
   const [isOpen, setIsOpen] = React.useState(() => {
     const stored = localStorage.getItem("weightGoalOpen");
     return stored === null ? true : stored === "true";
@@ -34,7 +36,7 @@ const WeightGoal = ({ onGoalSet }: WeightGoalProps) => {
       
       const { data, error } = await supabase
         .from('user_metrics')
-        .select('target_weight, target_days')
+        .select('target_weight, target_days, updated_at')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
         .limit(1)
@@ -49,6 +51,9 @@ const WeightGoal = ({ onGoalSet }: WeightGoalProps) => {
         console.log('Loaded weight goal:', data);
         setTargetWeight(data.target_weight?.toString() || "");
         setTargetDays(data.target_days?.toString() || "");
+        if (data.updated_at) {
+          setLastUpdated(format(new Date(data.updated_at), 'MMMM d, yyyy'));
+        }
       }
     } catch (error) {
       console.error('Error in loadWeightGoal:', error);
@@ -81,6 +86,7 @@ const WeightGoal = ({ onGoalSet }: WeightGoalProps) => {
       }
 
       console.log('Saving weight goal:', { weight, days });
+      const now = new Date().toISOString();
 
       const { error } = await supabase
         .from('user_metrics')
@@ -88,7 +94,7 @@ const WeightGoal = ({ onGoalSet }: WeightGoalProps) => {
           user_id: user.id,
           target_weight: weight,
           target_days: days,
-          updated_at: new Date().toISOString()
+          updated_at: now
         });
 
       if (error) {
@@ -101,6 +107,7 @@ const WeightGoal = ({ onGoalSet }: WeightGoalProps) => {
         return;
       }
 
+      setLastUpdated(format(new Date(now), 'MMMM d, yyyy'));
       onGoalSet(weight, days);
       toast({
         title: "Goal Set!",
@@ -156,6 +163,11 @@ const WeightGoal = ({ onGoalSet }: WeightGoalProps) => {
             <Button type="submit" className="w-full">
               Set Goal
             </Button>
+            {lastUpdated && (
+              <p className="text-sm text-gray-500 text-center mt-2">
+                Last updated: {lastUpdated}
+              </p>
+            )}
           </form>
         </CollapsibleContent>
       </Collapsible>
