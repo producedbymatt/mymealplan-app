@@ -4,7 +4,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { format, differenceInDays } from "date-fns";
+import { format, differenceInDays, addDays, parseISO } from "date-fns";
 
 interface MetricCardsProps {
   mostRecentWeight: number;
@@ -27,9 +27,9 @@ const MetricCards = ({
   targetDays,
   recommendedCalories,
 }: MetricCardsProps) => {
-  // Parse the date string correctly (assuming it comes in as dd/MM/yyyy)
-  const [day, month, year] = formattedTargetDate.split('/').map(Number);
-  const targetDate = new Date(year, month - 1, day); // month is 0-based in JS Date
+  // Calculate target date from the original start date (formattedTargetDate)
+  const startDate = parseISO(formattedTargetDate);
+  const targetDate = addDays(startDate, targetDays);
   const today = new Date();
   const actualDaysRemaining = Math.max(0, differenceInDays(targetDate, today));
 
