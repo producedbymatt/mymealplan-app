@@ -4,7 +4,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { format } from "date-fns";
+import { format, differenceInDays } from "date-fns";
 
 interface MetricCardsProps {
   mostRecentWeight: number;
@@ -30,6 +30,8 @@ const MetricCards = ({
   // Parse the date string correctly (assuming it comes in as dd/MM/yyyy)
   const [day, month, year] = formattedTargetDate.split('/').map(Number);
   const targetDate = new Date(year, month - 1, day); // month is 0-based in JS Date
+  const today = new Date();
+  const actualDaysRemaining = Math.max(0, differenceInDays(targetDate, today));
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -61,11 +63,11 @@ const MetricCards = ({
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">
-            {targetDays ? `${daysRemaining} days` : "Not Set"}
+            {targetDays ? `${actualDaysRemaining} days` : "Not Set"}
           </div>
           <p className="text-xs text-muted-foreground mt-1">
             {targetDays 
-              ? `${format(targetDate, 'MM/dd/yyyy')} / ${targetDays} day goal` 
+              ? `Target: ${format(targetDate, 'MM/dd/yyyy')} / ${targetDays} day goal` 
               : "Set a timeline for your goal"}
           </p>
         </CardContent>
