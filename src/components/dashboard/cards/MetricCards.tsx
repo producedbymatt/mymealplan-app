@@ -4,7 +4,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { format, differenceInDays } from "date-fns";
 
 interface MetricCardsProps {
   mostRecentWeight: number;
@@ -15,6 +14,7 @@ interface MetricCardsProps {
   formattedTargetDate: string;
   targetDays: number;
   recommendedCalories: number;
+  startingWeight?: number;
 }
 
 const MetricCards = ({
@@ -26,12 +26,16 @@ const MetricCards = ({
   formattedTargetDate,
   targetDays,
   recommendedCalories,
+  startingWeight,
 }: MetricCardsProps) => {
-  // Parse the date string correctly (assuming it comes in as dd/MM/yyyy)
-  const [day, month, year] = formattedTargetDate.split('/').map(Number);
-  const targetDate = new Date(year, month - 1, day); // month is 0-based in JS Date
-  const today = new Date();
-  const actualDaysRemaining = Math.max(0, differenceInDays(targetDate, today));
+  const calculateWeightLoss = () => {
+    if (!startingWeight) return 0;
+    const weightLoss = startingWeight - mostRecentWeight;
+    return Math.abs(weightLoss);
+  };
+
+  const weightLoss = calculateWeightLoss();
+  const isWeightLoss = startingWeight ? startingWeight > mostRecentWeight : false;
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -59,16 +63,16 @@ const MetricCards = ({
       </Card>
       <Card>
         <CardHeader>
-          <CardTitle>Days to Goal</CardTitle>
+          <CardTitle>Weight Progress</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">
-            {targetDays ? `${actualDaysRemaining} days` : "Not Set"}
+            {startingWeight ? `${weightLoss.toFixed(1)} lbs` : "No data"}
           </div>
           <p className="text-xs text-muted-foreground mt-1">
-            {targetDays 
-              ? `Target: ${format(targetDate, 'MM/dd/yyyy')} / ${targetDays} day goal` 
-              : "Set a timeline for your goal"}
+            {startingWeight 
+              ? `${isWeightLoss ? 'Lost' : 'Gained'} since starting` 
+              : "Start logging to track progress"}
           </p>
         </CardContent>
       </Card>

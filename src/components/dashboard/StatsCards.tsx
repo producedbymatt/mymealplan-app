@@ -45,7 +45,7 @@ const StatsCards = ({ metrics, recommendedCalories, hasMetrics, weightEntries = 
   const startDate = metrics.created_at ? parseISO(metrics.created_at) : new Date();
   const targetDate = addDays(startDate, metrics.targetDays);
   const daysRemaining = differenceInDays(targetDate, new Date());
-  const formattedTargetDate = format(targetDate, 'dd/MM/yyyy');
+  const formattedTargetDate = format(targetDate, 'MM/dd/yyyy');
 
   const underweightWeight = calculateWeightForBMI(metrics.height, 18.5);
   const normalWeight = calculateWeightForBMI(metrics.height, 24);
@@ -74,6 +74,7 @@ const StatsCards = ({ metrics, recommendedCalories, hasMetrics, weightEntries = 
         formattedTargetDate={formattedTargetDate}
         targetDays={metrics.targetDays}
         recommendedCalories={recommendedCalories}
+        startingWeight={metrics.currentWeight}
       />
     </div>
   );
