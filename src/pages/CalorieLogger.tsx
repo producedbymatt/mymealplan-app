@@ -11,12 +11,34 @@ import { supabase } from "@/lib/supabase";
 const CalorieLogger = () => {
   const [editingMeal, setEditingMeal] = useState<any>(null);
   const [userId, setUserId] = useState<string | undefined>(undefined);
+  const [recommendedCalories, setRecommendedCalories] = useState<number>(0);
   const { mealLogs, addMeal, updateMeal, deleteMeal } = useMealLogs(userId);
 
   useEffect(() => {
     const getSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       setUserId(session?.user?.id);
+
+      if (session?.user?.id) {
+        // Fetch user metrics to get recommended calories
+        const { data, error } = await supabase
+          .from('user_metrics')
+          .select('recommended_calories')
+          .eq('user_id', session.user.id)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .single();
+
+        if (error) {
+          console.error('Error fetching recommended calories:', error);
+          return;
+        }
+
+        if (data) {
+          console.log('Fetched recommended calories:', data.recommended_calories);
+          setRecommendedCalories(data.recommended_calories);
+        }
+      }
     };
     
     getSession();
@@ -69,7 +91,7 @@ const CalorieLogger = () => {
           <div>
             <CaloriesSummaryCard
               todayCalories={todayCalories}
-              recommendedCalories={2000} // This should come from user settings
+              recommendedCalories={recommendedCalories}
             />
           </div>
         </div>
