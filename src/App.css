@@ -4,7 +4,7 @@
   padding: 2rem;
   text-align: center;
   min-height: 100vh;
-  background-color: hsl(var(--background));
+  background-color: #07070A;
   color: hsl(var(--foreground));
 }
 
