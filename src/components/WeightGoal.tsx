@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 interface WeightGoalProps {
   onGoalSet: (weight: number, days: number) => void;
@@ -21,9 +22,40 @@ const WeightGoal = ({ onGoalSet }: WeightGoalProps) => {
 
   useEffect(() => {
     localStorage.setItem("weightGoalOpen", isOpen.toString());
+    loadWeightGoal();
   }, [isOpen]);
 
-  const setGoal = (e: React.FormEvent) => {
+  const loadWeightGoal = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      console.log('Loading weight goal for user:', user.id);
+      
+      const { data, error } = await supabase
+        .from('user_metrics')
+        .select('target_weight, target_days')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+
+      if (error) {
+        console.error('Error loading weight goal:', error);
+        return;
+      }
+
+      if (data) {
+        console.log('Loaded weight goal:', data);
+        setTargetWeight(data.target_weight?.toString() || "");
+        setTargetDays(data.target_days?.toString() || "");
+      }
+    } catch (error) {
+      console.error('Error in loadWeightGoal:', error);
+    }
+  };
+
+  const setGoal = async (e: React.FormEvent) => {
     e.preventDefault();
     const weight = parseFloat(targetWeight);
     const days = parseInt(targetDays);
@@ -37,11 +69,51 @@ const WeightGoal = ({ onGoalSet }: WeightGoalProps) => {
       return;
     }
 
-    onGoalSet(weight, days);
-    toast({
-      title: "Goal Set!",
-      description: `Aiming to reach ${weight} lbs in ${days} days.`,
-    });
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: "Error",
+          description: "You must be logged in to set a goal",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      console.log('Saving weight goal:', { weight, days });
+
+      const { error } = await supabase
+        .from('user_metrics')
+        .upsert({
+          user_id: user.id,
+          target_weight: weight,
+          target_days: days,
+          updated_at: new Date().toISOString()
+        });
+
+      if (error) {
+        console.error('Error saving weight goal:', error);
+        toast({
+          title: "Error",
+          description: "Failed to save weight goal",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      onGoalSet(weight, days);
+      toast({
+        title: "Goal Set!",
+        description: `Aiming to reach ${weight} lbs in ${days} days.`,
+      });
+    } catch (error) {
+      console.error('Error in setGoal:', error);
+      toast({
+        title: "Error",
+        description: "Failed to set goal",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
