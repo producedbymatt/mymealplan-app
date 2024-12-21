@@ -19,6 +19,7 @@ interface CalorieCalculatorProps {
   targetWeight: number;
   targetDays: number;
   onCaloriesCalculated?: (calories: number) => void;
+  onSaveMetrics?: () => void;
 }
 
 const CalorieCalculator = ({ 
@@ -26,7 +27,8 @@ const CalorieCalculator = ({
   currentWeight, 
   targetWeight, 
   targetDays,
-  onCaloriesCalculated 
+  onCaloriesCalculated,
+  onSaveMetrics 
 }: CalorieCalculatorProps) => {
   const [activityLevel, setActivityLevel] = useState<number>(ACTIVITY_LEVELS.sedentary.value);
   const [selectedActivityKey, setSelectedActivityKey] = useState<ActivityLevelKey>("sedentary");
@@ -100,6 +102,7 @@ const CalorieCalculator = ({
       console.log('Successfully saved activity level:', selectedActivityKey);
       toast.success("Activity level updated");
       setHasUnsavedChanges(false);
+      onSaveMetrics?.();
     } catch (err) {
       console.error('Error in saveActivityLevel:', err);
       toast.error("An error occurred while saving");
