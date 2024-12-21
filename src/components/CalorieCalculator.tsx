@@ -7,6 +7,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { supabase } from "@/lib/supabase";
+import { toast } from "sonner";
 
 interface CalorieCalculatorProps {
   height: number;
@@ -47,6 +49,69 @@ const CalorieCalculator = ({
   onCaloriesCalculated 
 }: CalorieCalculatorProps) => {
   const [activityLevel, setActivityLevel] = useState<number>(1.2); // Default to sedentary
+  const [selectedActivityKey, setSelectedActivityKey] = useState<keyof typeof ACTIVITY_LEVELS>("sedentary");
+
+  useEffect(() => {
+    loadActivityLevel();
+  }, []);
+
+  const loadActivityLevel = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from('user_metrics')
+        .select('activity_level')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(1);
+
+      if (error) {
+        console.error('Error loading activity level:', error);
+        return;
+      }
+
+      if (data && data.length > 0 && data[0].activity_level) {
+        const storedLevel = data[0].activity_level as keyof typeof ACTIVITY_LEVELS;
+        setSelectedActivityKey(storedLevel);
+        setActivityLevel(ACTIVITY_LEVELS[storedLevel].value);
+        console.log('Loaded activity level:', storedLevel);
+      }
+    } catch (err) {
+      console.error('Error in loadActivityLevel:', err);
+    }
+  };
+
+  const saveActivityLevel = async (level: keyof typeof ACTIVITY_LEVELS) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error("Please log in to save your activity level");
+        return;
+      }
+
+      const { error } = await supabase
+        .from('user_metrics')
+        .update({ 
+          activity_level: level,
+          updated_at: new Date().toISOString()
+        })
+        .eq('user_id', user.id);
+
+      if (error) {
+        console.error('Error saving activity level:', error);
+        toast.error("Failed to save activity level");
+        return;
+      }
+
+      console.log('Successfully saved activity level:', level);
+      toast.success("Activity level updated");
+    } catch (err) {
+      console.error('Error in saveActivityLevel:', err);
+      toast.error("An error occurred while saving");
+    }
+  };
 
   const calculateBMR = () => {
     const weightInKg = currentWeight * 0.453592;
@@ -60,13 +125,11 @@ const CalorieCalculator = ({
     const bmr = calculateBMR();
     const tdee = bmr * activityLevel;
     
-    // Calculate required surplus/deficit based on weight goal
     const weightDifference = targetWeight - currentWeight;
     const isGainingWeight = weightDifference > 0;
     const totalCaloriesNeeded = Math.abs(weightDifference) * 3500;
     const dailyCalorieAdjustment = totalCaloriesNeeded / targetDays;
     
-    // Calculate target calories with surplus or deficit
     const targetCalories = tdee + (isGainingWeight ? dailyCalorieAdjustment : -dailyCalorieAdjustment);
     
     console.log("TDEE:", tdee);
@@ -87,10 +150,13 @@ const CalorieCalculator = ({
     return { minProtein, maxProtein };
   };
 
-  const handleActivityChange = (value: string) => {
-    const level = ACTIVITY_LEVELS[value as keyof typeof ACTIVITY_LEVELS].value;
+  const handleActivityChange = async (value: string) => {
+    const level = value as keyof typeof ACTIVITY_LEVELS;
     console.log("Activity level changed to:", level);
-    setActivityLevel(level);
+    
+    setSelectedActivityKey(level);
+    setActivityLevel(ACTIVITY_LEVELS[level].value);
+    await saveActivityLevel(level);
   };
 
   const dailyCalories = calculateDailyCalories();
@@ -131,8 +197,8 @@ const CalorieCalculator = ({
       <div className="mb-6">
         <label className="block text-sm font-medium mb-2">Activity Level</label>
         <Select
+          value={selectedActivityKey}
           onValueChange={handleActivityChange}
-          defaultValue="sedentary"
         >
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Select your activity level" />
