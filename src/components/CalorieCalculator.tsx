@@ -4,6 +4,7 @@ import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import ActivityLevelSelect from "./calculator/ActivityLevelSelect";
 import CalorieResults from "./calculator/CalorieResults";
+import { ActivityLevelType, getActivityMultiplier } from "@/types/calculator";
 
 interface CalorieCalculatorProps {
   height: number;
@@ -20,7 +21,7 @@ const CalorieCalculator = ({
   targetDays,
   onCaloriesCalculated 
 }: CalorieCalculatorProps) => {
-  const [activityLevel, setActivityLevel] = useState<number>(1.2);
+  const [activityLevel, setActivityLevel] = useState<ActivityLevelType>('sedentary');
   const [isLoading, setIsLoading] = useState(true);
   const [saveTimeout, setSaveTimeout] = useState<NodeJS.Timeout | null>(null);
 
@@ -58,7 +59,7 @@ const CalorieCalculator = ({
     loadActivityLevel();
   }, []);
 
-  const saveActivityLevel = async (newLevel: number) => {
+  const saveActivityLevel = async (newLevel: ActivityLevelType) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
@@ -121,7 +122,8 @@ const CalorieCalculator = ({
 
   const calculateDailyCalories = () => {
     const bmr = calculateBMR();
-    const tdee = bmr * activityLevel;
+    const multiplier = getActivityMultiplier(activityLevel);
+    const tdee = bmr * multiplier;
     
     const weightDifference = targetWeight - currentWeight;
     const isGainingWeight = weightDifference > 0;
@@ -139,8 +141,9 @@ const CalorieCalculator = ({
   };
 
   const calculateProteinNeeds = () => {
-    const baseProteinMultiplier = activityLevel >= 1.55 ? 1.0 : 0.8;
-    const maxProteinMultiplier = activityLevel >= 1.55 ? 1.4 : 1.2;
+    const multiplier = getActivityMultiplier(activityLevel);
+    const baseProteinMultiplier = multiplier >= 1.55 ? 1.0 : 0.8;
+    const maxProteinMultiplier = multiplier >= 1.55 ? 1.4 : 1.2;
     
     const minProtein = Math.round(targetWeight * baseProteinMultiplier);
     const maxProtein = Math.round(targetWeight * maxProteinMultiplier);
@@ -148,7 +151,7 @@ const CalorieCalculator = ({
     return { minProtein, maxProtein };
   };
 
-  const handleActivityLevelChange = (newValue: number) => {
+  const handleActivityLevelChange = (newValue: ActivityLevelType) => {
     setActivityLevel(newValue);
     saveActivityLevel(newValue);
   };
