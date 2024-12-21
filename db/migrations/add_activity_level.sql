@@ -1,2 +1,12 @@
+-- Create enum type for activity levels
+CREATE TYPE activity_level_type AS ENUM (
+    'sedentary',
+    'lightly_active',
+    'moderately_active',
+    'very_active',
+    'extra_active'
+);
+
+-- Add activity_level column with default value
 ALTER TABLE user_metrics
-ADD COLUMN activity_level TEXT DEFAULT 'sedentary';
+ADD COLUMN activity_level activity_level_type DEFAULT 'sedentary';
