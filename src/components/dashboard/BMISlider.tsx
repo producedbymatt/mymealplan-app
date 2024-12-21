@@ -21,7 +21,9 @@ const getBMICategory = (bmi: number) => {
 };
 
 const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
-  const [sliderValue, setSliderValue] = React.useState([bmi]);
+  // Constrain BMI value between 15 and 40
+  const constrainedBMI = Math.max(15, Math.min(40, bmi));
+  const [sliderValue, setSliderValue] = React.useState([constrainedBMI]);
   const [thumbPosition, setThumbPosition] = React.useState({ x: 0, y: 0 });
   const [isInteracting, setIsInteracting] = React.useState(false);
   const sliderRef = React.useRef<HTMLDivElement>(null);
@@ -57,8 +59,8 @@ const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
     setIsInteracting(false);
     // Set a timeout to reset the slider value
     resetTimeoutRef.current = setTimeout(() => {
-      setSliderValue([bmi]);
-      onBMIChange([bmi]);
+      setSliderValue([constrainedBMI]);
+      onBMIChange([constrainedBMI]);
     }, 1000); // Reset after 1 second of no interaction
   };
 
@@ -74,8 +76,8 @@ const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
   const simulatedWeight = calculateWeightFromBMI(sliderValue[0], height);
   const bmiCategory = getBMICategory(sliderValue[0]);
   
-  // Calculate the position for the current BMI marker
-  const currentBMIPercentage = ((bmi - 15) / (40 - 15)) * 100;
+  // Calculate the position for the current BMI marker, constrained between 0% and 100%
+  const currentBMIPercentage = Math.max(0, Math.min(100, ((constrainedBMI - 15) / (40 - 15)) * 100));
 
   return (
     <div 
@@ -114,11 +116,11 @@ const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
           }}
         >
           <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-primary text-white px-2 py-0.5 rounded text-xs font-medium whitespace-nowrap shadow-sm">
-            Current: {bmi.toFixed(1)}
+            Current: {constrainedBMI.toFixed(1)}
           </div>
         </div>
         <Slider
-          defaultValue={[bmi]}
+          defaultValue={[constrainedBMI]}
           max={40}
           min={15}
           step={0.1}
