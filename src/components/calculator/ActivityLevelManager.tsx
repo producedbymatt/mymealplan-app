@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabase";
 import { ActivityLevelType } from "@/types/calculator";
 import { toast } from "sonner";
 import ActivityLevelSelect from "./ActivityLevelSelect";
+import { Button } from "@/components/ui/button";
 
 interface ActivityLevelManagerProps {
   onActivityLevelChange: (level: ActivityLevelType) => void;
@@ -10,8 +11,15 @@ interface ActivityLevelManagerProps {
 
 const ActivityLevelManager = ({ onActivityLevelChange }: ActivityLevelManagerProps) => {
   const [activityLevel, setActivityLevel] = useState<ActivityLevelType>('sedentary');
+  const [unsavedChanges, setUnsavedChanges] = useState(false);
 
-  const handleActivityLevelChange = async (newLevel: ActivityLevelType) => {
+  const handleActivityLevelChange = (newLevel: ActivityLevelType) => {
+    setActivityLevel(newLevel);
+    onActivityLevelChange(newLevel);
+    setUnsavedChanges(true);
+  };
+
+  const handleSaveToProfile = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     
     if (!user) {
@@ -22,7 +30,7 @@ const ActivityLevelManager = ({ onActivityLevelChange }: ActivityLevelManagerPro
     const { error } = await supabase
       .from('user_metrics')
       .update({ 
-        activity_level: newLevel,
+        activity_level: activityLevel,
         updated_at: new Date().toISOString()
       })
       .eq('user_id', user.id);
@@ -33,16 +41,25 @@ const ActivityLevelManager = ({ onActivityLevelChange }: ActivityLevelManagerPro
       return;
     }
 
-    setActivityLevel(newLevel);
-    onActivityLevelChange(newLevel);
-    toast.success("Activity level updated successfully");
+    setUnsavedChanges(false);
+    toast.success("Activity level saved to profile");
   };
 
   return (
-    <ActivityLevelSelect 
-      value={activityLevel}
-      onChange={handleActivityLevelChange}
-    />
+    <div className="space-y-4">
+      <ActivityLevelSelect 
+        value={activityLevel}
+        onChange={handleActivityLevelChange}
+      />
+      {unsavedChanges && (
+        <Button 
+          onClick={handleSaveToProfile}
+          className="w-full"
+        >
+          Save to Profile
+        </Button>
+      )}
+    </div>
   );
 };
 
