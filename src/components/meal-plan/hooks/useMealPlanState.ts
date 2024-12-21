@@ -23,19 +23,13 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
     const allOptions = getMealOptionsForTime(timeSlot);
     const availableOptions = allOptions.filter(meal => !excludeNames.has(meal.name));
     
-    if (availableOptions.length < 3) {
-      console.log('Not enough unique recipes available, resetting used recipes list');
+    if (availableOptions.length === 0) {
+      console.log('No unique recipes available, resetting used recipes list');
       setUsedRecipes(new Set());
-      return [...allOptions]
-        .sort(() => Math.random() - 0.5)
-        .slice(0, 3)
-        .map(meal => scaleMeal(meal, caloriesPerMeal));
+      return [scaleMeal(allOptions[Math.floor(Math.random() * allOptions.length)], caloriesPerMeal)];
     }
 
-    return [...availableOptions]
-      .sort(() => Math.random() - 0.5)
-      .slice(0, 3)
-      .map(meal => scaleMeal(meal, caloriesPerMeal));
+    return [scaleMeal(availableOptions[Math.floor(Math.random() * availableOptions.length)], caloriesPerMeal)];
   };
 
   // Update meal plan when calories change
