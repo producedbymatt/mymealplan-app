@@ -15,6 +15,7 @@ const ActivityLevelLoader = ({ onActivityLevelLoaded }: ActivityLevelLoaderProps
       try {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) {
+          console.log('No user found, skipping activity level load');
           setIsLoading(false);
           return;
         }
@@ -30,8 +31,11 @@ const ActivityLevelLoader = ({ onActivityLevelLoaded }: ActivityLevelLoaderProps
         if (error) throw error;
 
         if (data?.activity_level) {
-          console.log('Loaded activity level:', data.activity_level);
-          onActivityLevelLoaded(data.activity_level);
+          console.log('Successfully loaded activity level:', data.activity_level);
+          onActivityLevelLoaded(data.activity_level as ActivityLevelType);
+        } else {
+          console.log('No activity level found, using default');
+          onActivityLevelLoaded('sedentary');
         }
       } catch (error) {
         console.error('Error loading activity level:', error);
