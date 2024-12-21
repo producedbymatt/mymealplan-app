@@ -42,12 +42,12 @@ const MealTimeSlot = ({ time, options, onRefresh, isLast, showFavoritesOnly }: M
       </div>
       
       {options.length > 3 && (
-        <div className="mt-4 flex flex-col items-center gap-2">
+        <div className="mt-6 flex flex-col items-center gap-2 border-t pt-4">
           <Button
-            variant="ghost"
-            size="sm"
+            variant="secondary"
+            size="default"
             onClick={() => setShowAll(!showAll)}
-            className="flex items-center gap-2"
+            className="w-full max-w-[200px] flex items-center justify-center gap-2"
           >
             {showAll ? (
               <>
