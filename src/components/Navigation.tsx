@@ -32,7 +32,7 @@ const Navigation = () => {
   };
 
   return (
-    <div className="w-full bg-[#1E2533] p-4">
+    <div className="w-full bg-[#1E2533] p-4 rounded-[20px]">
       <div className="container mx-auto flex items-center justify-center">
         <Tabs value={location.pathname} onValueChange={handleTabChange} className="w-auto">
           <TabsList className="bg-transparent">
