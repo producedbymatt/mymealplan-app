@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
-import AuthSection from "@/components/dashboard/AuthSection";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import PreviewMessage from "@/components/PreviewMessage";
 
 const Index = () => {
   const [userMetrics, setUserMetrics] = useState({
@@ -113,35 +113,34 @@ const Index = () => {
     }
   };
 
-  if (!session) {
-    return <AuthSection />;
-  }
-
   return (
-    <DashboardLayout
-      hasMetrics={hasMetrics}
-      userMetrics={userMetrics}
-      recommendedCalories={recommendedCalories}
-      onMetricsUpdate={(height, weight) => {
-        setUserMetrics(prev => ({
-          ...prev,
-          height,
-          currentWeight: weight
-        }));
-      }}
-      onGoalSet={(weight, days) => {
-        setUserMetrics(prev => ({
-          ...prev,
-          targetWeight: weight,
-          targetDays: days
-        }));
-      }}
-      onCaloriesCalculated={(calories: number) => {
-        console.log("Setting recommended calories:", calories);
-        setRecommendedCalories(calories);
-      }}
-      onSaveMetrics={saveUserMetrics}
-    />
+    <>
+      {!session && <PreviewMessage />}
+      <DashboardLayout
+        hasMetrics={hasMetrics}
+        userMetrics={userMetrics}
+        recommendedCalories={recommendedCalories}
+        onMetricsUpdate={(height, weight) => {
+          setUserMetrics(prev => ({
+            ...prev,
+            height,
+            currentWeight: weight
+          }));
+        }}
+        onGoalSet={(weight, days) => {
+          setUserMetrics(prev => ({
+            ...prev,
+            targetWeight: weight,
+            targetDays: days
+          }));
+        }}
+        onCaloriesCalculated={(calories: number) => {
+          console.log("Setting recommended calories:", calories);
+          setRecommendedCalories(calories);
+        }}
+        onSaveMetrics={saveUserMetrics}
+      />
+    </>
   );
 };
 
