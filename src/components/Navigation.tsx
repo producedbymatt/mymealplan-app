@@ -57,7 +57,7 @@ const Navigation = () => {
               value="/" 
               className="data-[state=active]:bg-white data-[state=active]:text-[#1E2533] text-white"
             >
-              Home
+              Dashboard
             </TabsTrigger>
             <TabsTrigger 
               value="/calorie-logger"
