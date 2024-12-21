@@ -58,7 +58,7 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
               {groupedMeals[date].map((log) => (
                 <TableRow 
                   key={log.id}
-                  className={dateIndex % 2 === 0 ? "bg-white" : "bg-blue-50/50"}
+                  className={dateIndex % 2 === 0 ? "bg-white" : "bg-blue-100/80"}
                 >
                   <TableCell>{log.meal_name}</TableCell>
                   <TableCell>{log.calories}</TableCell>
