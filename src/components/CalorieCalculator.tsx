@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
+import { supabase } from "@/lib/supabase";
+import { toast } from "sonner";
 
 interface CalorieCalculatorProps {
   height: number;
@@ -18,6 +20,60 @@ const CalorieCalculator = ({
   onCaloriesCalculated 
 }: CalorieCalculatorProps) => {
   const [activityLevel, setActivityLevel] = useState([1.2]); // Default to sedentary
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Load activity level from database
+  useEffect(() => {
+    const loadActivityLevel = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        const { data, error } = await supabase
+          .from('user_metrics')
+          .select('activity_level')
+          .eq('user_id', user.id)
+          .single();
+
+        if (error) throw error;
+
+        if (data?.activity_level) {
+          console.log('Loaded activity level:', data.activity_level);
+          setActivityLevel([data.activity_level]);
+        }
+      } catch (error) {
+        console.error('Error loading activity level:', error);
+        toast.error("Failed to load activity level");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadActivityLevel();
+  }, []);
+
+  // Save activity level to database
+  const saveActivityLevel = async (newLevel: number) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error("Please log in to save your activity level");
+        return;
+      }
+
+      const { error } = await supabase
+        .from('user_metrics')
+        .update({ activity_level: newLevel })
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+
+      console.log('Saved activity level:', newLevel);
+    } catch (error) {
+      console.error('Error saving activity level:', error);
+      toast.error("Failed to save activity level");
+    }
+  };
 
   const calculateBMR = () => {
     const weightInKg = currentWeight * 0.453592;
@@ -56,6 +112,11 @@ const CalorieCalculator = ({
     const maxProtein = Math.round(targetWeight * maxProteinMultiplier);
     
     return { minProtein, maxProtein };
+  };
+
+  const handleActivityLevelChange = (newValue: number[]) => {
+    setActivityLevel(newValue);
+    saveActivityLevel(newValue[0]);
   };
 
   const getActivityLevelLabel = (level: number) => {
@@ -97,6 +158,22 @@ const CalorieCalculator = ({
     onCaloriesCalculated?.(dailyCalories);
   }, [dailyCalories, onCaloriesCalculated]);
 
+  if (isLoading) {
+    return (
+      <Card className="p-6 w-full max-w-2xl mx-auto mt-4">
+        <div className="animate-pulse space-y-4">
+          <div className="h-4 bg-gray-200 rounded w-1/4 mx-auto"></div>
+          <div className="h-2 bg-gray-200 rounded"></div>
+          <div className="h-8 bg-gray-200 rounded"></div>
+          <div className="space-y-2">
+            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+          </div>
+        </div>
+      </Card>
+    );
+  }
+
   return (
     <Card className="p-6 w-full max-w-2xl mx-auto mt-4">
       <h2 className="text-2xl font-bold mb-4 text-center">Calorie Analysis</h2>
@@ -105,7 +182,7 @@ const CalorieCalculator = ({
         <label className="block text-sm font-medium mb-2">Activity Level</label>
         <Slider
           value={activityLevel}
-          onValueChange={setActivityLevel}
+          onValueChange={handleActivityLevelChange}
           min={1.2}
           max={1.9}
           step={0.025}
