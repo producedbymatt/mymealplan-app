@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 
@@ -28,29 +27,13 @@ const Navigation = () => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const handleSignOut = async () => {
-    console.log("Starting sign out process...");
-    
-    const { error } = await supabase.auth.signOut();
-    
-    if (error) {
-      console.error("Error signing out:", error);
-      toast.error("Error signing out");
-      return;
-    }
-    
-    console.log("Sign out successful");
-    toast.success("Signed out successfully");
-    navigate("/");
-  };
-
   const handleTabChange = (value: string) => {
     navigate(value);
   };
 
   return (
     <div className="w-full bg-[#1E2533] p-4">
-      <div className="container mx-auto flex items-center justify-between">
+      <div className="container mx-auto flex items-center justify-center">
         <Tabs value={location.pathname} onValueChange={handleTabChange} className="w-auto">
           <TabsList className="bg-transparent">
             <TabsTrigger 
@@ -79,20 +62,6 @@ const Navigation = () => {
             </TabsTrigger>
           </TabsList>
         </Tabs>
-        
-        <Button
-          variant={session ? "destructive" : "default"}
-          className={session ? "bg-red-600 hover:bg-red-700" : ""}
-          onClick={async () => {
-            if (session) {
-              await handleSignOut();
-            } else {
-              navigate("/");
-            }
-          }}
-        >
-          {session ? "Sign Out" : "Sign In"}
-        </Button>
       </div>
     </div>
   );
