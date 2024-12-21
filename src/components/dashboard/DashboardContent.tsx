@@ -26,6 +26,7 @@ interface DashboardContentProps {
   onMetricsUpdate: (height: number, weight: number) => void;
   onGoalSet: (weight: number, days: number) => void;
   onCaloriesCalculated: (calories: number) => void;
+  onSaveMetrics: () => void;
 }
 
 const DashboardContent = ({
@@ -35,6 +36,7 @@ const DashboardContent = ({
   onMetricsUpdate,
   onGoalSet,
   onCaloriesCalculated,
+  onSaveMetrics,
 }: DashboardContentProps) => {
   const [weightEntries, setWeightEntries] = useState<WeightEntry[]>([]);
   const { loadWeightLogs } = useWeightLogs(false);
@@ -88,6 +90,7 @@ const DashboardContent = ({
           <CalorieCalculator
             {...userMetrics}
             onCaloriesCalculated={onCaloriesCalculated}
+            onSaveMetrics={onSaveMetrics}
           />
         </div>
       )}

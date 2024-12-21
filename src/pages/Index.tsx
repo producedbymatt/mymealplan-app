@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
-import AuthForm from "@/components/auth/AuthForm";
-import DashboardContent from "@/components/dashboard/DashboardContent";
-import MetricsPrompt from "@/components/dashboard/MetricsPrompt";
-import Footer from "@/components/Footer";
-import Header from "@/components/Header";
 import { toast } from "sonner";
+import AuthSection from "@/components/dashboard/AuthSection";
+import DashboardLayout from "@/components/dashboard/DashboardLayout";
 
 const Index = () => {
   const [userMetrics, setUserMetrics] = useState({
@@ -19,7 +16,6 @@ const Index = () => {
   const [recommendedCalories, setRecommendedCalories] = useState(1200);
   const [session, setSession] = useState<any>(null);
   const [hasMetrics, setHasMetrics] = useState(false);
-  const [lastSavedMetrics, setLastSavedMetrics] = useState<string>("");
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -56,7 +52,6 @@ const Index = () => {
         return;
       }
 
-      // Check if we have any metrics
       if (data && data.length > 0) {
         console.log('Loaded user metrics:', data[0]);
         setUserMetrics({
@@ -68,15 +63,6 @@ const Index = () => {
         });
         setRecommendedCalories(data[0].recommended_calories || 1200);
         setHasMetrics(true);
-        // Store the last saved state
-        setLastSavedMetrics(JSON.stringify({
-          height: data[0].height,
-          current_weight: data[0].current_weight,
-          target_weight: data[0].target_weight,
-          target_days: data[0].target_days,
-          recommended_calories: data[0].recommended_calories,
-          gender: data[0].gender,
-        }));
       } else {
         console.log('No metrics found for user');
         setHasMetrics(false);
@@ -92,24 +78,10 @@ const Index = () => {
       return;
     }
 
-    const currentMetrics = {
-      height: userMetrics.height,
-      current_weight: userMetrics.currentWeight,
-      target_weight: userMetrics.targetWeight,
-      target_days: userMetrics.targetDays,
-      recommended_calories: recommendedCalories,
-      gender: userMetrics.gender,
-    };
-
-    // Check if metrics have actually changed
-    if (JSON.stringify(currentMetrics) === lastSavedMetrics) {
-      console.log('Metrics unchanged, skipping save');
-      return;
-    }
-
-    console.log('Attempting to save user metrics:', {
+    console.log('Saving user metrics:', {
       user_id: session.user.id,
-      ...currentMetrics,
+      ...userMetrics,
+      recommended_calories: recommendedCalories,
     });
 
     try {
@@ -135,7 +107,6 @@ const Index = () => {
       console.log('Successfully saved user metrics');
       toast.success("Your metrics have been saved");
       setHasMetrics(true);
-      setLastSavedMetrics(JSON.stringify(currentMetrics));
     } catch (err) {
       console.error('Exception while saving metrics:', err);
       toast.error("An unexpected error occurred while saving your metrics");
@@ -143,78 +114,34 @@ const Index = () => {
   };
 
   if (!session) {
-    return (
-      <div className="min-h-screen bg-gray-50 py-8 flex flex-col">
-        <div className="container mx-auto px-4 flex-grow">
-          <Header />
-          <h1 className="text-4xl font-bold text-center mb-4">
-            Your Goals, Your Meals, Your Plan.
-          </h1>
-          <p className="text-lg text-gray-600 text-center mb-8 max-w-3xl mx-auto">
-            Calculate your recommended daily calorie and protein intake, get a custom meal plan designed to meet your goals, and track your progress.
-          </p>
-
-          <div className="mb-12 bg-white rounded-lg shadow-md p-6">
-            <AuthForm />
-          </div>
-        </div>
-        <Footer />
-      </div>
-    );
+    return <AuthSection />;
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 flex flex-col">
-      <div className="container mx-auto px-4 flex-grow">
-        <Header />
-        <h1 className="text-4xl font-bold text-center mb-4">
-          Your Goals, Your Meals, Your Plan.
-        </h1>
-        <p className="text-lg text-gray-600 text-center mb-8 max-w-3xl mx-auto">
-          Calculate your recommended daily calorie and protein intake, get a custom meal plan designed to meet your goals, and track your progress.
-        </p>
-
-        {!session ? (
-          <div className="mb-12 bg-white rounded-lg shadow-md p-6">
-            <AuthForm />
-          </div>
-        ) : (
-          <>
-            {!hasMetrics && <MetricsPrompt />}
-            
-            <div className="mt-8">
-              <DashboardContent
-                userMetrics={userMetrics}
-                recommendedCalories={recommendedCalories}
-                hasMetrics={hasMetrics}
-                onMetricsUpdate={(height, weight) => {
-                  setUserMetrics(prev => ({
-                    ...prev,
-                    height,
-                    currentWeight: weight
-                  }));
-                  saveUserMetrics();
-                }}
-                onGoalSet={(weight, days) => {
-                  setUserMetrics(prev => ({
-                    ...prev,
-                    targetWeight: weight,
-                    targetDays: days
-                  }));
-                  saveUserMetrics();
-                }}
-                onCaloriesCalculated={(calories: number) => {
-                  console.log("Setting recommended calories:", calories);
-                  setRecommendedCalories(calories);
-                  saveUserMetrics();
-                }}
-              />
-            </div>
-          </>
-        )}
-      </div>
-      <Footer />
-    </div>
+    <DashboardLayout
+      hasMetrics={hasMetrics}
+      userMetrics={userMetrics}
+      recommendedCalories={recommendedCalories}
+      onMetricsUpdate={(height, weight) => {
+        setUserMetrics(prev => ({
+          ...prev,
+          height,
+          currentWeight: weight
+        }));
+      }}
+      onGoalSet={(weight, days) => {
+        setUserMetrics(prev => ({
+          ...prev,
+          targetWeight: weight,
+          targetDays: days
+        }));
+      }}
+      onCaloriesCalculated={(calories: number) => {
+        console.log("Setting recommended calories:", calories);
+        setRecommendedCalories(calories);
+      }}
+      onSaveMetrics={saveUserMetrics}
+    />
   );
 };
 
