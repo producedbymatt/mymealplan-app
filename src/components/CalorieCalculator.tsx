@@ -20,23 +20,23 @@ interface CalorieCalculatorProps {
 
 // Using enum values that exactly match the database enum type
 const ACTIVITY_LEVELS = {
-  "low": {
+  "sedentary": {
     label: "Sedentary (little or no exercise)",
     value: 1.2
   },
-  "light": {
+  "lightly_active": {
     label: "Lightly active (exercise 1-3 times/week)",
     value: 1.375
   },
-  "moderate": {
+  "moderately_active": {
     label: "Moderately active (exercise 3-5 times/week)",
     value: 1.55
   },
-  "high": {
+  "very_active": {
     label: "Very active (exercise 6-7 times/week)",
     value: 1.725
   },
-  "very_high": {
+  "extra_active": {
     label: "Extra active (very intense exercise daily)",
     value: 1.9
   }
@@ -50,7 +50,7 @@ const CalorieCalculator = ({
   onCaloriesCalculated 
 }: CalorieCalculatorProps) => {
   const [activityLevel, setActivityLevel] = useState<number>(1.2); // Default to sedentary
-  const [selectedActivityKey, setSelectedActivityKey] = useState<keyof typeof ACTIVITY_LEVELS>("low");
+  const [selectedActivityKey, setSelectedActivityKey] = useState<keyof typeof ACTIVITY_LEVELS>("sedentary");
 
   useEffect(() => {
     loadActivityLevel();
@@ -248,5 +248,3 @@ const CalorieCalculator = ({
     </Card>
   );
 };
-
-export default CalorieCalculator;
