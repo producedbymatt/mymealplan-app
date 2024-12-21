@@ -43,7 +43,7 @@ const ActivityLevelManager = ({ onActivityLevelChange }: ActivityLevelManagerPro
               .eq('user_id', user.id);
 
             if (error) {
-              if (error.code === '40P01') {
+              if (error.code === '40P01') { // Deadlock error code
                 retryCount++;
                 if (retryCount < maxRetries) {
                   await new Promise(resolve => setTimeout(resolve, Math.random() * 400 + 100));
@@ -72,6 +72,7 @@ const ActivityLevelManager = ({ onActivityLevelChange }: ActivityLevelManagerPro
   };
 
   const handleActivityLevelChange = (newLevel: ActivityLevelType) => {
+    console.log('Activity level changed to:', newLevel);
     setActivityLevel(newLevel);
     onActivityLevelChange(newLevel);
     saveActivityLevel(newLevel);
