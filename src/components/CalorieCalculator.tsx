@@ -18,25 +18,25 @@ interface CalorieCalculatorProps {
   onCaloriesCalculated?: (calories: number) => void;
 }
 
-// Using enum values that match the database
+// Using enum values that exactly match the database enum type
 const ACTIVITY_LEVELS = {
-  "SEDENTARY": {
+  "sedentary": {
     label: "Sedentary (little or no exercise)",
     value: 1.2
   },
-  "LIGHT": {
+  "light": {
     label: "Lightly active (exercise 1-3 times/week)",
     value: 1.375
   },
-  "MODERATE": {
+  "moderate": {
     label: "Moderately active (exercise 3-5 times/week)",
     value: 1.55
   },
-  "VERY": {
+  "very_active": {
     label: "Very active (exercise 6-7 times/week)",
     value: 1.725
   },
-  "EXTRA": {
+  "extra_active": {
     label: "Extra active (very intense exercise daily)",
     value: 1.9
   }
@@ -50,7 +50,7 @@ const CalorieCalculator = ({
   onCaloriesCalculated 
 }: CalorieCalculatorProps) => {
   const [activityLevel, setActivityLevel] = useState<number>(1.2); // Default to sedentary
-  const [selectedActivityKey, setSelectedActivityKey] = useState<keyof typeof ACTIVITY_LEVELS>("SEDENTARY");
+  const [selectedActivityKey, setSelectedActivityKey] = useState<keyof typeof ACTIVITY_LEVELS>("sedentary");
 
   useEffect(() => {
     loadActivityLevel();
@@ -61,6 +61,7 @@ const CalorieCalculator = ({
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
+      console.log('Loading activity level for user:', user.id);
       const { data, error } = await supabase
         .from('user_metrics')
         .select('activity_level')
@@ -75,9 +76,9 @@ const CalorieCalculator = ({
 
       if (data && data.length > 0 && data[0].activity_level) {
         const storedLevel = data[0].activity_level as keyof typeof ACTIVITY_LEVELS;
+        console.log('Retrieved activity level from database:', storedLevel);
         setSelectedActivityKey(storedLevel);
         setActivityLevel(ACTIVITY_LEVELS[storedLevel].value);
-        console.log('Loaded activity level:', storedLevel);
       }
     } catch (err) {
       console.error('Error in loadActivityLevel:', err);
@@ -92,7 +93,7 @@ const CalorieCalculator = ({
         return;
       }
 
-      console.log('Saving activity level:', level);
+      console.log('Attempting to save activity level:', level);
       const { error } = await supabase
         .from('user_metrics')
         .update({ 
