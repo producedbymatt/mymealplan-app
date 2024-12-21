@@ -52,7 +52,56 @@ CREATE TABLE IF NOT EXISTS recipes (
     difficulty_level VARCHAR(20) NOT NULL
 );
 
--- ... keep existing code (breakfast recipe entries)
+-- Insert breakfast recipes
+INSERT INTO recipes (name, calories, protein, carbs, fat, prep_time, cook_time, ingredients, instructions, meal_type, category, difficulty_level)
+VALUES 
+    ('Classic Oatmeal with Berries', 
+    300, 
+    10, 
+    45, 
+    8, 
+    '5 minutes', 
+    '10 minutes',
+    '[
+        {"item": "Rolled oats", "amount": "1 cup"},
+        {"item": "Mixed berries", "amount": "1 cup"},
+        {"item": "Honey", "amount": "1 tablespoon"},
+        {"item": "Milk", "amount": "1 cup"}
+    ]'::jsonb,
+    '[
+        "Bring milk to a boil",
+        "Add oats and reduce heat",
+        "Cook for 5 minutes",
+        "Top with berries and honey"
+    ]'::jsonb,
+    'breakfast',
+    'oatmeal_and_bowls',
+    'easy'
+    ),
+    ('Protein Pancakes', 
+    400, 
+    25, 
+    35, 
+    15, 
+    '10 minutes', 
+    '15 minutes',
+    '[
+        {"item": "Protein powder", "amount": "2 scoops"},
+        {"item": "Eggs", "amount": "2"},
+        {"item": "Banana", "amount": "1"},
+        {"item": "Oat flour", "amount": "1/2 cup"}
+    ]'::jsonb,
+    '[
+        "Blend all ingredients",
+        "Heat pan over medium heat",
+        "Pour batter to form pancakes",
+        "Cook until bubbles form",
+        "Flip and cook other side"
+    ]'::jsonb,
+    'breakfast',
+    'protein_based',
+    'medium'
+    );
 
 -- Notify PostgREST to refresh its schema cache
 NOTIFY pgrst, 'reload schema';
