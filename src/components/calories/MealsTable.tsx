@@ -56,6 +56,13 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
                 </TableRow>
               )}
               <TableRow>
+                <TableCell colSpan={5} className="pb-2 pt-4">
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    {format(new Date(date), "EEEE, MMMM do")}
+                  </h3>
+                </TableCell>
+              </TableRow>
+              <TableRow>
                 <TableCell colSpan={5} className="p-0">
                   <div className="border-2 border-black rounded-lg overflow-hidden">
                     <Table>
