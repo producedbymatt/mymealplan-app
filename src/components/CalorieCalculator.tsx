@@ -62,6 +62,7 @@ const CalorieCalculator = ({
 
   const handleActivityLevelChange = (newLevel: ActivityLevelType) => {
     setActivityLevel(newLevel);
+    // We'll let the ActivityLevelManager handle the saving now
   };
 
   const dailyCalories = calculateDailyCalories();
