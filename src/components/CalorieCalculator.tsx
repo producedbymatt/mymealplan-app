@@ -185,6 +185,8 @@ const CalorieCalculator = ({
           weeklyChange={weeklyChange}
           warningMessage={weightChangeWarning.message}
           warningColor={weightChangeWarning.color}
+          bmr={bmr}
+          activityLevel={activityLevel}
         />
       </div>
     </Card>

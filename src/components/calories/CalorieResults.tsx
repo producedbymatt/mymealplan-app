@@ -7,6 +7,8 @@ interface CalorieResultsProps {
   weeklyChange: number;
   warningMessage: string;
   warningColor: string;
+  bmr: number;
+  activityLevel: number;
 }
 
 const CalorieResults = ({
@@ -18,13 +20,39 @@ const CalorieResults = ({
   weeklyChange,
   warningMessage,
   warningColor,
+  bmr,
+  activityLevel,
 }: CalorieResultsProps) => {
+  const tdee = Math.round(bmr * activityLevel);
+  const calorieDeficitOrSurplus = Math.abs(dailyCalories - tdee);
+
   return (
     <div className="space-y-4">
       <div className="text-center">
         <p className="text-lg font-semibold">
           Recommended Daily Calories:
           <span className="block text-2xl text-green-600">{dailyCalories} calories</span>
+        </p>
+      </div>
+
+      <div className="bg-blue-50 p-4 rounded-lg space-y-2">
+        <h3 className="font-semibold text-blue-800">Your Daily Energy Breakdown:</h3>
+        <p className="text-sm text-blue-700">
+          • Basal Metabolic Rate (BMR): <span className="font-medium">{Math.round(bmr)} calories</span>
+          <br />
+          <span className="text-xs">This is what your body burns at complete rest</span>
+        </p>
+        <p className="text-sm text-blue-700">
+          • Total Daily Energy Expenditure (TDEE): <span className="font-medium">{tdee} calories</span>
+          <br />
+          <span className="text-xs">This is your BMR adjusted for your activity level</span>
+        </p>
+        <p className="text-sm text-blue-700">
+          • Daily {dailyCalories > tdee ? "Surplus" : "Deficit"}: <span className="font-medium">{calorieDeficitOrSurplus} calories</span>
+          <br />
+          <span className="text-xs">
+            This {dailyCalories > tdee ? "surplus" : "deficit"} will help you {dailyCalories > tdee ? "gain" : "lose"} weight at your target rate
+          </span>
         </p>
       </div>
 
