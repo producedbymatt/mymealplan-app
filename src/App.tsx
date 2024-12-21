@@ -3,7 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import Index from "./pages/Index";
 import CalorieLogger from "./pages/CalorieLogger";
 import WeightTracking from "./pages/WeightTracking";
@@ -50,7 +50,16 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 const Layout = ({ children }: { children: React.ReactNode }) => (
   <div className="min-h-screen">
-    <Navigation />
+    <div className="w-full bg-[#1E2533] pt-4">
+      <div className="container mx-auto flex flex-col items-center">
+        <img 
+          src="/lovable-uploads/67003c76-1908-4b2f-93d3-01ea4a4cf510.png" 
+          alt="MyMealPlan Logo" 
+          className="h-24 w-auto mb-4"
+        />
+        <Navigation />
+      </div>
+    </div>
     {children}
   </div>
 );

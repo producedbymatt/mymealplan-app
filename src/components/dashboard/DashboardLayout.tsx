@@ -1,5 +1,4 @@
 import React from "react";
-import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import MetricsPrompt from "@/components/dashboard/MetricsPrompt";
 import DashboardContent from "@/components/dashboard/DashboardContent";
@@ -32,7 +31,6 @@ const DashboardLayout = ({
   return (
     <div className="min-h-screen bg-gray-50 py-8 flex flex-col">
       <div className="container mx-auto px-4 flex-grow">
-        <Header />
         <h1 className="text-4xl font-bold text-center mb-4">
           Your Goals, Your Meals, Your Plan.
         </h1>
