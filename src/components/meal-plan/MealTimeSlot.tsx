@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { RefreshCw } from "lucide-react";
+import { RefreshCw, ChevronDown, ChevronUp } from "lucide-react";
 import MealOption from "./MealOption";
 import { Separator } from "@/components/ui/separator";
 import { Meal } from "./types";
@@ -14,6 +14,9 @@ interface MealTimeSlotProps {
 }
 
 const MealTimeSlot = ({ time, options, onRefresh, isLast, showFavoritesOnly }: MealTimeSlotProps) => {
+  const [showAll, setShowAll] = useState(false);
+  const displayedOptions = showAll ? options : options.slice(0, 3);
+
   return (
     <div className="mb-6">
       <div className="flex justify-between items-center mb-3">
@@ -29,7 +32,7 @@ const MealTimeSlot = ({ time, options, onRefresh, isLast, showFavoritesOnly }: M
         </Button>
       </div>
       <div className="grid gap-4">
-        {options.map((meal, index) => (
+        {displayedOptions.map((meal, index) => (
           <MealOption 
             key={`${meal.name}-${index}`}
             meal={meal} 
@@ -37,6 +40,31 @@ const MealTimeSlot = ({ time, options, onRefresh, isLast, showFavoritesOnly }: M
           />
         ))}
       </div>
+      
+      {options.length > 3 && (
+        <div className="mt-4 flex flex-col items-center gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setShowAll(!showAll)}
+            className="flex items-center gap-2"
+          >
+            {showAll ? (
+              <>
+                Show Less <ChevronUp className="h-4 w-4" />
+              </>
+            ) : (
+              <>
+                Show All <ChevronDown className="h-4 w-4" />
+              </>
+            )}
+          </Button>
+          <p className="text-sm text-muted-foreground">
+            Total recipes in {time}: {options.length}
+          </p>
+        </div>
+      )}
+      
       {!isLast && <Separator className="mt-6" />}
     </div>
   );
