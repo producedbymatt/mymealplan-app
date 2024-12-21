@@ -25,6 +25,7 @@ const CalorieResults = ({
 }: CalorieResultsProps) => {
   const tdee = Math.round(bmr * activityLevel);
   const calorieDeficitOrSurplus = Math.abs(dailyCalories - tdee);
+  const weeklyWeightChange = (calorieDeficitOrSurplus * 7) / 3500; // 3500 calories = 1 pound
 
   return (
     <div className="space-y-4">
@@ -52,6 +53,10 @@ const CalorieResults = ({
           <br />
           <span className="text-xs">
             This {dailyCalories > tdee ? "surplus" : "deficit"} will help you {dailyCalories > tdee ? "gain" : "lose"} weight at your target rate
+          </span>
+          <br />
+          <span className="text-xs font-medium mt-1 block">
+            Expected weekly {dailyCalories > tdee ? "gain" : "loss"}: {weeklyWeightChange.toFixed(2)} lbs
           </span>
         </p>
       </div>
