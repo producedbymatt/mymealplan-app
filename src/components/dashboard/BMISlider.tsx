@@ -116,7 +116,7 @@ const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
           }}
         >
           <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-primary text-white px-2 py-0.5 rounded text-xs font-medium whitespace-nowrap shadow-sm">
-            Current: {constrainedBMI.toFixed(1)}
+            Current: {bmi.toFixed(1)}
           </div>
         </div>
         <Slider
