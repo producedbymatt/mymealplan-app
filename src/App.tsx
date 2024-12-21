@@ -50,10 +50,10 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 const Layout = ({ children }: { children: React.ReactNode }) => (
   <div className="min-h-screen">
-    <div className="w-full bg-[#1E2533]">
+    <div className="w-full bg-background">
       <div className="container mx-auto flex flex-col items-center">
         <img 
-          src="/lovable-uploads/f6662a44-ab76-41ca-890b-b9da00a755af.png" 
+          src="/lovable-uploads/67003c76-1908-4b2f-93d3-01ea4a4cf510.png" 
           alt="MyMealPlan Logo" 
           className="h-24 w-auto mb-4"
         />
