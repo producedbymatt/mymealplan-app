@@ -30,6 +30,7 @@ const CalorieCalculator = ({
   const [activityLevel, setActivityLevel] = useState<number>(ACTIVITY_LEVELS.sedentary.value);
   const [selectedActivityKey, setSelectedActivityKey] = useState<ActivityLevelKey>("sedentary");
   const [isInitialized, setIsInitialized] = useState(false);
+  const [isUserChange, setIsUserChange] = useState(false);
 
   useEffect(() => {
     const initializeActivityLevel = async () => {
@@ -37,6 +38,7 @@ const CalorieCalculator = ({
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) {
           console.log('No user found, using default activity level');
+          setIsInitialized(true);
           return;
         }
 
@@ -50,6 +52,7 @@ const CalorieCalculator = ({
 
         if (error) {
           console.error('Error loading activity level:', error);
+          setIsInitialized(true);
           return;
         }
 
@@ -57,7 +60,6 @@ const CalorieCalculator = ({
           const storedLevel = data[0].activity_level as ActivityLevelKey;
           console.log('Retrieved activity level from database:', storedLevel);
           
-          // Set both the key and the numerical value
           setSelectedActivityKey(storedLevel);
           setActivityLevel(ACTIVITY_LEVELS[storedLevel].value);
           
@@ -79,6 +81,12 @@ const CalorieCalculator = ({
   }, [isInitialized]);
 
   const saveActivityLevel = async (level: ActivityLevelKey) => {
+    // Only save if this is a user-initiated change and not initial load
+    if (!isUserChange) {
+      console.log('Skipping save - not a user-initiated change');
+      return;
+    }
+
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
@@ -111,6 +119,7 @@ const CalorieCalculator = ({
 
   const handleActivityChange = async (value: ActivityLevelKey) => {
     console.log("Activity level changed to:", value);
+    setIsUserChange(true);
     setSelectedActivityKey(value);
     const newActivityLevel = ACTIVITY_LEVELS[value].value;
     setActivityLevel(newActivityLevel);
@@ -130,7 +139,7 @@ const CalorieCalculator = ({
   }, [dailyCalories, onCaloriesCalculated]);
 
   if (!isInitialized) {
-    return null; // Or a loading spinner if you prefer
+    return null;
   }
 
   return (
