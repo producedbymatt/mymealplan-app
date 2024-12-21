@@ -29,46 +29,54 @@ const CalorieCalculator = ({
 }: CalorieCalculatorProps) => {
   const [activityLevel, setActivityLevel] = useState<number>(ACTIVITY_LEVELS.sedentary.value);
   const [selectedActivityKey, setSelectedActivityKey] = useState<ActivityLevelKey>("sedentary");
+  const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    loadActivityLevel();
-  }, []);
+    const initializeActivityLevel = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+          console.log('No user found, using default activity level');
+          return;
+        }
 
-  const loadActivityLevel = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+        console.log('Loading activity level for user:', user.id);
+        const { data, error } = await supabase
+          .from('user_metrics')
+          .select('activity_level')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(1);
 
-      console.log('Loading activity level for user:', user.id);
-      const { data, error } = await supabase
-        .from('user_metrics')
-        .select('activity_level')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(1);
+        if (error) {
+          console.error('Error loading activity level:', error);
+          return;
+        }
 
-      if (error) {
-        console.error('Error loading activity level:', error);
-        return;
+        if (data && data.length > 0 && data[0].activity_level) {
+          const storedLevel = data[0].activity_level as ActivityLevelKey;
+          console.log('Retrieved activity level from database:', storedLevel);
+          
+          // Set both the key and the numerical value
+          setSelectedActivityKey(storedLevel);
+          setActivityLevel(ACTIVITY_LEVELS[storedLevel].value);
+          
+          console.log('Updated activity states:', {
+            key: storedLevel,
+            value: ACTIVITY_LEVELS[storedLevel].value
+          });
+        }
+      } catch (err) {
+        console.error('Error in initializeActivityLevel:', err);
+      } finally {
+        setIsInitialized(true);
       }
+    };
 
-      if (data && data.length > 0 && data[0].activity_level) {
-        const storedLevel = data[0].activity_level as ActivityLevelKey;
-        console.log('Retrieved activity level from database:', storedLevel);
-        
-        // Set both the key and the numerical value
-        setSelectedActivityKey(storedLevel);
-        setActivityLevel(ACTIVITY_LEVELS[storedLevel].value);
-        
-        console.log('Updated activity states:', {
-          key: storedLevel,
-          value: ACTIVITY_LEVELS[storedLevel].value
-        });
-      }
-    } catch (err) {
-      console.error('Error in loadActivityLevel:', err);
+    if (!isInitialized) {
+      initializeActivityLevel();
     }
-  };
+  }, [isInitialized]);
 
   const saveActivityLevel = async (level: ActivityLevelKey) => {
     try {
@@ -120,6 +128,10 @@ const CalorieCalculator = ({
   useEffect(() => {
     onCaloriesCalculated?.(dailyCalories);
   }, [dailyCalories, onCaloriesCalculated]);
+
+  if (!isInitialized) {
+    return null; // Or a loading spinner if you prefer
+  }
 
   return (
     <Card className="p-6 w-full max-w-2xl mx-auto mt-4">
