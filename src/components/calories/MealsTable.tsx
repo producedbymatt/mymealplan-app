@@ -38,11 +38,11 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Meal Name</TableHead>
-            <TableHead>Calories</TableHead>
-            <TableHead>Time</TableHead>
-            <TableHead>Date</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+            <TableHead className="w-1/4">Meal Name</TableHead>
+            <TableHead className="w-1/6">Calories</TableHead>
+            <TableHead className="w-1/6">Time</TableHead>
+            <TableHead className="w-1/4">Date</TableHead>
+            <TableHead className="w-1/6 text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
