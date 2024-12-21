@@ -21,13 +21,17 @@ const CalorieCalculator = ({
 }: CalorieCalculatorProps) => {
   const [activityLevel, setActivityLevel] = useState([1.2]); // Default to sedentary
   const [isLoading, setIsLoading] = useState(true);
+  const [saveTimeout, setSaveTimeout] = useState<NodeJS.Timeout | null>(null);
 
   // Load activity level from database
   useEffect(() => {
     const loadActivityLevel = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return;
+        if (!user) {
+          setIsLoading(false);
+          return;
+        }
 
         const { data, error } = await supabase
           .from('user_metrics')
@@ -52,7 +56,7 @@ const CalorieCalculator = ({
     loadActivityLevel();
   }, []);
 
-  // Save activity level to database
+  // Save activity level to database with debounce and retry
   const saveActivityLevel = async (newLevel: number) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -61,16 +65,50 @@ const CalorieCalculator = ({
         return;
       }
 
-      const { error } = await supabase
-        .from('user_metrics')
-        .update({ activity_level: newLevel })
-        .eq('user_id', user.id);
+      // Clear any pending save timeout
+      if (saveTimeout) {
+        clearTimeout(saveTimeout);
+      }
 
-      if (error) throw error;
+      // Set a new timeout to save after 500ms of no changes
+      const timeout = setTimeout(async () => {
+        const maxRetries = 3;
+        let retryCount = 0;
+        let success = false;
 
-      console.log('Saved activity level:', newLevel);
+        while (!success && retryCount < maxRetries) {
+          try {
+            const { error } = await supabase
+              .from('user_metrics')
+              .update({ activity_level: newLevel })
+              .eq('user_id', user.id);
+
+            if (error) {
+              if (error.code === '40P01') { // Deadlock error code
+                retryCount++;
+                if (retryCount < maxRetries) {
+                  // Wait for a random time between 100-500ms before retrying
+                  await new Promise(resolve => setTimeout(resolve, Math.random() * 400 + 100));
+                  continue;
+                }
+              }
+              throw error;
+            }
+
+            success = true;
+            console.log('Saved activity level:', newLevel);
+          } catch (error) {
+            console.error(`Error saving activity level (attempt ${retryCount + 1}):`, error);
+            if (retryCount === maxRetries - 1) {
+              toast.error("Failed to save activity level");
+            }
+          }
+        }
+      }, 500);
+
+      setSaveTimeout(timeout);
     } catch (error) {
-      console.error('Error saving activity level:', error);
+      console.error('Error in saveActivityLevel:', error);
       toast.error("Failed to save activity level");
     }
   };
