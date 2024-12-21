@@ -61,7 +61,10 @@ const MealTimeSlot = ({ time, options, onRefresh, isLast, showFavoritesOnly }: M
           )}
         </Button>
         <p className="text-sm text-muted-foreground">
-          Total recipes in {time}: {options.length}
+          {showAll 
+            ? `Showing all ${options.length} recipes`
+            : `Showing 3 of ${options.length} recipes`
+          }
         </p>
       </div>
       
