@@ -27,7 +27,7 @@ const CalorieCalculator = ({
   targetDays,
   onCaloriesCalculated 
 }: CalorieCalculatorProps) => {
-  const [activityLevel, setActivityLevel] = useState<number>(1.2);
+  const [activityLevel, setActivityLevel] = useState<number>(ACTIVITY_LEVELS.sedentary.value);
   const [selectedActivityKey, setSelectedActivityKey] = useState<ActivityLevelKey>("sedentary");
 
   useEffect(() => {
@@ -97,7 +97,8 @@ const CalorieCalculator = ({
   const handleActivityChange = async (value: ActivityLevelKey) => {
     console.log("Activity level changed to:", value);
     setSelectedActivityKey(value);
-    setActivityLevel(ACTIVITY_LEVELS[value].value);
+    const newActivityLevel = ACTIVITY_LEVELS[value].value;
+    setActivityLevel(newActivityLevel);
     await saveActivityLevel(value);
   };
 
