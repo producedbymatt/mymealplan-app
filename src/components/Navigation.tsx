@@ -51,41 +51,34 @@ const Navigation = () => {
   return (
     <div className="w-full bg-[#1E2533] p-4">
       <div className="container mx-auto flex items-center justify-between">
-        <div className="flex items-center gap-8">
-          <img 
-            src="/lovable-uploads/67003c76-1908-4b2f-93d3-01ea4a4cf510.png" 
-            alt="MyMealPlan Logo" 
-            className="h-8 w-auto"
-          />
-          <Tabs value={location.pathname} onValueChange={handleTabChange} className="w-auto">
-            <TabsList className="bg-transparent">
-              <TabsTrigger 
-                value="/" 
-                className="data-[state=active]:bg-white data-[state=active]:text-[#1E2533] text-white"
-              >
-                Dashboard
-              </TabsTrigger>
-              <TabsTrigger 
-                value="/calorie-logger"
-                className="data-[state=active]:bg-white data-[state=active]:text-[#1E2533] text-white"
-              >
-                Charts
-              </TabsTrigger>
-              <TabsTrigger 
-                value="/weight-tracking"
-                className="data-[state=active]:bg-white data-[state=active]:text-[#1E2533] text-white"
-              >
-                Report
-              </TabsTrigger>
-              <TabsTrigger 
-                value="/profile"
-                className="data-[state=active]:bg-white data-[state=active]:text-[#1E2533] text-white"
-              >
-                Snapshot
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
-        </div>
+        <Tabs value={location.pathname} onValueChange={handleTabChange} className="w-auto">
+          <TabsList className="bg-transparent">
+            <TabsTrigger 
+              value="/" 
+              className="data-[state=active]:bg-white data-[state=active]:text-[#1E2533] text-white"
+            >
+              Home
+            </TabsTrigger>
+            <TabsTrigger 
+              value="/calorie-logger"
+              className="data-[state=active]:bg-white data-[state=active]:text-[#1E2533] text-white"
+            >
+              Calorie Logger
+            </TabsTrigger>
+            <TabsTrigger 
+              value="/weight-tracking"
+              className="data-[state=active]:bg-white data-[state=active]:text-[#1E2533] text-white"
+            >
+              Weight Tracking
+            </TabsTrigger>
+            <TabsTrigger 
+              value="/profile"
+              className="data-[state=active]:bg-white data-[state=active]:text-[#1E2533] text-white"
+            >
+              Profile
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
         
         <Button
           variant={session ? "destructive" : "default"}
