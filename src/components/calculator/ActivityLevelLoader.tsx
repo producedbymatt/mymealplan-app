@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { ActivityLevelType } from "@/types/calculator";
 import { toast } from "sonner";
@@ -8,15 +8,12 @@ interface ActivityLevelLoaderProps {
 }
 
 const ActivityLevelLoader = ({ onActivityLevelLoaded }: ActivityLevelLoaderProps) => {
-  const [isLoading, setIsLoading] = useState(true);
-
   useEffect(() => {
     const loadActivityLevel = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) {
           console.log('No user found, skipping activity level load');
-          setIsLoading(false);
           return;
         }
 
@@ -40,8 +37,6 @@ const ActivityLevelLoader = ({ onActivityLevelLoaded }: ActivityLevelLoaderProps
       } catch (error) {
         console.error('Error loading activity level:', error);
         toast.error("Failed to load activity level");
-      } finally {
-        setIsLoading(false);
       }
     };
 
