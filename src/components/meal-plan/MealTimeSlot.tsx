@@ -41,29 +41,27 @@ const MealTimeSlot = ({ time, options, onRefresh, isLast, showFavoritesOnly }: M
         ))}
       </div>
       
-      {options.length > 3 && (
-        <div className="mt-6 flex flex-col items-center gap-2 border-t pt-4">
-          <Button
-            variant="secondary"
-            size="default"
-            onClick={() => setShowAll(!showAll)}
-            className="w-full max-w-[200px] flex items-center justify-center gap-2"
-          >
-            {showAll ? (
-              <>
-                Show Less <ChevronUp className="h-4 w-4" />
-              </>
-            ) : (
-              <>
-                Show All <ChevronDown className="h-4 w-4" />
-              </>
-            )}
-          </Button>
-          <p className="text-sm text-muted-foreground">
-            Total recipes in {time}: {options.length}
-          </p>
-        </div>
-      )}
+      <div className="mt-6 flex flex-col items-center gap-2 border-t pt-4">
+        <Button
+          variant="secondary"
+          size="default"
+          onClick={() => setShowAll(!showAll)}
+          className="w-full max-w-[200px] flex items-center justify-center gap-2"
+        >
+          {showAll ? (
+            <>
+              Show Less <ChevronUp className="h-4 w-4" />
+            </>
+          ) : (
+            <>
+              Show All <ChevronDown className="h-4 w-4" />
+            </>
+          )}
+        </Button>
+        <p className="text-sm text-muted-foreground">
+          Total recipes in {time}: {options.length}
+        </p>
+      </div>
       
       {!isLast && <Separator className="mt-6" />}
     </div>
