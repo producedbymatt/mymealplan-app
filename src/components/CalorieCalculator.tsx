@@ -36,12 +36,11 @@ const CalorieCalculator = ({
   useEffect(() => {
     const initializeActivityLevel = async () => {
       try {
-        setIsLoading(true);
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) {
           console.log('No user found, using default activity level');
-          setIsInitialized(true);
           setIsLoading(false);
+          setIsInitialized(true);
           return;
         }
 
@@ -55,8 +54,8 @@ const CalorieCalculator = ({
 
         if (error) {
           console.error('Error loading activity level:', error);
-          setIsInitialized(true);
           setIsLoading(false);
+          setIsInitialized(true);
           return;
         }
 
@@ -64,31 +63,29 @@ const CalorieCalculator = ({
           const storedLevel = data[0].activity_level as ActivityLevelKey;
           console.log('Retrieved activity level from database:', storedLevel);
           
-          // Set initial values without triggering save
+          // Initialize state without triggering save
           setSelectedActivityKey(storedLevel);
           setActivityLevel(ACTIVITY_LEVELS[storedLevel].value);
         }
       } catch (err) {
         console.error('Error in initializeActivityLevel:', err);
       } finally {
-        // Only mark as initialized after everything is set
         setIsLoading(false);
         setIsInitialized(true);
         console.log('Activity level initialization complete');
       }
     };
 
-    if (!isInitialized) {
-      initializeActivityLevel();
-    }
-  }, [isInitialized]);
+    initializeActivityLevel();
+  }, []);
 
   const saveActivityLevel = async (level: ActivityLevelKey) => {
-    if (!isInitialized || isLoading || !isUserChange) {
-      console.log('Skipping save - conditions not met:', {
+    // Only save if it's a user-initiated change and initialization is complete
+    if (!isUserChange || !isInitialized || isLoading) {
+      console.log('Skipping save - not a user change or initialization not complete:', {
+        isUserChange,
         isInitialized,
-        isLoading,
-        isUserChange
+        isLoading
       });
       return;
     }
@@ -100,7 +97,7 @@ const CalorieCalculator = ({
         return;
       }
 
-      console.log('Attempting to save activity level:', level);
+      console.log('Saving user-initiated activity level change:', level);
       const { error } = await supabase
         .from('user_metrics')
         .update({ 
@@ -123,17 +120,17 @@ const CalorieCalculator = ({
     }
   };
 
-  const handleActivityChange = async (value: ActivityLevelKey) => {
-    // Only set isUserChange to true for actual user interactions
-    if (isInitialized && !isLoading) {
-      console.log("User changed activity level to:", value);
-      setIsUserChange(true);
-      setSelectedActivityKey(value);
-      setActivityLevel(ACTIVITY_LEVELS[value].value);
-      await saveActivityLevel(value);
-    } else {
-      console.log("Skipping activity change during initialization");
+  const handleActivityChange = (value: ActivityLevelKey) => {
+    if (!isInitialized || isLoading) {
+      console.log('Skipping activity change - initialization not complete');
+      return;
     }
+
+    console.log('Processing user-initiated activity change:', value);
+    setIsUserChange(true);
+    setSelectedActivityKey(value);
+    setActivityLevel(ACTIVITY_LEVELS[value].value);
+    saveActivityLevel(value);
   };
 
   const bmr = calculateBMR(currentWeight, height);
