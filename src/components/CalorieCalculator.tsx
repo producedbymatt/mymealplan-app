@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import { ACTIVITY_LEVELS, ActivityLevelKey } from "./calories/constants";
@@ -29,9 +30,8 @@ const CalorieCalculator = ({
 }: CalorieCalculatorProps) => {
   const [activityLevel, setActivityLevel] = useState<number>(ACTIVITY_LEVELS.sedentary.value);
   const [selectedActivityKey, setSelectedActivityKey] = useState<ActivityLevelKey>("sedentary");
-  const [isInitialized, setIsInitialized] = useState(false);
-  const [isUserChange, setIsUserChange] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   useEffect(() => {
     const initializeActivityLevel = async () => {
@@ -40,7 +40,6 @@ const CalorieCalculator = ({
         if (!user) {
           console.log('No user found, using default activity level');
           setIsLoading(false);
-          setIsInitialized(true);
           return;
         }
 
@@ -55,15 +54,12 @@ const CalorieCalculator = ({
         if (error) {
           console.error('Error loading activity level:', error);
           setIsLoading(false);
-          setIsInitialized(true);
           return;
         }
 
         if (data && data.length > 0 && data[0].activity_level) {
           const storedLevel = data[0].activity_level as ActivityLevelKey;
           console.log('Retrieved activity level from database:', storedLevel);
-          
-          // Initialize state without triggering save
           setSelectedActivityKey(storedLevel);
           setActivityLevel(ACTIVITY_LEVELS[storedLevel].value);
         }
@@ -71,7 +67,6 @@ const CalorieCalculator = ({
         console.error('Error in initializeActivityLevel:', err);
       } finally {
         setIsLoading(false);
-        setIsInitialized(true);
         console.log('Activity level initialization complete');
       }
     };
@@ -79,17 +74,7 @@ const CalorieCalculator = ({
     initializeActivityLevel();
   }, []);
 
-  const saveActivityLevel = async (level: ActivityLevelKey) => {
-    // Only save if it's a user-initiated change and initialization is complete
-    if (!isUserChange || !isInitialized || isLoading) {
-      console.log('Skipping save - not a user change or initialization not complete:', {
-        isUserChange,
-        isInitialized,
-        isLoading
-      });
-      return;
-    }
-
+  const saveActivityLevel = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
@@ -97,11 +82,11 @@ const CalorieCalculator = ({
         return;
       }
 
-      console.log('Saving user-initiated activity level change:', level);
+      console.log('Saving activity level:', selectedActivityKey);
       const { error } = await supabase
         .from('user_metrics')
         .update({ 
-          activity_level: level,
+          activity_level: selectedActivityKey,
           updated_at: new Date().toISOString()
         })
         .eq('user_id', user.id);
@@ -112,8 +97,9 @@ const CalorieCalculator = ({
         return;
       }
 
-      console.log('Successfully saved activity level:', level);
+      console.log('Successfully saved activity level:', selectedActivityKey);
       toast.success("Activity level updated");
+      setHasUnsavedChanges(false);
     } catch (err) {
       console.error('Error in saveActivityLevel:', err);
       toast.error("An error occurred while saving");
@@ -121,16 +107,15 @@ const CalorieCalculator = ({
   };
 
   const handleActivityChange = (value: ActivityLevelKey) => {
-    if (!isInitialized || isLoading) {
-      console.log('Skipping activity change - initialization not complete');
+    if (isLoading) {
+      console.log('Skipping activity change - still loading');
       return;
     }
 
-    console.log('Processing user-initiated activity change:', value);
-    setIsUserChange(true);
+    console.log('Activity level changed to:', value);
     setSelectedActivityKey(value);
     setActivityLevel(ACTIVITY_LEVELS[value].value);
-    saveActivityLevel(value);
+    setHasUnsavedChanges(true);
   };
 
   const bmr = calculateBMR(currentWeight, height);
@@ -153,21 +138,34 @@ const CalorieCalculator = ({
     <Card className="p-6 w-full max-w-2xl mx-auto mt-4">
       <h2 className="text-2xl font-bold mb-4 text-center">Calorie Analysis</h2>
       
-      <ActivityLevelSelector
-        selectedActivityKey={selectedActivityKey}
-        onActivityChange={handleActivityChange}
-      />
+      <div className="space-y-4">
+        <ActivityLevelSelector
+          selectedActivityKey={selectedActivityKey}
+          onActivityChange={handleActivityChange}
+        />
 
-      <CalorieResults
-        dailyCalories={dailyCalories}
-        minProtein={minProtein}
-        maxProtein={maxProtein}
-        targetWeight={targetWeight}
-        targetDays={targetDays}
-        weeklyChange={weeklyChange}
-        warningMessage={weightChangeWarning.message}
-        warningColor={weightChangeWarning.color}
-      />
+        {hasUnsavedChanges && (
+          <div className="flex justify-end">
+            <Button 
+              onClick={saveActivityLevel}
+              className="bg-primary hover:bg-primary/90"
+            >
+              Save Activity Level
+            </Button>
+          </div>
+        )}
+
+        <CalorieResults
+          dailyCalories={dailyCalories}
+          minProtein={minProtein}
+          maxProtein={maxProtein}
+          targetWeight={targetWeight}
+          targetDays={targetDays}
+          weeklyChange={weeklyChange}
+          warningMessage={weightChangeWarning.message}
+          warningColor={weightChangeWarning.color}
+        />
+      </div>
     </Card>
   );
 };
