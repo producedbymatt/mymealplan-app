@@ -14,8 +14,6 @@ interface MealTimeSlotProps {
 }
 
 const MealTimeSlot = ({ time, options, onRefresh, isLast, showFavoritesOnly }: MealTimeSlotProps) => {
-  console.log(`MealTimeSlot ${time}: Showing ${options.length} options`);
-
   return (
     <div className="mb-6">
       <div className="flex justify-between items-center mb-3">
@@ -31,7 +29,7 @@ const MealTimeSlot = ({ time, options, onRefresh, isLast, showFavoritesOnly }: M
         </Button>
       </div>
       <div className="grid gap-4">
-        {options.slice(0, 3).map((meal, index) => (
+        {options.map((meal, index) => (
           <MealOption 
             key={`${meal.name}-${index}`}
             meal={meal} 
@@ -39,7 +37,6 @@ const MealTimeSlot = ({ time, options, onRefresh, isLast, showFavoritesOnly }: M
           />
         ))}
       </div>
-      
       {!isLast && <Separator className="mt-6" />}
     </div>
   );

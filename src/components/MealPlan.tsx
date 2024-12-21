@@ -1,14 +1,12 @@
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
-import { Filter, FilterX, ChevronDown, ChevronUp } from "lucide-react";
+import { Filter, FilterX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import MealTimeSlot from "./meal-plan/MealTimeSlot";
 import FavoritesList from "./meal-plan/FavoritesList";
 import { useAllFavoriteMeals } from "@/hooks/useAllFavoriteMeals";
 import { useMealPlanState } from "./meal-plan/hooks/useMealPlanState";
 import { scaleMeal } from "./meal-plan/utils/mealScaling";
-import { useState } from "react";
-import MealOption from "./meal-plan/MealOption";
 
 interface MealPlanProps {
   dailyCalories?: number;
@@ -28,7 +26,6 @@ const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: Me
     generateMealOptions
   } = useMealPlanState(dailyCalories);
 
-  const [showAllRecipes, setShowAllRecipes] = useState(false);
   const { toast } = useToast();
   const { favoriteMeals, isLoading: favoritesLoading } = useAllFavoriteMeals(userId);
 
@@ -75,10 +72,6 @@ const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: Me
     return favoriteMeals.map(meal => scaleMeal(meal, caloriesPerMeal));
   };
 
-  const getAllRecipes = () => {
-    return mealPlan.reduce((acc, slot) => [...acc, ...slot.options], [] as any[]);
-  };
-
   if (favoritesLoading) {
     return (
       <Card className="p-6 w-full max-w-2xl mx-auto">
@@ -123,55 +116,16 @@ const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: Me
           isLast={true}
         />
       ) : (
-        <>
-          {mealPlan.map((slot, index) => (
-            <MealTimeSlot
-              key={slot.time}
-              time={slot.time}
-              options={slot.options}
-              onRefresh={() => refreshMealOptions(index)}
-              isLast={index === mealPlan.length - 1}
-              showFavoritesOnly={showFavoritesOnly}
-            />
-          ))}
-          
-          <div className="mt-8 flex flex-col items-center gap-4 border-t pt-6">
-            <Button
-              variant="secondary"
-              size="lg"
-              onClick={() => setShowAllRecipes(!showAllRecipes)}
-              className="w-full max-w-[200px] flex items-center justify-center gap-2"
-            >
-              {showAllRecipes ? (
-                <>
-                  Show Less <ChevronUp className="h-4 w-4" />
-                </>
-              ) : (
-                <>
-                  Show All Recipes <ChevronDown className="h-4 w-4" />
-                </>
-              )}
-            </Button>
-            <p className="text-sm text-muted-foreground">
-              {showAllRecipes 
-                ? `Showing all ${getAllRecipes().length} recipes`
-                : `Click to see all ${getAllRecipes().length} available recipes`
-              }
-            </p>
-          </div>
-
-          {showAllRecipes && (
-            <div className="mt-6 grid gap-4">
-              {getAllRecipes().map((meal, index) => (
-                <MealOption
-                  key={`${meal.name}-${index}`}
-                  meal={meal}
-                  showFavoritesOnly={showFavoritesOnly}
-                />
-              ))}
-            </div>
-          )}
-        </>
+        mealPlan.map((slot, index) => (
+          <MealTimeSlot
+            key={slot.time}
+            time={slot.time}
+            options={slot.options}
+            onRefresh={() => refreshMealOptions(index)}
+            isLast={index === mealPlan.length - 1}
+            showFavoritesOnly={showFavoritesOnly}
+          />
+        ))
       )}
     </Card>
   );
