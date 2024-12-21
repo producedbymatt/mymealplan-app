@@ -64,20 +64,16 @@ const CalorieCalculator = ({
           const storedLevel = data[0].activity_level as ActivityLevelKey;
           console.log('Retrieved activity level from database:', storedLevel);
           
-          // Ensure we set both states without triggering a save
+          // Set initial values without triggering save
           setSelectedActivityKey(storedLevel);
           setActivityLevel(ACTIVITY_LEVELS[storedLevel].value);
-          
-          console.log('Updated activity states:', {
-            key: storedLevel,
-            value: ACTIVITY_LEVELS[storedLevel].value
-          });
         }
       } catch (err) {
         console.error('Error in initializeActivityLevel:', err);
       } finally {
-        setIsInitialized(true);
+        // Only mark as initialized after everything is set
         setIsLoading(false);
+        setIsInitialized(true);
         console.log('Activity level initialization complete');
       }
     };
@@ -128,12 +124,16 @@ const CalorieCalculator = ({
   };
 
   const handleActivityChange = async (value: ActivityLevelKey) => {
-    console.log("Activity level changed to:", value);
-    setIsUserChange(true);
-    setSelectedActivityKey(value);
-    const newActivityLevel = ACTIVITY_LEVELS[value].value;
-    setActivityLevel(newActivityLevel);
-    await saveActivityLevel(value);
+    // Only set isUserChange to true for actual user interactions
+    if (isInitialized && !isLoading) {
+      console.log("User changed activity level to:", value);
+      setIsUserChange(true);
+      setSelectedActivityKey(value);
+      setActivityLevel(ACTIVITY_LEVELS[value].value);
+      await saveActivityLevel(value);
+    } else {
+      console.log("Skipping activity change during initialization");
+    }
   };
 
   const bmr = calculateBMR(currentWeight, height);
