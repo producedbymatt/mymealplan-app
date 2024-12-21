@@ -46,13 +46,13 @@ const Navigation = () => {
               value="/calorie-logger"
               className="data-[state=active]:bg-white data-[state=active]:text-[#1E2533] text-white"
             >
-              Calorie Logger
+              Log
             </TabsTrigger>
             <TabsTrigger 
               value="/weight-tracking"
               className="data-[state=active]:bg-white data-[state=active]:text-[#1E2533] text-white"
             >
-              Weight Tracking
+              Scale
             </TabsTrigger>
             <TabsTrigger 
               value="/profile"
