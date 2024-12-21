@@ -96,13 +96,13 @@ const ProgressPhotos = () => {
         return;
       }
 
-      // Upload to Supabase Storage
+      // Upload to Supabase Storage with proper path structure
       const fileExt = file.name.split('.').pop();
       const fileName = `${Math.random()}.${fileExt}`;
-      const filePath = `progress-photos/${session.user.id}/${fileName}`;
+      const filePath = `${session.user.id}/${fileName}`;
 
       const { error: uploadError, data } = await supabase.storage
-        .from('user-uploads')
+        .from('progress-photos')
         .upload(filePath, file, {
           upsert: false,
           contentType: file.type,
@@ -112,7 +112,7 @@ const ProgressPhotos = () => {
 
       // Get public URL
       const { data: { publicUrl } } = supabase.storage
-        .from('user-uploads')
+        .from('progress-photos')
         .getPublicUrl(filePath);
 
       // Save to database
@@ -155,11 +155,14 @@ const ProgressPhotos = () => {
 
       if (dbError) throw dbError;
 
-      // Delete from storage
-      const filePath = photoUrl.split('/').slice(-2).join('/');
+      // Extract file path from URL and delete from storage
+      const pathMatch = photoUrl.match(/progress-photos\/(.+)$/);
+      if (!pathMatch) throw new Error("Invalid photo URL format");
+      
+      const filePath = pathMatch[1];
       const { error: storageError } = await supabase.storage
-        .from('user-uploads')
-        .remove([`progress-photos/${filePath}`]);
+        .from('progress-photos')
+        .remove([filePath]);
 
       if (storageError) throw storageError;
 
