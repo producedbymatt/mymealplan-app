@@ -37,6 +37,8 @@ const CalorieCalculator = ({
           .from('user_metrics')
           .select('activity_level')
           .eq('user_id', user.id)
+          .order('updated_at', { ascending: false })
+          .limit(1)
           .single();
 
         if (error) throw error;
