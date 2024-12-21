@@ -35,20 +35,20 @@ const CalorieResults = ({
         </p>
       </div>
 
-      <div className="bg-blue-50 p-4 rounded-lg space-y-2">
+      <div className="bg-blue-50 p-4 rounded-lg space-y-2 text-center">
         <h3 className="font-semibold text-blue-800">Your Daily Energy Breakdown:</h3>
         <p className="text-sm text-blue-700">
-          • Basal Metabolic Rate (BMR): <span className="font-medium">{Math.round(bmr)} calories</span>
+          <span className="font-bold">•</span> Basal Metabolic Rate (BMR): <span className="font-medium">{Math.round(bmr)} calories</span>
           <br />
           <span className="text-xs">This is what your body burns at complete rest</span>
         </p>
         <p className="text-sm text-blue-700">
-          • Total Daily Energy Expenditure (TDEE): <span className="font-medium">{tdee} calories</span>
+          <span className="font-bold">•</span> Total Daily Energy Expenditure (TDEE): <span className="font-medium">{tdee} calories</span>
           <br />
           <span className="text-xs">This is your BMR adjusted for your activity level</span>
         </p>
         <p className="text-sm text-blue-700">
-          • Daily {dailyCalories > tdee ? "Surplus" : "Deficit"}: <span className="font-medium">{calorieDeficitOrSurplus} calories</span>
+          <span className="font-bold">•</span> Daily {dailyCalories > tdee ? "Surplus" : "Deficit"}: <span className="font-medium">{calorieDeficitOrSurplus} calories</span>
           <br />
           <span className="text-xs">
             This {dailyCalories > tdee ? "surplus" : "deficit"} will help you {dailyCalories > tdee ? "gain" : "lose"} weight at your target rate
