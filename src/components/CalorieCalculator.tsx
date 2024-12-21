@@ -18,24 +18,25 @@ interface CalorieCalculatorProps {
   onCaloriesCalculated?: (calories: number) => void;
 }
 
+// Using enum values that match the database
 const ACTIVITY_LEVELS = {
-  "sedentary": {
+  "SEDENTARY": {
     label: "Sedentary (little or no exercise)",
     value: 1.2
   },
-  "light": {
+  "LIGHT": {
     label: "Lightly active (exercise 1-3 times/week)",
     value: 1.375
   },
-  "moderate": {
+  "MODERATE": {
     label: "Moderately active (exercise 3-5 times/week)",
     value: 1.55
   },
-  "very": {
+  "VERY": {
     label: "Very active (exercise 6-7 times/week)",
     value: 1.725
   },
-  "extra": {
+  "EXTRA": {
     label: "Extra active (very intense exercise daily)",
     value: 1.9
   }
@@ -49,7 +50,7 @@ const CalorieCalculator = ({
   onCaloriesCalculated 
 }: CalorieCalculatorProps) => {
   const [activityLevel, setActivityLevel] = useState<number>(1.2); // Default to sedentary
-  const [selectedActivityKey, setSelectedActivityKey] = useState<keyof typeof ACTIVITY_LEVELS>("sedentary");
+  const [selectedActivityKey, setSelectedActivityKey] = useState<keyof typeof ACTIVITY_LEVELS>("SEDENTARY");
 
   useEffect(() => {
     loadActivityLevel();
@@ -91,6 +92,7 @@ const CalorieCalculator = ({
         return;
       }
 
+      console.log('Saving activity level:', level);
       const { error } = await supabase
         .from('user_metrics')
         .update({ 
