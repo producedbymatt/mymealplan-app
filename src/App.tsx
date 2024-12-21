@@ -18,22 +18,49 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
 
   useEffect(() => {
-    // Check current session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log("Current session:", session);
-      setSession(session);
-      setLoading(false);
-    });
+    // Initialize session
+    const initSession = async () => {
+      try {
+        const { data: { session: currentSession }, error } = await supabase.auth.getSession();
+        if (error) {
+          console.error('Error getting session:', error);
+          // Clear any stale session data
+          await supabase.auth.signOut();
+          setSession(null);
+        } else {
+          console.log('Current session:', currentSession);
+          setSession(currentSession);
+        }
+        setLoading(false);
+      } catch (err) {
+        console.error('Error initializing session:', err);
+        setLoading(false);
+      }
+    };
+
+    initSession();
 
     // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      console.log("Auth state changed:", session);
-      setSession(session);
+    } = supabase.auth.onAuthStateChange(async (event, newSession) => {
+      console.log('Auth state changed:', event, newSession);
+      
+      if (event === 'TOKEN_REFRESHED') {
+        console.log('Token refreshed successfully');
+      }
+      
+      if (event === 'SIGNED_OUT') {
+        // Clear any local session data
+        setSession(null);
+      } else {
+        setSession(newSession);
+      }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   if (loading) {
