@@ -31,3 +31,6 @@ CREATE TYPE activity_level_type AS ENUM (
 -- Add activity_level column with default value
 ALTER TABLE user_metrics
 ADD COLUMN activity_level activity_level_type DEFAULT 'sedentary';
+
+-- Notify PostgREST to refresh its schema cache
+NOTIFY pgrst, 'reload schema';
