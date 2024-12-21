@@ -50,7 +50,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 const Layout = ({ children }: { children: React.ReactNode }) => (
   <div className="min-h-screen">
-    <div className="w-full bg-[#1E2533] pt-4">
+    <div className="w-full bg-[#1E2533]">
       <div className="container mx-auto flex flex-col items-center">
         <img 
           src="/lovable-uploads/f6662a44-ab76-41ca-890b-b9da00a755af.png" 
