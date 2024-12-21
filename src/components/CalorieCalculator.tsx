@@ -19,7 +19,7 @@ const CalorieCalculator = ({
   targetDays,
   onCaloriesCalculated 
 }: CalorieCalculatorProps) => {
-  const [activityLevel, setActivityLevel] = useState([1.2]); // Default to sedentary
+  const [activityLevel, setActivityLevel] = useState<number[]>([1.2]); // Default to sedentary
   const [isLoading, setIsLoading] = useState(true);
   const [saveTimeout, setSaveTimeout] = useState<NodeJS.Timeout | null>(null);
 
