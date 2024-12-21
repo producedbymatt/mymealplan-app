@@ -115,3 +115,8 @@
 [role="listbox"] {
   @apply bg-white dark:bg-zinc-950;
 }
+
+/* Add solid background to tooltips */
+[role="tooltip"] {
+  @apply bg-white dark:bg-zinc-950;
+}
