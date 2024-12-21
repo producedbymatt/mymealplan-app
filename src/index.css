@@ -105,3 +105,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Add solid background to toasts */
+[role="status"].toast {
+  @apply bg-white dark:bg-zinc-950;
+}

@@ -90,21 +90,47 @@ const WeightGoal = ({ onGoalSet }: WeightGoalProps) => {
 
       const { error } = await supabase
         .from('user_metrics')
-        .upsert({
+        .insert({
           user_id: user.id,
           target_weight: weight,
           target_days: days,
           updated_at: now
-        });
+        })
+        .select()
+        .single();
 
       if (error) {
         console.error('Error saving weight goal:', error);
-        toast({
-          title: "Error",
-          description: "Failed to save weight goal",
-          variant: "destructive",
-        });
-        return;
+        if (error.code === '23505') { // Unique constraint error
+          // If record already exists, try updating instead
+          const { error: updateError } = await supabase
+            .from('user_metrics')
+            .update({
+              target_weight: weight,
+              target_days: days,
+              updated_at: now
+            })
+            .eq('user_id', user.id)
+            .select()
+            .single();
+
+          if (updateError) {
+            console.error('Error updating weight goal:', updateError);
+            toast({
+              title: "Error",
+              description: "Failed to update weight goal",
+              variant: "destructive",
+            });
+            return;
+          }
+        } else {
+          toast({
+            title: "Error",
+            description: "Failed to save weight goal",
+            variant: "destructive",
+          });
+          return;
+        }
       }
 
       setLastUpdated(format(new Date(now), 'MMMM d, yyyy'));
