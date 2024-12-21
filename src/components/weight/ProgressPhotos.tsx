@@ -104,7 +104,7 @@ const ProgressPhotos = () => {
       console.log('Uploading file to path:', filePath);
       
       const { error: uploadError, data } = await supabase.storage
-        .from('user_progress_photos')  // Changed bucket name
+        .from('user-uploads')  // Updated bucket name
         .upload(filePath, file, {
           upsert: false,
           contentType: file.type,
@@ -117,7 +117,7 @@ const ProgressPhotos = () => {
 
       // Get public URL
       const { data: { publicUrl } } = supabase.storage
-        .from('user_progress_photos')  // Changed bucket name
+        .from('user-uploads')  // Updated bucket name
         .getPublicUrl(filePath);
 
       // Save to database
@@ -161,12 +161,12 @@ const ProgressPhotos = () => {
       if (dbError) throw dbError;
 
       // Extract file path from URL and delete from storage
-      const pathMatch = photoUrl.match(/user_progress_photos\/(.+)$/);
+      const pathMatch = photoUrl.match(/user-uploads\/(.+)$/);  // Updated regex pattern
       if (!pathMatch) throw new Error("Invalid photo URL format");
       
       const filePath = pathMatch[1];
       const { error: storageError } = await supabase.storage
-        .from('user_progress_photos')  // Changed bucket name
+        .from('user-uploads')  // Updated bucket name
         .remove([filePath]);
 
       if (storageError) throw storageError;
