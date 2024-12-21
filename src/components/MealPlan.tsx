@@ -1,14 +1,12 @@
-import React, { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { Filter, FilterX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import MealTimeSlot from "./meal-plan/MealTimeSlot";
 import FavoritesList from "./meal-plan/FavoritesList";
-import { getMealOptionsForTime } from "./meal-plan/mealData";
-import { MealTimeSlot as MealTimeSlotType, Meal } from "./meal-plan/types";
 import { useAllFavoriteMeals } from "@/hooks/useAllFavoriteMeals";
-import { supabase } from "@/lib/supabase";
+import { useMealPlanState } from "./meal-plan/hooks/useMealPlanState";
+import { scaleMeal } from "./meal-plan/utils/mealScaling";
 
 interface MealPlanProps {
   dailyCalories?: number;
@@ -16,122 +14,20 @@ interface MealPlanProps {
   maxProtein?: number;
 }
 
-// Helper function to scale a meal's ingredients and macros
-const scaleMeal = (originalMeal: Meal, targetCalories: number): Meal => {
-  const scaleFactor = targetCalories / originalMeal.calories;
-  let totalCalories = 0;
-  
-  // Scale the ingredients and calculate total calories
-  const scaledIngredients = originalMeal.recipe.ingredients.map(ingredient => {
-    const parts = ingredient.split(" ");
-    const amount = parseFloat(parts[0]);
-    if (isNaN(amount)) return ingredient; // Skip scaling if amount is not a number
-    
-    const unit = parts[1];
-    const calorieMatch = ingredient.match(/\((\d+) cal\)/);
-    if (!calorieMatch) return ingredient;
-    
-    const originalCalories = parseInt(calorieMatch[1]);
-    const scaledCalories = Math.round(originalCalories * scaleFactor);
-    totalCalories += scaledCalories;
-    
-    // Calculate scaled amount and handle potential floating point issues
-    const scaledAmount = amount * scaleFactor;
-    // Round all amounts to whole numbers
-    const formattedAmount = Math.round(scaledAmount);
-    
-    // Reconstruct the ingredient string with scaled values
-    const remainingParts = parts.slice(2).join(" ").replace(/\(\d+ cal\)/, `(${scaledCalories} cal)`);
-    return `${formattedAmount} ${unit} ${remainingParts}`;
-  });
-
-  // Use the actual sum of scaled ingredient calories
-  return {
-    ...originalMeal,
-    calories: Math.round(totalCalories), // Round the total calories
-    protein: Math.round(originalMeal.protein * scaleFactor),
-    carbs: Math.round(originalMeal.carbs * scaleFactor),
-    fat: Math.round(originalMeal.fat * scaleFactor),
-    recipe: {
-      ...originalMeal.recipe,
-      ingredients: scaledIngredients
-    }
-  };
-};
-
 const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: MealPlanProps) => {
-  const [mealPlan, setMealPlan] = useState<MealTimeSlotType[]>([]);
-  const [usedRecipes, setUsedRecipes] = useState<Set<string>>(new Set());
-  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
-  const [userId, setUserId] = useState<string | undefined>();
+  const {
+    mealPlan,
+    setMealPlan,
+    usedRecipes,
+    setUsedRecipes,
+    showFavoritesOnly,
+    setShowFavoritesOnly,
+    userId,
+    generateMealOptions
+  } = useMealPlanState(dailyCalories);
+
   const { toast } = useToast();
   const { favoriteMeals, isLoading: favoritesLoading } = useAllFavoriteMeals(userId);
-
-  // Get current user on mount
-  useEffect(() => {
-    const loadUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setUserId(session?.user?.id);
-    };
-    loadUser();
-  }, []);
-
-  const generateMealOptions = (timeSlot: string, caloriesPerMeal: number, excludeNames: Set<string>) => {
-    const allOptions = getMealOptionsForTime(timeSlot);
-    const availableOptions = allOptions.filter(meal => !excludeNames.has(meal.name));
-    
-    if (availableOptions.length < 3) {
-      console.log('Not enough unique recipes available, resetting used recipes list');
-      setUsedRecipes(new Set());
-      return [...allOptions]
-        .sort(() => Math.random() - 0.5)
-        .slice(0, 3)
-        .map(meal => {
-          const scaledMeal = scaleMeal(meal, caloriesPerMeal);
-          console.log(`Scaled meal ${meal.name}:`, {
-            calories: scaledMeal.calories,
-            protein: scaledMeal.protein
-          });
-          return scaledMeal;
-        });
-    }
-
-    return [...availableOptions]
-      .sort(() => Math.random() - 0.5)
-      .slice(0, 3)
-      .map(meal => {
-        const scaledMeal = scaleMeal(meal, caloriesPerMeal);
-        console.log(`Scaled meal ${meal.name}:`, {
-          calories: scaledMeal.calories,
-          protein: scaledMeal.protein
-        });
-        return scaledMeal;
-      });
-  };
-
-  // Update meal plan when calories or protein targets change
-  useEffect(() => {
-    console.log('Updating meal plan with new targets:', {
-      dailyCalories,
-      minProtein,
-      maxProtein
-    });
-
-    const caloriesPerMeal = Math.round(dailyCalories / 3);
-    const timeSlots = ["Breakfast", "Lunch", "Dinner"];
-    
-    setUsedRecipes(new Set());
-    
-    const newMealPlan = timeSlots.map(time => {
-      const options = generateMealOptions(time, caloriesPerMeal, new Set());
-      options.forEach(meal => {
-        setUsedRecipes(prev => new Set([...prev, meal.name]));
-      });
-      return { time, options };
-    });
-
-    setMealPlan(newMealPlan);
-  }, [dailyCalories, minProtein, maxProtein]);
 
   const refreshMealOptions = (timeSlotIndex: number) => {
     console.log(`Refreshing meal options for time slot ${timeSlotIndex}`);
