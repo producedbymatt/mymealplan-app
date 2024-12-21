@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Menu, X, Weight, Gauge, ClipboardList, UserCircle } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 
 const Navigation = () => {
-  const [isOpen, setIsOpen] = useState(false);
   const [session, setSession] = useState<any>(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     // Check current session
@@ -44,88 +44,63 @@ const Navigation = () => {
     navigate("/");
   };
 
-  return (
-    <div className="relative z-50">
-      <Button
-        variant="ghost"
-        size="icon"
-        className="fixed top-4 right-4 bg-white"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        {isOpen ? (
-          <X className="h-7 w-7" />
-        ) : (
-          <Menu className="h-7 w-7" />
-        )}
-      </Button>
+  const handleTabChange = (value: string) => {
+    navigate(value);
+  };
 
-      {isOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50">
-          <div className="fixed right-0 top-0 h-full w-64 bg-white shadow-lg">
-            <div className="flex flex-col p-4">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="absolute right-2 top-2"
-                onClick={() => setIsOpen(false)}
+  return (
+    <div className="w-full bg-[#1E2533] p-4">
+      <div className="container mx-auto flex items-center justify-between">
+        <div className="flex items-center gap-8">
+          <img 
+            src="/lovable-uploads/67003c76-1908-4b2f-93d3-01ea4a4cf510.png" 
+            alt="MyMealPlan Logo" 
+            className="h-8 w-auto"
+          />
+          <Tabs value={location.pathname} onValueChange={handleTabChange} className="w-auto">
+            <TabsList className="bg-transparent">
+              <TabsTrigger 
+                value="/" 
+                className="data-[state=active]:bg-white data-[state=active]:text-[#1E2533] text-white"
               >
-                <X className="h-6 w-6" />
-              </Button>
-              <img 
-                src="/lovable-uploads/67003c76-1908-4b2f-93d3-01ea4a4cf510.png" 
-                alt="MyMealPlan Logo" 
-                className="h-16 w-auto mx-auto mb-6"
-              />
-              <Link
-                to="/"
-                className="px-4 py-2 hover:bg-gray-100 rounded-md flex items-center gap-2"
-                onClick={() => setIsOpen(false)}
-              >
-                <Gauge className="h-4 w-4" />
                 Dashboard
-              </Link>
-              <Link
-                to="/calorie-logger"
-                className="px-4 py-2 hover:bg-gray-100 rounded-md flex items-center gap-2"
-                onClick={() => setIsOpen(false)}
+              </TabsTrigger>
+              <TabsTrigger 
+                value="/calorie-logger"
+                className="data-[state=active]:bg-white data-[state=active]:text-[#1E2533] text-white"
               >
-                <ClipboardList className="h-4 w-4" />
-                Calorie Logger
-              </Link>
-              <Link
-                to="/weight-tracking"
-                className="px-4 py-2 hover:bg-gray-100 rounded-md flex items-center gap-2"
-                onClick={() => setIsOpen(false)}
+                Charts
+              </TabsTrigger>
+              <TabsTrigger 
+                value="/weight-tracking"
+                className="data-[state=active]:bg-white data-[state=active]:text-[#1E2533] text-white"
               >
-                <Weight className="h-4 w-4" />
-                Weight Tracking
-              </Link>
-              <Link
-                to="/profile"
-                className="px-4 py-2 hover:bg-gray-100 rounded-md flex items-center gap-2"
-                onClick={() => setIsOpen(false)}
+                Report
+              </TabsTrigger>
+              <TabsTrigger 
+                value="/profile"
+                className="data-[state=active]:bg-white data-[state=active]:text-[#1E2533] text-white"
               >
-                <UserCircle className="h-4 w-4" />
-                Profile
-              </Link>
-              <Button
-                variant={session ? "ghost" : "default"}
-                className={session ? "mt-4 text-red-600 hover:text-red-700 hover:bg-red-50" : "mt-4"}
-                onClick={async () => {
-                  if (session) {
-                    await handleSignOut();
-                  } else {
-                    navigate("/");
-                  }
-                  setIsOpen(false);
-                }}
-              >
-                {session ? "Sign Out" : "Sign In"}
-              </Button>
-            </div>
-          </div>
+                Snapshot
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
         </div>
-      )}
+        
+        <Button
+          variant={session ? "destructive" : "default"}
+          className={session ? "bg-red-600 hover:bg-red-700" : ""}
+          onClick={async () => {
+            if (session) {
+              await handleSignOut();
+            } else {
+              navigate("/");
+            }
+          }}
+        >
+          {session ? "Sign Out" : "Sign In"}
+        </Button>
+      </div>
     </div>
   );
 };
