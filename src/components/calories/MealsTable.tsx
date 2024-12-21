@@ -55,39 +55,45 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
                   </TableCell>
                 </TableRow>
               )}
-              {groupedMeals[date].map((log) => (
-                <TableRow 
-                  key={log.id}
-                  className={dateIndex % 2 === 0 ? "bg-white" : "bg-blue-100/50"}
-                >
-                  <TableCell>{log.meal_name}</TableCell>
-                  <TableCell>{log.calories}</TableCell>
-                  <TableCell>{format(new Date(log.created_at), "h:mm a")}</TableCell>
-                  <TableCell>{format(new Date(log.created_at), "MMM d, yyyy")}</TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => onEdit(log)}
+              <TableRow>
+                <TableCell colSpan={5} className="p-0">
+                  <div className="border-2 border-black rounded-lg overflow-hidden">
+                    {groupedMeals[date].map((log) => (
+                      <TableRow 
+                        key={log.id}
+                        className={dateIndex % 2 === 0 ? "bg-white" : "bg-blue-100/50"}
                       >
-                        <Pencil className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => {
-                          if (window.confirm("Are you sure you want to delete this meal?")) {
-                            onDelete(log.id);
-                          }
-                        }}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
+                        <TableCell>{log.meal_name}</TableCell>
+                        <TableCell>{log.calories}</TableCell>
+                        <TableCell>{format(new Date(log.created_at), "h:mm a")}</TableCell>
+                        <TableCell>{format(new Date(log.created_at), "MMM d, yyyy")}</TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-2">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => onEdit(log)}
+                            >
+                              <Pencil className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => {
+                                if (window.confirm("Are you sure you want to delete this meal?")) {
+                                  onDelete(log.id);
+                                }
+                              }}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </div>
+                </TableCell>
+              </TableRow>
             </React.Fragment>
           ))}
         </TableBody>
