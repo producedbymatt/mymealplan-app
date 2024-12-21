@@ -58,13 +58,23 @@ const ProgressPhotos = () => {
     setUploadProgress(0);
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
+      // Get current session
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError) {
+        console.error('Session error:', sessionError);
+        throw new Error("Authentication error");
+      }
+
+      if (!session) {
+        console.error('No session found');
+        throw new Error("Please log in to upload photos");
+      }
 
       // Upload to Supabase Storage
       const fileExt = file.name.split('.').pop();
       const fileName = `${Math.random()}.${fileExt}`;
-      const filePath = `progress-photos/${user.id}/${fileName}`;
+      const filePath = `progress-photos/${session.user.id}/${fileName}`;
 
       const { error: uploadError, data } = await supabase.storage
         .from('user-uploads')
@@ -85,7 +95,7 @@ const ProgressPhotos = () => {
         .from('progress_photos')
         .insert([
           {
-            user_id: user.id,
+            user_id: session.user.id,
             photo_url: publicUrl,
           },
         ]);
@@ -94,9 +104,13 @@ const ProgressPhotos = () => {
 
       toast.success("Photo uploaded successfully");
       await loadPhotos();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error uploading photo:', error);
-      toast.error("Failed to upload photo");
+      if (error.message === "Please log in to upload photos") {
+        toast.error("Please log in to upload photos");
+      } else {
+        toast.error("Failed to upload photo");
+      }
     } finally {
       setUploading(false);
       setUploadProgress(0);
@@ -105,6 +119,14 @@ const ProgressPhotos = () => {
 
   const handleDelete = async (photoId: string, photoUrl: string) => {
     try {
+      // Get current session
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError || !session) {
+        toast.error("Please log in to delete photos");
+        return;
+      }
+
       // Delete from database
       const { error: dbError } = await supabase
         .from('progress_photos')
