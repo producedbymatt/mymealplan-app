@@ -19,7 +19,7 @@ const ActivityLevelManager = ({ onActivityLevelChange }: ActivityLevelManagerPro
     onActivityLevelChange(level);
   }, [onActivityLevelChange]);
 
-  const saveActivityLevel = async (newLevel: ActivityLevelType) => {
+  const handleActivityLevelChange = async (newLevel: ActivityLevelType) => {
     if (isSaving) return;
     
     try {
@@ -46,21 +46,16 @@ const ActivityLevelManager = ({ onActivityLevelChange }: ActivityLevelManagerPro
         return;
       }
 
-      // Only update the state after successful save
       setActivityLevel(newLevel);
       onActivityLevelChange(newLevel);
       console.log('Successfully saved activity level:', newLevel);
+      toast.success("Activity level updated successfully");
     } catch (error) {
       console.error('Exception while saving activity level:', error);
       toast.error("Failed to save activity level");
     } finally {
       setIsSaving(false);
     }
-  };
-
-  const handleActivityLevelChange = (newLevel: ActivityLevelType) => {
-    console.log('Activity level changing to:', newLevel);
-    saveActivityLevel(newLevel);
   };
 
   return (
