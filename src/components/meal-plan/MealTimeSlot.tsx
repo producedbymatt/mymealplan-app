@@ -17,6 +17,8 @@ const MealTimeSlot = ({ time, options, onRefresh, isLast, showFavoritesOnly }: M
   const [showAll, setShowAll] = useState(false);
   const displayedOptions = showAll ? options : options.slice(0, 3);
 
+  console.log(`MealTimeSlot ${time}: Showing ${displayedOptions.length} of ${options.length} options`);
+
   return (
     <div className="mb-6">
       <div className="flex justify-between items-center mb-3">
