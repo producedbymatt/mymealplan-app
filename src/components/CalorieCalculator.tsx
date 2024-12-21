@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
-import { Slider } from "@/components/ui/slider";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface CalorieCalculatorProps {
   height: number;
@@ -10,6 +16,29 @@ interface CalorieCalculatorProps {
   onCaloriesCalculated?: (calories: number) => void;
 }
 
+const ACTIVITY_LEVELS = {
+  "sedentary": {
+    label: "Sedentary (little or no exercise)",
+    value: 1.2
+  },
+  "light": {
+    label: "Lightly active (exercise 1-3 times/week)",
+    value: 1.375
+  },
+  "moderate": {
+    label: "Moderately active (exercise 3-5 times/week)",
+    value: 1.55
+  },
+  "very": {
+    label: "Very active (exercise 6-7 times/week)",
+    value: 1.725
+  },
+  "extra": {
+    label: "Extra active (very intense exercise daily)",
+    value: 1.9
+  }
+} as const;
+
 const CalorieCalculator = ({ 
   height, 
   currentWeight, 
@@ -17,7 +46,7 @@ const CalorieCalculator = ({
   targetDays,
   onCaloriesCalculated 
 }: CalorieCalculatorProps) => {
-  const [activityLevel, setActivityLevel] = useState([1.2]); // Default to sedentary
+  const [activityLevel, setActivityLevel] = useState<number>(1.2); // Default to sedentary
 
   const calculateBMR = () => {
     const weightInKg = currentWeight * 0.453592;
@@ -29,7 +58,7 @@ const CalorieCalculator = ({
 
   const calculateDailyCalories = () => {
     const bmr = calculateBMR();
-    const tdee = bmr * activityLevel[0];
+    const tdee = bmr * activityLevel;
     
     // Calculate required surplus/deficit based on weight goal
     const weightDifference = targetWeight - currentWeight;
@@ -41,7 +70,7 @@ const CalorieCalculator = ({
     const targetCalories = tdee + (isGainingWeight ? dailyCalorieAdjustment : -dailyCalorieAdjustment);
     
     console.log("TDEE:", tdee);
-    console.log("Activity Level:", activityLevel[0]);
+    console.log("Activity Level:", activityLevel);
     console.log("Daily calorie adjustment:", dailyCalorieAdjustment);
     console.log("Target daily calories:", targetCalories);
     
@@ -49,8 +78,8 @@ const CalorieCalculator = ({
   };
 
   const calculateProteinNeeds = () => {
-    const baseProteinMultiplier = activityLevel[0] >= 1.55 ? 1.0 : 0.8;
-    const maxProteinMultiplier = activityLevel[0] >= 1.55 ? 1.4 : 1.2;
+    const baseProteinMultiplier = activityLevel >= 1.55 ? 1.0 : 0.8;
+    const maxProteinMultiplier = activityLevel >= 1.55 ? 1.4 : 1.2;
     
     const minProtein = Math.round(targetWeight * baseProteinMultiplier);
     const maxProtein = Math.round(targetWeight * maxProteinMultiplier);
@@ -58,12 +87,10 @@ const CalorieCalculator = ({
     return { minProtein, maxProtein };
   };
 
-  const getActivityLevelLabel = (level: number) => {
-    if (level <= 1.2) return "Sedentary (little or no exercise)";
-    if (level <= 1.375) return "Lightly active (exercise 1-3 times/week)";
-    if (level <= 1.55) return "Moderately active (exercise 3-5 times/week)";
-    if (level <= 1.725) return "Very active (exercise 6-7 times/week)";
-    return "Extra active (very intense exercise daily)";
+  const handleActivityChange = (value: string) => {
+    const level = ACTIVITY_LEVELS[value as keyof typeof ACTIVITY_LEVELS].value;
+    console.log("Activity level changed to:", level);
+    setActivityLevel(level);
   };
 
   const dailyCalories = calculateDailyCalories();
@@ -103,17 +130,21 @@ const CalorieCalculator = ({
       
       <div className="mb-6">
         <label className="block text-sm font-medium mb-2">Activity Level</label>
-        <Slider
-          value={activityLevel}
-          onValueChange={setActivityLevel}
-          min={1.2}
-          max={1.9}
-          step={0.025}
-          className="mb-2 [&_.relative]:before:absolute [&_.relative]:before:inset-0 [&_.relative]:before:h-2 [&_.relative]:before:rounded-full [&_.relative]:before:bg-gradient-to-r [&_.relative]:before:from-blue-400 [&_.relative]:before:via-green-400 [&_.relative]:before:via-yellow-400 [&_.relative]:before:to-red-400 [&_[role=slider]]:z-20 [&_.relative]:bg-transparent [&_[class*=SliderRange]]:bg-transparent"
-        />
-        <p className="text-sm text-muted-foreground">
-          {getActivityLevelLabel(activityLevel[0])}
-        </p>
+        <Select
+          onValueChange={handleActivityChange}
+          defaultValue="sedentary"
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select your activity level" />
+          </SelectTrigger>
+          <SelectContent>
+            {Object.entries(ACTIVITY_LEVELS).map(([key, { label }]) => (
+              <SelectItem key={key} value={key}>
+                {label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="space-y-4">
