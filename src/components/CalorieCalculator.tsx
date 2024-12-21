@@ -64,6 +64,10 @@ const CalorieCalculator = ({
           console.log('Retrieved activity level from database:', storedLevel);
           setSelectedActivityKey(storedLevel);
           setActivityLevel(ACTIVITY_LEVELS[storedLevel].value);
+        } else {
+          console.log('No saved activity level found, using default');
+          setSelectedActivityKey("sedentary");
+          setActivityLevel(ACTIVITY_LEVELS.sedentary.value);
         }
       } catch (err) {
         console.error('Error in initializeActivityLevel:', err);
@@ -85,13 +89,27 @@ const CalorieCalculator = ({
       }
 
       console.log('Saving activity level:', selectedActivityKey);
+      const { data: existingMetrics } = await supabase
+        .from('user_metrics')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+
+      const metricsToUpdate = {
+        user_id: user.id,
+        activity_level: selectedActivityKey,
+        height: existingMetrics?.height || height,
+        current_weight: existingMetrics?.current_weight || currentWeight,
+        target_weight: existingMetrics?.target_weight || targetWeight,
+        target_days: existingMetrics?.target_days || targetDays,
+        updated_at: new Date().toISOString()
+      };
+
       const { error } = await supabase
         .from('user_metrics')
-        .update({ 
-          activity_level: selectedActivityKey,
-          updated_at: new Date().toISOString()
-        })
-        .eq('user_id', user.id);
+        .upsert(metricsToUpdate);
 
       if (error) {
         console.error('Error saving activity level:', error);
