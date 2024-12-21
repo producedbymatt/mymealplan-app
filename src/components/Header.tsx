@@ -1,15 +1,14 @@
 import React from "react";
-import Navigation from "./Navigation";
 
 const Header = () => {
   return (
-    <div className="w-full flex flex-col items-center gap-4 mb-8">
-      <img 
-        src="/lovable-uploads/67003c76-1908-4b2f-93d3-01ea4a4cf510.png" 
-        alt="MyMealPlan Logo" 
-        className="h-24 w-auto"
-      />
-      <Navigation />
+    <div className="mb-8">
+      <h2 className="text-2xl font-bold text-center">
+        Track Your Health Journey
+      </h2>
+      <p className="text-muted-foreground text-center mt-2">
+        Monitor your progress and achieve your health goals
+      </p>
     </div>
   );
 };
