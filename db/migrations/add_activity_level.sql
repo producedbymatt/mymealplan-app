@@ -1,2 +1,0 @@
-ALTER TABLE user_metrics
-ADD COLUMN IF NOT EXISTS activity_level DECIMAL DEFAULT 1.2;
