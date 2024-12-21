@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
+import { supabase } from "@/lib/supabase";
+import { toast } from "sonner";
 
 interface CalorieCalculatorProps {
   height: number;
@@ -18,6 +20,68 @@ const CalorieCalculator = ({
   onCaloriesCalculated 
 }: CalorieCalculatorProps) => {
   const [activityLevel, setActivityLevel] = useState([1.2]); // Default to sedentary
+
+  // Load activity level from database
+  useEffect(() => {
+    const loadActivityLevel = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        const { data, error } = await supabase
+          .from('user_metrics')
+          .select('activity_level')
+          .eq('user_id', user.id)
+          .single();
+
+        if (error) {
+          console.error('Error loading activity level:', error);
+          return;
+        }
+
+        if (data?.activity_level) {
+          console.log('Loaded activity level:', data.activity_level);
+          setActivityLevel([data.activity_level]);
+        }
+      } catch (err) {
+        console.error('Failed to load activity level:', err);
+      }
+    };
+
+    loadActivityLevel();
+  }, []);
+
+  // Save activity level when it changes
+  const handleActivityLevelChange = async (newLevel: number[]) => {
+    setActivityLevel(newLevel);
+    
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { error } = await supabase
+        .from('user_metrics')
+        .upsert({
+          user_id: user.id,
+          activity_level: newLevel[0],
+          height,
+          current_weight: currentWeight,
+          target_weight: targetWeight,
+          target_days: targetDays,
+        });
+
+      if (error) {
+        console.error('Error saving activity level:', error);
+        toast.error('Failed to save activity level');
+        return;
+      }
+
+      console.log('Saved activity level:', newLevel[0]);
+    } catch (err) {
+      console.error('Failed to save activity level:', err);
+      toast.error('Failed to save activity level');
+    }
+  };
 
   const calculateBMR = () => {
     const weightInKg = currentWeight * 0.453592;
@@ -105,7 +169,7 @@ const CalorieCalculator = ({
         <label className="block text-sm font-medium mb-2">Activity Level</label>
         <Slider
           value={activityLevel}
-          onValueChange={setActivityLevel}
+          onValueChange={handleActivityLevelChange}
           min={1.2}
           max={1.9}
           step={0.025}
