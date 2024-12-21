@@ -24,7 +24,7 @@ const ActivityLevelSelect = ({ value, onChange }: ActivityLevelSelectProps) => {
         <SelectTrigger className="w-full">
           <SelectValue placeholder="Select your activity level" />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="bg-white dark:bg-zinc-950">
           {ACTIVITY_LEVELS.map((level) => (
             <SelectItem key={level.value} value={level.value.toString()}>
               {level.label}
