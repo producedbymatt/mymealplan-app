@@ -1,3 +1,10 @@
 -- Run all migrations in the correct order
-\i 'breakfast_recipes.sql'
-\i 'add_activity_level.sql'
+BEGIN;
+
+-- Include breakfast recipes migration
+\ir breakfast_recipes.sql;
+
+-- Include activity level migration
+\ir add_activity_level.sql;
+
+COMMIT;
