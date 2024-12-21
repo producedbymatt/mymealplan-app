@@ -3,7 +3,7 @@ import { Card } from "./ui/card";
 
 const PreviewMessage = () => {
   return (
-    <div className="container mx-auto px-4">
+    <div className="container mx-auto px-4 mt-4">
       <Card className="w-full max-w-3xl mx-auto bg-[#FFE5DC] border-none shadow-none mb-8">
         <div className="flex items-center justify-between p-4">
           <div className="flex items-center gap-4">
