@@ -55,8 +55,15 @@ const CalorieCalculator = ({
       if (data && data.length > 0 && data[0].activity_level) {
         const storedLevel = data[0].activity_level as ActivityLevelKey;
         console.log('Retrieved activity level from database:', storedLevel);
+        
+        // Set both the key and the numerical value
         setSelectedActivityKey(storedLevel);
         setActivityLevel(ACTIVITY_LEVELS[storedLevel].value);
+        
+        console.log('Updated activity states:', {
+          key: storedLevel,
+          value: ACTIVITY_LEVELS[storedLevel].value
+        });
       }
     } catch (err) {
       console.error('Error in loadActivityLevel:', err);
