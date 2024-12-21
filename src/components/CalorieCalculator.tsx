@@ -31,14 +31,17 @@ const CalorieCalculator = ({
   const [selectedActivityKey, setSelectedActivityKey] = useState<ActivityLevelKey>("sedentary");
   const [isInitialized, setIsInitialized] = useState(false);
   const [isUserChange, setIsUserChange] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const initializeActivityLevel = async () => {
       try {
+        setIsLoading(true);
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) {
           console.log('No user found, using default activity level');
           setIsInitialized(true);
+          setIsLoading(false);
           return;
         }
 
@@ -53,6 +56,7 @@ const CalorieCalculator = ({
         if (error) {
           console.error('Error loading activity level:', error);
           setIsInitialized(true);
+          setIsLoading(false);
           return;
         }
 
@@ -60,6 +64,7 @@ const CalorieCalculator = ({
           const storedLevel = data[0].activity_level as ActivityLevelKey;
           console.log('Retrieved activity level from database:', storedLevel);
           
+          // Ensure we set both states without triggering a save
           setSelectedActivityKey(storedLevel);
           setActivityLevel(ACTIVITY_LEVELS[storedLevel].value);
           
@@ -72,6 +77,8 @@ const CalorieCalculator = ({
         console.error('Error in initializeActivityLevel:', err);
       } finally {
         setIsInitialized(true);
+        setIsLoading(false);
+        console.log('Activity level initialization complete');
       }
     };
 
@@ -81,9 +88,12 @@ const CalorieCalculator = ({
   }, [isInitialized]);
 
   const saveActivityLevel = async (level: ActivityLevelKey) => {
-    // Only save if this is a user-initiated change and not initial load
-    if (!isUserChange) {
-      console.log('Skipping save - not a user-initiated change');
+    if (!isInitialized || isLoading || !isUserChange) {
+      console.log('Skipping save - conditions not met:', {
+        isInitialized,
+        isLoading,
+        isUserChange
+      });
       return;
     }
 
@@ -138,7 +148,7 @@ const CalorieCalculator = ({
     onCaloriesCalculated?.(dailyCalories);
   }, [dailyCalories, onCaloriesCalculated]);
 
-  if (!isInitialized) {
+  if (isLoading) {
     return null;
   }
 
