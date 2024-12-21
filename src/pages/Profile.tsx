@@ -4,8 +4,11 @@ import UserDetailsForm from "@/components/profile/UserDetailsForm";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
+  const navigate = useNavigate();
   const [metrics, setMetrics] = useState({
     height: 0,
     current_weight: 0,
@@ -65,9 +68,34 @@ const Profile = () => {
     setMetrics(newMetrics);
   };
 
+  const handleSignOut = async () => {
+    console.log("Starting sign out process...");
+    
+    const { error } = await supabase.auth.signOut();
+    
+    if (error) {
+      console.error("Error signing out:", error);
+      toast.error("Error signing out");
+      return;
+    }
+    
+    console.log("Sign out successful");
+    toast.success("Signed out successfully");
+    navigate("/");
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Profile Settings</h1>
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold">Profile Settings</h1>
+        <Button 
+          variant="destructive"
+          className="bg-red-600 hover:bg-red-700"
+          onClick={handleSignOut}
+        >
+          Sign Out
+        </Button>
+      </div>
       <div className="grid gap-8 md:grid-cols-2">
         <div>
           <UserDetailsForm />
