@@ -1,4 +1,3 @@
-import React from "react";
 import UserMetricsCard from "@/components/profile/UserMetricsCard";
 import UserDetailsForm from "@/components/profile/UserDetailsForm";
 import { useState, useEffect } from "react";
@@ -90,7 +89,7 @@ const Profile = () => {
         <h1 className="text-3xl font-bold">Profile Settings</h1>
         <Button 
           variant="destructive"
-          className="bg-red-600 hover:bg-red-700"
+          className="bg-red-600 hover:bg-red-700 text-white"
           onClick={handleSignOut}
         >
           Sign Out

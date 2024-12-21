@@ -10,6 +10,7 @@ import WeightTracking from "./pages/WeightTracking";
 import Profile from "./pages/Profile";
 import AuthOverlay from "./components/auth/AuthOverlay";
 import { supabase } from "@/lib/supabase";
+import Navigation from "./components/Navigation";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<any>(null);
@@ -47,6 +48,13 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
+const Layout = ({ children }: { children: React.ReactNode }) => (
+  <div className="min-h-screen">
+    <Navigation />
+    {children}
+  </div>
+);
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -56,12 +64,12 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index />} />
+          <Route path="/" element={<Layout><Index /></Layout>} />
           <Route
             path="/calorie-logger"
             element={
               <ProtectedRoute>
-                <CalorieLogger />
+                <Layout><CalorieLogger /></Layout>
               </ProtectedRoute>
             }
           />
@@ -69,7 +77,7 @@ const App = () => (
             path="/weight-tracking"
             element={
               <ProtectedRoute>
-                <WeightTracking />
+                <Layout><WeightTracking /></Layout>
               </ProtectedRoute>
             }
           />
@@ -77,7 +85,7 @@ const App = () => (
             path="/profile"
             element={
               <ProtectedRoute>
-                <Profile />
+                <Layout><Profile /></Layout>
               </ProtectedRoute>
             }
           />
