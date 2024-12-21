@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { ActivityLevelType } from "@/types/calculator";
 import { toast } from "sonner";
@@ -12,15 +12,17 @@ interface ActivityLevelManagerProps {
 const ActivityLevelManager = ({ onActivityLevelChange }: ActivityLevelManagerProps) => {
   const [activityLevel, setActivityLevel] = useState<ActivityLevelType>('sedentary');
   const [isSaving, setIsSaving] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   const handleActivityLevelLoaded = useCallback((level: ActivityLevelType) => {
     console.log('Activity level loaded:', level);
     setActivityLevel(level);
+    setIsInitialized(true);
     onActivityLevelChange(level);
   }, [onActivityLevelChange]);
 
   const saveActivityLevel = async (newLevel: ActivityLevelType) => {
-    if (isSaving) return;
+    if (isSaving || !isInitialized) return;
     
     try {
       setIsSaving(true);
@@ -43,6 +45,8 @@ const ActivityLevelManager = ({ onActivityLevelChange }: ActivityLevelManagerPro
       if (error) {
         console.error('Error saving activity level:', error);
         toast.error("Failed to save activity level");
+        // Revert to previous state on error
+        setActivityLevel(activityLevel);
         return;
       }
 
@@ -50,17 +54,34 @@ const ActivityLevelManager = ({ onActivityLevelChange }: ActivityLevelManagerPro
     } catch (error) {
       console.error('Exception while saving activity level:', error);
       toast.error("Failed to save activity level");
+      // Revert to previous state on error
+      setActivityLevel(activityLevel);
     } finally {
       setIsSaving(false);
     }
   };
 
   const handleActivityLevelChange = async (newLevel: ActivityLevelType) => {
+    if (!isInitialized) return;
+    
     console.log('Activity level changing to:', newLevel);
     setActivityLevel(newLevel);
     onActivityLevelChange(newLevel);
     await saveActivityLevel(newLevel);
   };
+
+  // Prevent any state updates until initial load is complete
+  useEffect(() => {
+    return () => {
+      setIsInitialized(false);
+    };
+  }, []);
+
+  if (!isInitialized) {
+    return (
+      <ActivityLevelLoader onActivityLevelLoaded={handleActivityLevelLoaded} />
+    );
+  }
 
   return (
     <>
