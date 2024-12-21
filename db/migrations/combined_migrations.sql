@@ -38,7 +38,7 @@ ADD COLUMN activity_level activity_level_type DEFAULT 'sedentary';
 -- Create the recipes table if it doesn't exist
 CREATE TABLE IF NOT EXISTS recipes (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL UNIQUE,
     calories INTEGER NOT NULL,
     protein INTEGER NOT NULL,
     carbs INTEGER NOT NULL,
@@ -51,6 +51,9 @@ CREATE TABLE IF NOT EXISTS recipes (
     category VARCHAR(50) NOT NULL,
     difficulty_level VARCHAR(20) NOT NULL
 );
+
+-- Clear existing data to prevent duplicates
+TRUNCATE TABLE recipes;
 
 -- Insert breakfast recipes
 INSERT INTO recipes (name, calories, protein, carbs, fat, prep_time, cook_time, ingredients, instructions, meal_type, category, difficulty_level)
