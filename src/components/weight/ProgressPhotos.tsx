@@ -17,7 +17,30 @@ const ProgressPhotos = () => {
   const [uploadProgress, setUploadProgress] = useState(0);
 
   useEffect(() => {
-    loadPhotos();
+    const initializeSession = async () => {
+      const { data: { session }, error } = await supabase.auth.getSession();
+      if (error) {
+        console.error('Error getting session:', error);
+        return;
+      }
+      if (session) {
+        loadPhotos();
+      }
+    };
+
+    initializeSession();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        loadPhotos();
+      } else {
+        setPhotos([]);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   const loadPhotos = async () => {
