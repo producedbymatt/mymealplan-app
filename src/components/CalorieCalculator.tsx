@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
-import { supabase } from "@/lib/supabase";
-import { toast } from "sonner";
-import ActivityLevelSelect from "./calculator/ActivityLevelSelect";
 import CalorieResults from "./calculator/CalorieResults";
 import { ActivityLevelType, getActivityMultiplier } from "@/types/calculator";
+import ActivityLevelManager from "./calculator/ActivityLevelManager";
 
 interface CalorieCalculatorProps {
   height: number;
@@ -22,95 +20,6 @@ const CalorieCalculator = ({
   onCaloriesCalculated 
 }: CalorieCalculatorProps) => {
   const [activityLevel, setActivityLevel] = useState<ActivityLevelType>('sedentary');
-  const [isLoading, setIsLoading] = useState(true);
-  const [saveTimeout, setSaveTimeout] = useState<NodeJS.Timeout | null>(null);
-
-  useEffect(() => {
-    const loadActivityLevel = async () => {
-      try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) {
-          setIsLoading(false);
-          return;
-        }
-
-        const { data, error } = await supabase
-          .from('user_metrics')
-          .select('activity_level')
-          .eq('user_id', user.id)
-          .order('updated_at', { ascending: false })
-          .limit(1)
-          .single();
-
-        if (error) throw error;
-
-        if (data?.activity_level) {
-          console.log('Loaded activity level:', data.activity_level);
-          setActivityLevel(data.activity_level);
-        }
-      } catch (error) {
-        console.error('Error loading activity level:', error);
-        toast.error("Failed to load activity level");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadActivityLevel();
-  }, []);
-
-  const saveActivityLevel = async (newLevel: ActivityLevelType) => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast.error("Please log in to save your activity level");
-        return;
-      }
-
-      if (saveTimeout) {
-        clearTimeout(saveTimeout);
-      }
-
-      const timeout = setTimeout(async () => {
-        const maxRetries = 3;
-        let retryCount = 0;
-        let success = false;
-
-        while (!success && retryCount < maxRetries) {
-          try {
-            const { error } = await supabase
-              .from('user_metrics')
-              .update({ activity_level: newLevel })
-              .eq('user_id', user.id);
-
-            if (error) {
-              if (error.code === '40P01') {
-                retryCount++;
-                if (retryCount < maxRetries) {
-                  await new Promise(resolve => setTimeout(resolve, Math.random() * 400 + 100));
-                  continue;
-                }
-              }
-              throw error;
-            }
-
-            success = true;
-            console.log('Saved activity level:', newLevel);
-          } catch (error) {
-            console.error(`Error saving activity level (attempt ${retryCount + 1}):`, error);
-            if (retryCount === maxRetries - 1) {
-              toast.error("Failed to save activity level");
-            }
-          }
-        }
-      }, 500);
-
-      setSaveTimeout(timeout);
-    } catch (error) {
-      console.error('Error in saveActivityLevel:', error);
-      toast.error("Failed to save activity level");
-    }
-  };
 
   const calculateBMR = () => {
     const weightInKg = currentWeight * 0.453592;
@@ -151,9 +60,8 @@ const CalorieCalculator = ({
     return { minProtein, maxProtein };
   };
 
-  const handleActivityLevelChange = (newValue: ActivityLevelType) => {
-    setActivityLevel(newValue);
-    saveActivityLevel(newValue);
+  const handleActivityLevelChange = (newLevel: ActivityLevelType) => {
+    setActivityLevel(newLevel);
   };
 
   const dailyCalories = calculateDailyCalories();
@@ -166,30 +74,11 @@ const CalorieCalculator = ({
     onCaloriesCalculated?.(dailyCalories);
   }, [dailyCalories, onCaloriesCalculated]);
 
-  if (isLoading) {
-    return (
-      <Card className="p-6 w-full max-w-2xl mx-auto mt-4">
-        <div className="animate-pulse space-y-4">
-          <div className="h-4 bg-gray-200 rounded w-1/4 mx-auto"></div>
-          <div className="h-2 bg-gray-200 rounded"></div>
-          <div className="h-8 bg-gray-200 rounded"></div>
-          <div className="space-y-2">
-            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-          </div>
-        </div>
-      </Card>
-    );
-  }
-
   return (
     <Card className="p-6 w-full max-w-2xl mx-auto mt-4">
       <h2 className="text-2xl font-bold mb-4 text-center">Calorie Analysis</h2>
       
-      <ActivityLevelSelect 
-        value={activityLevel}
-        onChange={handleActivityLevelChange}
-      />
+      <ActivityLevelManager onActivityLevelChange={handleActivityLevelChange} />
 
       <CalorieResults
         dailyCalories={dailyCalories}
