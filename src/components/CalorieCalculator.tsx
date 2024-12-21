@@ -248,3 +248,5 @@ const CalorieCalculator = ({
     </Card>
   );
 };
+
+export default CalorieCalculator;
