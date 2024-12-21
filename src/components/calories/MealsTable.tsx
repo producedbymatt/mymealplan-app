@@ -57,44 +57,46 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
               )}
               <TableRow>
                 <TableCell colSpan={5} className="p-0">
-                  <Table>
-                    <TableBody>
-                      {groupedMeals[date].map((log) => (
-                        <TableRow key={log.id} className="bg-white">
-                          <TableCell className="w-1/4">{log.meal_name}</TableCell>
-                          <TableCell className="w-1/6">{log.calories}</TableCell>
-                          <TableCell className="w-1/6">
-                            {format(new Date(log.created_at), "h:mm a")}
-                          </TableCell>
-                          <TableCell className="w-1/4">
-                            {format(new Date(log.created_at), "MMM d, yyyy")}
-                          </TableCell>
-                          <TableCell className="w-1/6 text-right">
-                            <div className="flex justify-end gap-2">
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => onEdit(log)}
-                              >
-                                <Pencil className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => {
-                                  if (window.confirm("Are you sure you want to delete this meal?")) {
-                                    onDelete(log.id);
-                                  }
-                                }}
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+                  <div className="border-2 border-black rounded-lg overflow-hidden">
+                    <Table>
+                      <TableBody>
+                        {groupedMeals[date].map((log) => (
+                          <TableRow key={log.id} className="bg-white">
+                            <TableCell className="w-1/4">{log.meal_name}</TableCell>
+                            <TableCell className="w-1/6">{log.calories}</TableCell>
+                            <TableCell className="w-1/6">
+                              {format(new Date(log.created_at), "h:mm a")}
+                            </TableCell>
+                            <TableCell className="w-1/4">
+                              {format(new Date(log.created_at), "MMM d, yyyy")}
+                            </TableCell>
+                            <TableCell className="w-1/6 text-right">
+                              <div className="flex justify-end gap-2">
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => onEdit(log)}
+                                >
+                                  <Pencil className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => {
+                                    if (window.confirm("Are you sure you want to delete this meal?")) {
+                                      onDelete(log.id);
+                                    }
+                                  }}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
                 </TableCell>
               </TableRow>
             </React.Fragment>
