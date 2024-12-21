@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { Button } from "@/components/ui/button";
-import { RefreshCw, ChevronDown, ChevronUp } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 import MealOption from "./MealOption";
 import { Separator } from "@/components/ui/separator";
 import { Meal } from "./types";
@@ -14,10 +14,7 @@ interface MealTimeSlotProps {
 }
 
 const MealTimeSlot = ({ time, options, onRefresh, isLast, showFavoritesOnly }: MealTimeSlotProps) => {
-  const [showAll, setShowAll] = useState(false);
-  const displayedOptions = showAll ? options : options.slice(0, 3);
-
-  console.log(`MealTimeSlot ${time}: Showing ${displayedOptions.length} of ${options.length} options`);
+  console.log(`MealTimeSlot ${time}: Showing ${options.length} options`);
 
   return (
     <div className="mb-6">
@@ -34,38 +31,13 @@ const MealTimeSlot = ({ time, options, onRefresh, isLast, showFavoritesOnly }: M
         </Button>
       </div>
       <div className="grid gap-4">
-        {displayedOptions.map((meal, index) => (
+        {options.slice(0, 3).map((meal, index) => (
           <MealOption 
             key={`${meal.name}-${index}`}
             meal={meal} 
             showFavoritesOnly={showFavoritesOnly}
           />
         ))}
-      </div>
-      
-      <div className="mt-6 flex flex-col items-center gap-2 border-t pt-4">
-        <Button
-          variant="secondary"
-          size="default"
-          onClick={() => setShowAll(!showAll)}
-          className="w-full max-w-[200px] flex items-center justify-center gap-2"
-        >
-          {showAll ? (
-            <>
-              Show Less <ChevronUp className="h-4 w-4" />
-            </>
-          ) : (
-            <>
-              Show All <ChevronDown className="h-4 w-4" />
-            </>
-          )}
-        </Button>
-        <p className="text-sm text-muted-foreground">
-          {showAll 
-            ? `Showing all ${options.length} recipes`
-            : `Showing 3 of ${options.length} recipes`
-          }
-        </p>
       </div>
       
       {!isLast && <Separator className="mt-6" />}
