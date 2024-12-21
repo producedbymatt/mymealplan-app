@@ -15,7 +15,7 @@ const PhotoUploader = ({ uploading, uploadProgress, onFileUpload }: PhotoUploade
       <div className="relative">
         <Input
           type="file"
-          accept="image/*"
+          accept="image/*,.heic"
           onChange={onFileUpload}
           disabled={uploading}
           className="hidden"
@@ -41,7 +41,7 @@ const PhotoUploader = ({ uploading, uploadProgress, onFileUpload }: PhotoUploade
 
       <div className="mt-2 text-sm text-muted-foreground text-center">
         <p>Maximum file size: 5MB</p>
-        <p>Supported formats: JPEG, PNG</p>
+        <p>Supported formats: JPEG, PNG, HEIC</p>
       </div>
 
       {uploading && (

@@ -42,8 +42,9 @@ const ProgressPhotos = () => {
     if (!file) return;
 
     // Validate file type
-    if (!file.type.startsWith('image/')) {
-      toast.error("Please upload an image file");
+    const validTypes = ['image/jpeg', 'image/png', 'image/heic'];
+    if (!validTypes.includes(file.type.toLowerCase())) {
+      toast.error("Please upload a JPEG, PNG, or HEIC file");
       return;
     }
 
