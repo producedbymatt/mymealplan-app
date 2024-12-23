@@ -1,10 +1,25 @@
 import { WeightEntry } from "@/hooks/useWeightLogs";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { format } from "date-fns";
+import { Card } from "@/components/ui/card";
 
 interface WeightChartProps {
   entries: WeightEntry[];
 }
+
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <Card className="p-2 bg-blue-950 shadow-lg rounded-lg">
+        <div className="text-center text-sm">
+          <div className="font-semibold text-white">{label}</div>
+          <div className="text-white">{payload[0].value} lbs</div>
+        </div>
+      </Card>
+    );
+  }
+  return null;
+};
 
 const WeightChart = ({ entries }: WeightChartProps) => {
   // Sort entries by date, oldest first
@@ -33,7 +48,10 @@ const WeightChart = ({ entries }: WeightChartProps) => {
               domain={["auto", "auto"]}
               tick={{ fontSize: 12 }}
             />
-            <Tooltip />
+            <Tooltip 
+              content={<CustomTooltip />}
+              cursor={{ stroke: '#374151' }}
+            />
             <Line
               type="monotone"
               dataKey="weight"
