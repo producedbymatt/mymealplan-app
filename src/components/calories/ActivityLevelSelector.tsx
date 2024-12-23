@@ -28,7 +28,11 @@ const ActivityLevelSelector = ({
         </SelectTrigger>
         <SelectContent>
           {Object.entries(ACTIVITY_LEVELS).map(([key, { label }]) => (
-            <SelectItem key={key} value={key}>
+            <SelectItem 
+              key={key} 
+              value={key}
+              className="hover:bg-blue-900 hover:text-white hover:border hover:border-white"
+            >
               {label}
             </SelectItem>
           ))}
