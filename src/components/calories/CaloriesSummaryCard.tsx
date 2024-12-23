@@ -7,15 +7,15 @@ interface CaloriesSummaryCardProps {
 
 const CaloriesSummaryCard = ({ todayCalories, recommendedCalories }: CaloriesSummaryCardProps) => {
   return (
-    <Card>
+    <Card className="bg-gradient-to-r from-blue-950/90 to-green-950/90">
       <CardHeader>
-        <CardTitle>Today's Calories</CardTitle>
+        <CardTitle className="text-white">Today's Calories</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex justify-between items-center">
-          <p className="text-4xl font-bold">{todayCalories}</p>
+          <p className="text-4xl font-bold text-white">{todayCalories}</p>
           {recommendedCalories && (
-            <p className="text-2xl font-semibold text-green-600">
+            <p className="text-2xl font-semibold text-green-400">
               Target: {recommendedCalories}
             </p>
           )}
