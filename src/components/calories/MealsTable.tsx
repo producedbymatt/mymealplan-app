@@ -55,9 +55,9 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
                   </TableCell>
                 </TableRow>
               )}
-              <TableRow>
+              <TableRow className="bg-[#0EA5E9] text-white hover:bg-[#0EA5E9]">
                 <TableCell colSpan={5} className="pb-2 pt-4">
-                  <h3 className="text-lg font-semibold text-foreground">
+                  <h3 className="text-lg font-semibold">
                     {format(new Date(date), "EEEE, MMMM do")}
                   </h3>
                 </TableCell>
