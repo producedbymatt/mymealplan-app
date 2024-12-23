@@ -54,7 +54,7 @@ const UserMetricsCard = ({ metrics, onMetricsUpdate }: UserMetricsCardProps) => 
         <Button
           onClick={() => setIsEditing(true)}
           variant="outline"
-          size="sm"
+          className="hover:bg-accent hover:text-accent-foreground"
         >
           Edit
         </Button>

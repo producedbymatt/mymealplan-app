@@ -89,7 +89,7 @@ const Profile = () => {
         <h1 className="text-3xl font-bold">Profile Settings</h1>
         <Button 
           variant="destructive"
-          className="bg-red-600 hover:bg-red-700 text-white"
+          className="bg-accent hover:bg-accent/90 text-accent-foreground"
           onClick={handleSignOut}
         >
           Sign Out

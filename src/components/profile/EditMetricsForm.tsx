@@ -97,10 +97,19 @@ const EditMetricsForm = ({ metrics, onCancel, onSave }: EditMetricsFormProps) =>
         </Select>
       </div>
       <div className="flex gap-4">
-        <Button type="submit" disabled={loading}>
+        <Button 
+          type="submit" 
+          disabled={loading}
+          className="bg-primary hover:bg-primary/90 text-primary-foreground"
+        >
           {loading ? "Saving..." : "Save Changes"}
         </Button>
-        <Button type="button" variant="outline" onClick={onCancel}>
+        <Button 
+          type="button" 
+          variant="outline" 
+          onClick={onCancel}
+          className="hover:bg-accent hover:text-accent-foreground"
+        >
           Cancel
         </Button>
       </div>
