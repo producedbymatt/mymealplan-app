@@ -55,7 +55,7 @@ const MealOption = ({ meal, showFavoritesOnly }: MealOptionProps) => {
             </div>
           </div>
         </AccordionTrigger>
-        <AccordionContent className="px-4 pt-2">
+        <AccordionContent className="px-4 pt-2 text-white bg-gradient-to-r from-blue-950/90 to-green-950/90 rounded-b-lg">
           <RecipeDetails meal={meal} />
         </AccordionContent>
       </AccordionItem>
