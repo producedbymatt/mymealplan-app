@@ -37,7 +37,7 @@ const MessageDisplay = ({ messages, isLoading, messagesEndRef, onLogMeal }: Mess
           </ReactMarkdown>
           
           {shouldShowLogButtons && (
-            <div className="mt-4 flex gap-2">
+            <div className="mt-4">
               <Button
                 onClick={() => onLogMeal(
                   mealInfo?.meal_name || "Unknown Food Item",
@@ -47,12 +47,6 @@ const MessageDisplay = ({ messages, isLoading, messagesEndRef, onLogMeal }: Mess
                 className="bg-white text-blue-600 hover:bg-blue-50"
               >
                 Log this meal
-              </Button>
-              <Button
-                variant="ghost"
-                className="text-white hover:bg-blue-700/20"
-              >
-                No, thanks
               </Button>
             </div>
           )}
