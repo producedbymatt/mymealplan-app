@@ -37,7 +37,7 @@ const ChatBubble = () => {
       ) : (
         <Button
           onClick={() => setIsOpen(true)}
-          className="rounded-full h-14 w-14 bg-gradient-to-r from-blue-950/90 to-green-950/90 hover:from-blue-950 hover:to-green-950 shadow-lg"
+          className="rounded-full h-14 w-14 bg-gradient-to-r from-orange-600/90 via-yellow-500/90 to-orange-600/90 hover:from-orange-600 hover:to-orange-600 shadow-lg"
         >
           <MessageCircle className="h-6 w-6" />
         </Button>
