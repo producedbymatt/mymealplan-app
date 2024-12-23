@@ -52,7 +52,8 @@ const CalorieCalculator = ({
           .select('activity_level, recommended_calories')
           .eq('user_id', user.id)
           .order('created_at', { ascending: false })
-          .limit(1);
+          .limit(1)
+          .single();
 
         if (error) {
           console.error('Error loading activity level:', error);
@@ -60,25 +61,17 @@ const CalorieCalculator = ({
           return;
         }
 
-        if (data && data.length > 0 && data[0].activity_level) {
-          const storedLevel = data[0].activity_level as ActivityLevelKey;
-          console.log('Retrieved activity level from database:', storedLevel);
-          console.log('Retrieved recommended calories from database:', data[0].recommended_calories);
-          
-          // Only set the activity level if it's a valid key in ACTIVITY_LEVELS
-          if (ACTIVITY_LEVELS[storedLevel]) {
-            setSelectedActivityKey(storedLevel);
-            setActivityLevel(ACTIVITY_LEVELS[storedLevel].value);
-            setSavedCalories(data[0].recommended_calories);
-            localStorage.setItem('saved_activity_level', storedLevel);
-          } else {
-            console.warn('Invalid activity level found in database:', storedLevel);
-            setSelectedActivityKey("sedentary");
-            setActivityLevel(ACTIVITY_LEVELS.sedentary.value);
-            localStorage.setItem('saved_activity_level', "sedentary");
-          }
+        console.log('Retrieved data from database:', data);
+
+        if (data?.activity_level && ACTIVITY_LEVELS[data.activity_level as ActivityLevelKey]) {
+          const storedLevel = data.activity_level as ActivityLevelKey;
+          console.log('Setting activity level to:', storedLevel);
+          setSelectedActivityKey(storedLevel);
+          setActivityLevel(ACTIVITY_LEVELS[storedLevel].value);
+          setSavedCalories(data.recommended_calories);
+          localStorage.setItem('saved_activity_level', storedLevel);
         } else {
-          console.log('No saved activity level found, using default');
+          console.log('No valid activity level found, using default');
           setSelectedActivityKey("sedentary");
           setActivityLevel(ACTIVITY_LEVELS.sedentary.value);
           localStorage.setItem('saved_activity_level', "sedentary");
@@ -87,7 +80,6 @@ const CalorieCalculator = ({
         console.error('Error in initializeActivityLevel:', err);
       } finally {
         setIsLoading(false);
-        console.log('Activity level initialization complete');
       }
     };
 
@@ -102,14 +94,7 @@ const CalorieCalculator = ({
         return;
       }
 
-      console.log('Saving activity level:', selectedActivityKey);
-      const { data: existingMetrics } = await supabase
-        .from('user_metrics')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .single();
+      console.log('Attempting to save activity level:', selectedActivityKey);
 
       const calculatedCalories = calculateDailyCalories(
         calculateBMR(currentWeight, height),
@@ -118,6 +103,20 @@ const CalorieCalculator = ({
         currentWeight,
         targetDays
       );
+
+      const { data: existingMetrics, error: fetchError } = await supabase
+        .from('user_metrics')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+
+      if (fetchError && fetchError.code !== 'PGRST116') {
+        console.error('Error fetching existing metrics:', fetchError);
+        toast.error("Failed to save activity level");
+        return;
+      }
 
       const metricsToUpdate = {
         user_id: user.id,
@@ -130,12 +129,14 @@ const CalorieCalculator = ({
         updated_at: new Date().toISOString()
       };
 
-      const { error } = await supabase
+      console.log('Saving metrics:', metricsToUpdate);
+
+      const { error: upsertError } = await supabase
         .from('user_metrics')
         .upsert(metricsToUpdate);
 
-      if (error) {
-        console.error('Error saving activity level:', error);
+      if (upsertError) {
+        console.error('Error saving activity level:', upsertError);
         toast.error("Failed to save activity level");
         return;
       }
