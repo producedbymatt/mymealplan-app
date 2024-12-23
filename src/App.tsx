@@ -76,9 +76,29 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
-  // Add dark mode by default
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  // Add dark mode by default and detect changes
   useEffect(() => {
     document.documentElement.classList.add('dark');
+    setIsDarkMode(true);
+
+    // Watch for class changes on html element
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === 'class') {
+          const htmlElement = document.documentElement;
+          setIsDarkMode(htmlElement.classList.contains('dark'));
+        }
+      });
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
+
+    return () => observer.disconnect();
   }, []);
 
   return (
@@ -86,7 +106,10 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       <div className="w-full bg-background">
         <div className="container mx-auto flex flex-col items-center">
           <img 
-            src="/lovable-uploads/67003c76-1908-4b2f-93d3-01ea4a4cf510.png" 
+            src={isDarkMode 
+              ? "/lovable-uploads/f6662a44-ab76-41ca-890b-b9da00a755af.png"  // White logo for dark mode
+              : "/lovable-uploads/67003c76-1908-4b2f-93d3-01ea4a4cf510.png"  // Original logo for light mode
+            }
             alt="MyMealPlan Logo" 
             className="h-24 w-auto mb-4"
           />
