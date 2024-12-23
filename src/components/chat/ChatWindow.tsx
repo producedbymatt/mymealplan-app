@@ -23,11 +23,10 @@ const ChatWindow = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: "Hi! I'm your AI health coach. I can help you with:\n\n" +
-               "* Recipe suggestions\n" +
-               "* Nutritional information\n" +
-               "* General health questions\n\n" +
-               "How can I assist you today?"
+      content: "Welcome to Your Health Coach! 🌟\n\n" +
+               "Hi there! I'm here to help you achieve your health and fitness goals, one step at a time. Whether you're looking to lose weight, gain muscle, eat healthier, or just feel your best, I've got your back. 💪\n\n" +
+               "Ask me anything about nutrition, exercise, calorie counts, recipes, or strategies to stay on track. Let's create a plan that works for you and keeps you motivated along the way!\n\n" +
+               "Remember, every small step counts—let's start this journey together! 🚀"
     }
   ]);
   const [input, setInput] = useState('');
