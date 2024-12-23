@@ -55,7 +55,7 @@ const CalorieCalculator = ({
           .limit(1)
           .single();
 
-        if (error) {
+        if (error && error.code !== 'PGRST116') {
           console.error('Error loading activity level:', error);
           setIsLoading(false);
           return;
@@ -69,12 +69,10 @@ const CalorieCalculator = ({
           setSelectedActivityKey(storedLevel);
           setActivityLevel(ACTIVITY_LEVELS[storedLevel].value);
           setSavedCalories(data.recommended_calories);
-          localStorage.setItem('saved_activity_level', storedLevel);
         } else {
           console.log('No valid activity level found, using default');
           setSelectedActivityKey("sedentary");
           setActivityLevel(ACTIVITY_LEVELS.sedentary.value);
-          localStorage.setItem('saved_activity_level', "sedentary");
         }
       } catch (err) {
         console.error('Error in initializeActivityLevel:', err);
@@ -104,27 +102,13 @@ const CalorieCalculator = ({
         targetDays
       );
 
-      const { data: existingMetrics, error: fetchError } = await supabase
-        .from('user_metrics')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .single();
-
-      if (fetchError && fetchError.code !== 'PGRST116') {
-        console.error('Error fetching existing metrics:', fetchError);
-        toast.error("Failed to save activity level");
-        return;
-      }
-
       const metricsToUpdate = {
         user_id: user.id,
         activity_level: selectedActivityKey,
-        height: existingMetrics?.height || height,
-        current_weight: existingMetrics?.current_weight || currentWeight,
-        target_weight: existingMetrics?.target_weight || targetWeight,
-        target_days: existingMetrics?.target_days || targetDays,
+        height,
+        current_weight: currentWeight,
+        target_weight: targetWeight,
+        target_days: targetDays,
         recommended_calories: calculatedCalories,
         updated_at: new Date().toISOString()
       };
@@ -144,7 +128,6 @@ const CalorieCalculator = ({
       console.log('Successfully saved activity level:', selectedActivityKey);
       console.log('Successfully saved recommended calories:', calculatedCalories);
       setSavedCalories(calculatedCalories);
-      localStorage.setItem('saved_activity_level', selectedActivityKey);
       toast.success("Activity level updated");
       setHasUnsavedChanges(false);
       onSaveMetrics?.();
@@ -164,7 +147,7 @@ const CalorieCalculator = ({
     setSelectedActivityKey(value);
     setActivityLevel(ACTIVITY_LEVELS[value].value);
     setHasUnsavedChanges(true);
-    setSavedCalories(null); // Clear saved calories when activity level changes
+    setSavedCalories(null);
   };
 
   const bmr = calculateBMR(currentWeight, height);
