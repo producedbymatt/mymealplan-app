@@ -84,6 +84,7 @@ const WeightTable = ({ entries, showMore, onToggleShowMore, onEdit, onDelete }: 
                     variant="ghost"
                     size="icon"
                     onClick={() => handleEdit(entry)}
+                    className="hover:bg-[#0EA5E9] hover:text-white"
                   >
                     <Pencil className="h-4 w-4" />
                   </Button>
@@ -91,6 +92,7 @@ const WeightTable = ({ entries, showMore, onToggleShowMore, onEdit, onDelete }: 
                     variant="ghost"
                     size="icon"
                     onClick={() => handleDelete(entry.id!)}
+                    className="hover:bg-[#0EA5E9] hover:text-white"
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>

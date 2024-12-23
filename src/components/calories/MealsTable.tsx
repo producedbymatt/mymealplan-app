@@ -123,6 +123,7 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
                               variant="ghost"
                               size="icon"
                               onClick={() => onEdit(log)}
+                              className="hover:bg-[#0EA5E9] hover:text-white"
                             >
                               <Pencil className="h-4 w-4" />
                             </Button>
@@ -134,6 +135,7 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
                                   onDelete(log.id);
                                 }
                               }}
+                              className="hover:bg-[#0EA5E9] hover:text-white"
                             >
                               <Trash2 className="h-4 w-4" />
                             </Button>
