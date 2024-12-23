@@ -119,7 +119,11 @@ const BMICalculator = ({ onBMICalculated, onMetricsUpdate }: BMICalculatorProps)
                     </SelectTrigger>
                     <SelectContent className="bg-white">
                       {Array.from({ length: 8 }, (_, i) => i + 4).map((foot) => (
-                        <SelectItem key={foot} value={foot.toString()}>
+                        <SelectItem 
+                          key={foot} 
+                          value={foot.toString()}
+                          className="hover:bg-[#0EA5E9]/50 hover:text-white data-[highlighted]:bg-[#0EA5E9]/50 data-[highlighted]:text-white"
+                        >
                           {foot} ft
                         </SelectItem>
                       ))}
@@ -133,7 +137,11 @@ const BMICalculator = ({ onBMICalculated, onMetricsUpdate }: BMICalculatorProps)
                     </SelectTrigger>
                     <SelectContent className="bg-white">
                       {Array.from({ length: 12 }, (_, i) => i).map((inch) => (
-                        <SelectItem key={inch} value={inch.toString()}>
+                        <SelectItem 
+                          key={inch} 
+                          value={inch.toString()}
+                          className="hover:bg-[#0EA5E9]/50 hover:text-white data-[highlighted]:bg-[#0EA5E9]/50 data-[highlighted]:text-white"
+                        >
                           {inch} in
                         </SelectItem>
                       ))}
