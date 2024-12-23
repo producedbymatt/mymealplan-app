@@ -12,9 +12,17 @@ interface MealTimeSlotProps {
   onRefresh: () => void;
   isLast?: boolean;
   showFavoritesOnly?: boolean;
+  onFavoriteChange?: (meal: Meal, isFavorite: boolean) => void;
 }
 
-const MealTimeSlot = ({ time, options, onRefresh, isLast, showFavoritesOnly }: MealTimeSlotProps) => {
+const MealTimeSlot = ({ 
+  time, 
+  options, 
+  onRefresh, 
+  isLast, 
+  showFavoritesOnly,
+  onFavoriteChange 
+}: MealTimeSlotProps) => {
   const [showAll, setShowAll] = useState(false);
   const allOptions = getMealOptionsForTime(time);
   const displayedOptions = showAll ? allOptions : options;
@@ -41,6 +49,7 @@ const MealTimeSlot = ({ time, options, onRefresh, isLast, showFavoritesOnly }: M
             key={`${meal.name}-${index}`}
             meal={meal} 
             showFavoritesOnly={showFavoritesOnly}
+            onFavoriteChange={onFavoriteChange}
           />
         ))}
       </div>

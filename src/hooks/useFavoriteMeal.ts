@@ -60,7 +60,7 @@ export const useFavoriteMeal = (meal: Meal) => {
           title: "Please log in",
           description: "You need to be logged in to save favorites.",
         });
-        return;
+        return isFavorite;
       }
 
       const newFavoriteStatus = !isFavorite;
@@ -87,7 +87,7 @@ export const useFavoriteMeal = (meal: Meal) => {
             title: "Error",
             description: "Failed to save favorite. Please try again.",
           });
-          return;
+          return isFavorite;
         }
       } else {
         console.log('Removing favorite:', {
@@ -107,7 +107,7 @@ export const useFavoriteMeal = (meal: Meal) => {
             title: "Error",
             description: "Failed to remove favorite. Please try again.",
           });
-          return;
+          return isFavorite;
         }
       }
 
@@ -116,12 +116,15 @@ export const useFavoriteMeal = (meal: Meal) => {
         title: newFavoriteStatus ? "Added to favorites" : "Removed from favorites",
         description: `${meal.name} has been ${newFavoriteStatus ? "added to" : "removed from"} your favorites.`,
       });
+      
+      return newFavoriteStatus;
     } catch (err) {
       console.error('Exception while toggling favorite:', err);
       toast({
         title: "Error",
         description: "An unexpected error occurred. Please try again.",
       });
+      return isFavorite;
     } finally {
       setIsLoading(false);
     }

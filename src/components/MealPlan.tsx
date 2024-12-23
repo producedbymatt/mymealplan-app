@@ -7,6 +7,7 @@ import FavoritesList from "./meal-plan/FavoritesList";
 import { useAllFavoriteMeals } from "@/hooks/useAllFavoriteMeals";
 import { useMealPlanState } from "./meal-plan/hooks/useMealPlanState";
 import { scaleMeal } from "./meal-plan/utils/mealScaling";
+import { Meal } from "./meal-plan/types";
 
 interface MealPlanProps {
   dailyCalories?: number;
@@ -23,11 +24,13 @@ const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: Me
     showFavoritesOnly,
     setShowFavoritesOnly,
     userId,
-    generateMealOptions
+    generateMealOptions,
+    favoriteMeals,
+    addFavoriteMeal,
+    removeFavoriteMeal
   } = useMealPlanState(dailyCalories);
 
   const { toast } = useToast();
-  const { favoriteMeals, isLoading: favoritesLoading } = useAllFavoriteMeals(userId);
 
   const refreshMealOptions = (timeSlotIndex: number) => {
     console.log(`Refreshing meal options for time slot ${timeSlotIndex}`);
@@ -67,18 +70,18 @@ const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: Me
     });
   };
 
+  const handleFavoriteChange = (meal: Meal, isFavorite: boolean) => {
+    if (isFavorite) {
+      addFavoriteMeal(meal);
+    } else {
+      removeFavoriteMeal(meal.name);
+    }
+  };
+
   const getAllFavorites = () => {
     const caloriesPerMeal = Math.round(dailyCalories / 3);
     return favoriteMeals.map(meal => scaleMeal(meal, caloriesPerMeal));
   };
-
-  if (favoritesLoading) {
-    return (
-      <Card className="p-6 w-full max-w-2xl mx-auto bg-background">
-        <div>Loading favorites...</div>
-      </Card>
-    );
-  }
 
   return (
     <Card className="p-6 w-full max-w-2xl mx-auto bg-background">
@@ -124,6 +127,7 @@ const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: Me
             onRefresh={() => refreshMealOptions(index)}
             isLast={index === mealPlan.length - 1}
             showFavoritesOnly={showFavoritesOnly}
+            onFavoriteChange={handleFavoriteChange}
           />
         ))
       )}

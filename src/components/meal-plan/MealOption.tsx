@@ -14,10 +14,19 @@ import RecipeDetails from "./RecipeDetails";
 interface MealOptionProps {
   meal: Meal;
   showFavoritesOnly?: boolean;
+  onFavoriteChange?: (meal: Meal, isFavorite: boolean) => void;
 }
 
-const MealOption = ({ meal, showFavoritesOnly }: MealOptionProps) => {
-  const { isFavorite, isLoading, toggleFavorite } = useFavoriteMeal(meal);
+const MealOption = ({ meal, showFavoritesOnly, onFavoriteChange }: MealOptionProps) => {
+  const { isFavorite, isLoading, toggleFavorite: toggleFavoriteState } = useFavoriteMeal(meal);
+
+  const toggleFavorite = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const newFavoriteState = await toggleFavoriteState(e);
+    if (onFavoriteChange) {
+      onFavoriteChange(meal, newFavoriteState);
+    }
+  };
 
   if (showFavoritesOnly && !isFavorite) {
     return null;
