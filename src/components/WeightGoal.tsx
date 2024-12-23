@@ -185,7 +185,7 @@ const WeightGoal = ({ onGoalSet }: WeightGoalProps) => {
                   required
                 />
               </div>
-              <Button type="submit" className="w-full" disabled={loading}>
+              <Button type="submit" className="w-full bg-gradient-to-r from-blue-950/90 to-green-950/90 hover:from-blue-950 hover:to-green-950" disabled={loading}>
                 {loading ? "Saving..." : "Set Goal"}
               </Button>
               {lastUpdated && (

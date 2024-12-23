@@ -148,7 +148,7 @@ const BMICalculator = ({ onBMICalculated, onMetricsUpdate }: BMICalculatorProps)
                 className="w-full"
               />
             </div>
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full bg-gradient-to-r from-blue-950/90 to-green-950/90 hover:from-blue-950 hover:to-green-950">
               Calculate BMI
             </Button>
           </form>
