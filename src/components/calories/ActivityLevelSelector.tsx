@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/select";
 
 interface ActivityLevelSelectorProps {
-  selectedActivityKey: ActivityLevelKey;
+  selectedActivityKey: ActivityLevelKey | "";
   onActivityChange: (value: ActivityLevelKey) => void;
 }
 

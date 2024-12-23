@@ -31,7 +31,7 @@ const CalorieCalculator = ({
   onSaveMetrics 
 }: CalorieCalculatorProps) => {
   const [activityLevel, setActivityLevel] = useState<number>(ACTIVITY_LEVELS.sedentary.value);
-  const [selectedActivityKey, setSelectedActivityKey] = useState<ActivityLevelKey>("sedentary");
+  const [selectedActivityKey, setSelectedActivityKey] = useState<ActivityLevelKey | "">("");
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [savedCalories, setSavedCalories] = useState<number | null>(null);
 
@@ -40,6 +40,11 @@ const CalorieCalculator = ({
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         toast.error("Please log in to save your activity level");
+        return;
+      }
+
+      if (!selectedActivityKey) {
+        toast.error("Please select an activity level first");
         return;
       }
 
