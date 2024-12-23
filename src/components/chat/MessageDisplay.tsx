@@ -16,8 +16,14 @@ const MessageDisplay = ({ messages, isLoading, messagesEndRef, onLogMeal }: Mess
   const renderMessage = (message: Message) => {
     const mealInfo = message.role === 'assistant' ? extractMealInfo(message.content) : null;
     const shouldShowLogButtons = message.role === 'assistant' && 
-      message.content.toLowerCase().includes('would you like to log this meal?') && 
+      message.content.toLowerCase().includes('would you like to log this meal') && 
       mealInfo;
+
+    console.log('Message content:', message.content);
+    console.log('Is assistant message:', message.role === 'assistant');
+    console.log('Contains log meal phrase:', message.content.toLowerCase().includes('would you like to log this meal'));
+    console.log('Meal info:', mealInfo);
+    console.log('Should show buttons:', shouldShowLogButtons);
 
     return (
       <div className={`flex ${message.role === 'assistant' ? 'justify-start' : 'justify-end'} mb-4`}>
