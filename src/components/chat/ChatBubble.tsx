@@ -18,7 +18,7 @@ const ChatBubble = () => {
                 variant="ghost"
                 size="icon"
                 onClick={() => setIsMinimized(!isMinimized)}
-                className="h-8 w-8"
+                className="h-8 w-8 hover:bg-[#0EA5E9] hover:text-white"
               >
                 {isMinimized ? <Maximize2 className="h-4 w-4" /> : <Minimize2 className="h-4 w-4" />}
               </Button>
@@ -26,7 +26,7 @@ const ChatBubble = () => {
                 variant="ghost"
                 size="icon"
                 onClick={() => setIsOpen(false)}
-                className="h-8 w-8"
+                className="h-8 w-8 hover:bg-[#0EA5E9] hover:text-white"
               >
                 <X className="h-4 w-4" />
               </Button>
