@@ -98,7 +98,7 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
             </AccordionTrigger>
             
             <AccordionContent>
-              <div className="border-2 border-foreground rounded-lg overflow-hidden mt-2">
+              <div className="rounded-lg overflow-hidden mt-2">
                 <Table>
                   <TableBody>
                     {groupedMeals[date].map((log) => (
