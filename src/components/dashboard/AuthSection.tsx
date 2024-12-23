@@ -11,7 +11,7 @@ const AuthSection = () => {
         <h1 className="text-4xl font-bold text-center mb-4">
           Your Goals, Your Meals, Your Plan.
         </h1>
-        <p className="text-lg text-gray-600 text-center mb-8 max-w-3xl mx-auto">
+        <p className="text-lg text-white text-center mb-8 max-w-3xl mx-auto">
           Calculate your recommended daily calorie and protein intake, get a custom meal plan designed to meet your goals, and track your progress.
         </p>
 

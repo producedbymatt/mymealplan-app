@@ -45,7 +45,7 @@ const MetricCards = ({
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{mostRecentWeight} lbs</div>
-          <p className="text-xs text-muted-foreground mt-1">Height: {heightFeet}'{heightInches}"</p>
+          <p className="text-xs text-white mt-1">Height: {heightFeet}'{heightInches}"</p>
         </CardContent>
       </Card>
       <Card>
@@ -56,7 +56,7 @@ const MetricCards = ({
           <div className="text-2xl font-bold">
             {targetWeight ? `${targetWeight} lbs` : "Not Set"}
           </div>
-          <p className="text-xs text-muted-foreground mt-1">
+          <p className="text-xs text-white mt-1">
             {targetWeight ? `${Math.abs(mostRecentWeight - targetWeight)} lbs to go` : "Set a goal to track progress"}
           </p>
         </CardContent>
@@ -69,7 +69,7 @@ const MetricCards = ({
           <div className="text-2xl font-bold">
             {startingWeight ? `${weightLoss.toFixed(1)} lbs` : "No data"}
           </div>
-          <p className="text-xs text-muted-foreground mt-1">
+          <p className="text-xs text-white mt-1">
             {startingWeight 
               ? `${isWeightLoss ? 'Lost' : 'Gained'} since starting` 
               : "Start logging to track progress"}
@@ -82,7 +82,7 @@ const MetricCards = ({
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{recommendedCalories}</div>
-          <p className="text-xs text-muted-foreground mt-1">Recommended intake</p>
+          <p className="text-xs text-white mt-1">Recommended intake</p>
         </CardContent>
       </Card>
     </div>
