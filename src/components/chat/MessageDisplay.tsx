@@ -21,8 +21,8 @@ const MessageDisplay = ({ messages, isLoading, messagesEndRef, onLogMeal }: Mess
         <div
           className={`max-w-[80%] p-4 rounded-lg ${
             message.role === 'assistant'
-              ? 'bg-blue-600 text-white'
-              : 'bg-green-600 text-white'
+              ? 'bg-gradient-to-r from-blue-950/90 to-green-950/90 text-white'
+              : 'bg-gradient-to-r from-orange-600/90 via-yellow-500/90 to-orange-600/90 text-white'
           }`}
         >
           <ReactMarkdown className="prose prose-invert">
@@ -40,7 +40,7 @@ const MessageDisplay = ({ messages, isLoading, messagesEndRef, onLogMeal }: Mess
               </Button>
               <Button
                 variant="ghost"
-                className="text-white hover:bg-blue-700"
+                className="text-white hover:bg-blue-700/20"
               >
                 No, thanks
               </Button>
@@ -60,7 +60,7 @@ const MessageDisplay = ({ messages, isLoading, messagesEndRef, onLogMeal }: Mess
       ))}
       {isLoading && (
         <div className="flex justify-start mb-4">
-          <div className="max-w-[80%] p-4 rounded-lg bg-blue-600 text-white">
+          <div className="max-w-[80%] p-4 rounded-lg bg-gradient-to-r from-blue-950/90 to-green-950/90 text-white">
             <TypingIndicator />
           </div>
         </div>
