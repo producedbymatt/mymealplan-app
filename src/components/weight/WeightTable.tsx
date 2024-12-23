@@ -60,7 +60,10 @@ const WeightTable = ({ entries, showMore, onToggleShowMore, onEdit, onDelete }: 
         </TableHeader>
         <TableBody>
           {entries.map((entry) => (
-            <TableRow key={entry.id}>
+            <TableRow 
+              key={entry.id}
+              className="bg-background hover:bg-[#0EA5E9] hover:text-white transition-colors"
+            >
               <TableCell>{format(new Date(entry.created_at!), 'MMM dd, yyyy')}</TableCell>
               <TableCell>{format(new Date(entry.created_at!), 'h:mm a')}</TableCell>
               <TableCell>
