@@ -39,7 +39,14 @@ const DashboardContent = ({
   onSaveMetrics,
 }: DashboardContentProps) => {
   const [weightEntries, setWeightEntries] = useState<WeightEntry[]>([]);
+  const [displayedCalories, setDisplayedCalories] = useState(recommendedCalories);
   const { loadWeightLogs } = useWeightLogs(false);
+
+  // Update displayed calories when recommendedCalories prop changes
+  useEffect(() => {
+    console.log('Updating displayed calories to:', recommendedCalories);
+    setDisplayedCalories(recommendedCalories);
+  }, [recommendedCalories]);
 
   const loadEntries = async () => {
     console.log("Loading weight entries...");
@@ -58,7 +65,7 @@ const DashboardContent = ({
     <div>
       <StatsCards 
         metrics={userMetrics}
-        recommendedCalories={recommendedCalories}
+        recommendedCalories={displayedCalories}
         hasMetrics={hasMetrics}
         weightEntries={weightEntries}
       />
@@ -96,7 +103,7 @@ const DashboardContent = ({
       )}
 
       <div className="mt-8">
-        <MealPlan dailyCalories={recommendedCalories} />
+        <MealPlan dailyCalories={displayedCalories} />
       </div>
     </div>
   );
