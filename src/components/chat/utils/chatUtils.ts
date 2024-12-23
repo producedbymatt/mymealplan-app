@@ -1,21 +1,27 @@
-export const extractMealInfo = (message: string): { meal_name: string; calories: number } | null => {
-  // Look for patterns like "X calories" or "X kcal"
-  const calorieMatches = message.match(/(\d+)\s*(calories|kcal)/i);
-  if (!calorieMatches) return null;
+import { Message } from '../types';
 
-  const calories = parseInt(calorieMatches[1]);
-  if (isNaN(calories)) return null;
+export const extractMealInfo = (content: string) => {
+  console.log('Extracting meal info from:', content);
+  
+  // Look for meal name in bold (between ** **)
+  const mealNameMatch = content.match(/\*\*(.*?)\*\*/);
+  if (!mealNameMatch) {
+    console.log('No meal name found in bold text');
+    return null;
+  }
 
-  // Extract meal name from AI response
-  // This will match any text between quotes that appears before the calorie count
-  const mealNameMatch = message.match(/"([^"]+)"/);
-  if (!mealNameMatch) return null;
+  // Look for calories number
+  const caloriesMatch = content.match(/approximately\s*(\d+)\s*calories/i);
+  if (!caloriesMatch) {
+    console.log('No calories found');
+    return null;
+  }
 
-  const mealName = mealNameMatch[1].trim();
-  if (!mealName) return null;
-
-  return {
-    meal_name: mealName,
-    calories: calories
+  const mealInfo = {
+    meal_name: mealNameMatch[1].trim(),
+    calories: parseInt(caloriesMatch[1])
   };
+
+  console.log('Extracted meal info:', mealInfo);
+  return mealInfo;
 };
