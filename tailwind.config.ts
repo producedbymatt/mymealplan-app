@@ -59,11 +59,22 @@ export default {
           "0%": { width: "0%" },
           "100%": { width: "var(--progress-width)" },
         },
+        "gradient-x": {
+          "0%, 100%": {
+            "background-size": "200% 200%",
+            "background-position": "left center",
+          },
+          "50%": {
+            "background-size": "200% 200%",
+            "background-position": "right center",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "progress-fill": "progress-fill 1s ease-in-out",
+        "gradient-x": "gradient-x 15s ease infinite",
       },
     },
   },

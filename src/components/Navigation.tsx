@@ -32,8 +32,12 @@ const Navigation = () => {
   };
 
   return (
-    <div className="w-full bg-gradient-to-r from-blue-950/90 to-green-950/90 p-4 rounded-[20px]">
-      <div className="container mx-auto flex items-center justify-center">
+    <div className="w-full p-4 rounded-[20px] relative overflow-hidden">
+      {/* Animated gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-950/90 via-green-950/90 to-blue-950/90 animate-gradient-x" />
+      
+      {/* Content */}
+      <div className="container mx-auto flex items-center justify-center relative z-10">
         <Tabs value={location.pathname} onValueChange={handleTabChange} className="w-auto">
           <TabsList className="bg-transparent">
             <TabsTrigger 
