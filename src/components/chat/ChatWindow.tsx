@@ -16,8 +16,8 @@ const ChatWindow = () => {
     {
       role: 'assistant',
       content: "Hi! I'm your AI health coach. I can help you with:\n\n" +
-               "* Recipe suggestions\n\n" +
-               "* Nutritional information\n\n" +
+               "* Recipe suggestions\n" +
+               "* Nutritional information\n" +
                "* General health questions\n\n" +
                "How can I assist you today?"
     }
@@ -102,8 +102,8 @@ const ChatWindow = () => {
                 components={{
                   // Override default element styling
                   p: ({children}) => <p className="m-0">{children}</p>,
-                  ul: ({children}) => <ul className="m-0 ml-4 space-y-4">{children}</ul>,
-                  ol: ({children}) => <ol className="m-0 ml-4 space-y-4">{children}</ol>,
+                  ul: ({children}) => <ul className="m-0 ml-4">{children}</ul>,
+                  ol: ({children}) => <ol className="m-0 ml-4">{children}</ol>,
                   li: ({children}) => <li className="m-0">{children}</li>,
                   strong: ({children}) => <strong className="font-bold">{children}</strong>,
                 }}
