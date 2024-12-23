@@ -1,7 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { Configuration, OpenAIApi } from "https://esm.sh/openai@3.1.0";
+import OpenAI from "https://esm.sh/openai@4.28.0";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -47,11 +47,9 @@ serve(async (req) => {
     });
 
     console.log('Initializing OpenAI...');
-    const openai = new OpenAIApi(
-      new Configuration({
-        apiKey: openaiKey,
-      })
-    );
+    const openai = new OpenAI({
+      apiKey: openaiKey,
+    });
 
     console.log('Fetching recipes...');
     const { data: recipes, error: recipesError } = await supabaseClient
@@ -86,15 +84,15 @@ serve(async (req) => {
     ];
 
     console.log('Sending request to OpenAI...');
-    const completion = await openai.createChatCompletion({
-      model: 'gpt-4',
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
       messages,
       temperature: 0.7,
       max_tokens: 500,
     });
 
     console.log('Received response from OpenAI');
-    const aiResponse = completion.data.choices[0].message?.content || 'Sorry, I could not process your request.';
+    const aiResponse = completion.choices[0].message?.content || 'Sorry, I could not process your request.';
 
     return new Response(
       JSON.stringify({ message: aiResponse }),
