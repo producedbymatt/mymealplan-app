@@ -1,10 +1,41 @@
 import { Search } from "lucide-react";
 import { Card } from "./ui/card";
 import AuthForm from "./auth/AuthForm";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
 
 const PreviewMessage = () => {
   const [showAuth, setShowAuth] = useState(false);
+  const [session, setSession] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Check current session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log("PreviewMessage - Current session:", session);
+      setSession(session);
+      setLoading(false);
+    });
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      console.log("PreviewMessage - Auth state changed:", session);
+      setSession(session);
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  if (loading) {
+    return null; // Don't render anything while checking auth status
+  }
+
+  if (session) {
+    return null; // Don't render if user is authenticated
+  }
 
   if (showAuth) {
     return (
