@@ -53,11 +53,11 @@ const RecipeDetails = ({ meal }: RecipeDetailsProps) => {
         <h5 className="font-semibold mb-2">Preparation Time</h5>
         <Button
           variant="ghost"
-          size="icon"
           onClick={handleAddToLog}
-          className="hover:bg-white/20"
+          className="hover:bg-white/20 flex items-center gap-2"
         >
           <Plus className="h-4 w-4" />
+          <span>Log Meal</span>
         </Button>
       </div>
       <p className="text-sm">
