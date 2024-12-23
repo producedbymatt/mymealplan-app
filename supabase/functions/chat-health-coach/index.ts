@@ -63,14 +63,44 @@ serve(async (req) => {
 
     console.log('Recipes fetched successfully:', recipes?.length);
 
+    // Format recipes for better AI understanding
+    const formattedRecipes = recipes.map(recipe => ({
+      name: recipe.name,
+      type: recipe.meal_type,
+      category: recipe.category,
+      nutritionalInfo: {
+        calories: recipe.calories,
+        protein: recipe.protein,
+        carbs: recipe.carbs,
+        fat: recipe.fat
+      },
+      timing: {
+        prepTime: recipe.prep_time,
+        cookTime: recipe.cook_time
+      },
+      ingredients: recipe.ingredients,
+      instructions: recipe.instructions,
+      difficultyLevel: recipe.difficulty_level
+    }));
+
     const systemMessage = {
       role: 'system',
-      content: `You are a helpful AI health coach with access to our recipe database: ${JSON.stringify(recipes)}. 
+      content: `You are a helpful AI health coach with access to our recipe database. Here are the available recipes:
+                ${JSON.stringify(formattedRecipes, null, 2)}
+                
                 You can help users with:
-                1. Recipe suggestions and modifications
-                2. General health and nutrition advice
-                3. Diet-related questions
-                4. Calorie and nutrient information for recipes
+                1. Recipe suggestions based on meal type, category, or nutritional requirements
+                2. Detailed recipe instructions and ingredients
+                3. Nutritional information for specific recipes
+                4. General health and nutrition advice
+                5. Diet-related questions
+                
+                When suggesting recipes:
+                - Consider the user's preferences and requirements
+                - Include nutritional information
+                - Provide preparation instructions when asked
+                - Suggest alternatives or modifications when appropriate
+                
                 Always be encouraging and supportive while keeping health and nutrition in mind.`
     };
 
