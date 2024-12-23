@@ -13,6 +13,10 @@ serve(async (req) => {
   }
 
   try {
+    // Log the request method and headers
+    console.log('Request method:', req.method);
+    console.log('Request headers:', Object.fromEntries(req.headers.entries()));
+
     console.log('Initializing Supabase client...');
     const supabaseUrl = Deno.env.get('SUPABASE_URL');
     const supabaseKey = Deno.env.get('SUPABASE_ANON_KEY');
@@ -22,16 +26,27 @@ serve(async (req) => {
       throw new Error('Missing Supabase configuration');
     }
 
+    console.log('Supabase URL found:', !!supabaseUrl);
+    console.log('Supabase Key found:', !!supabaseKey);
+
     const supabaseClient = createClient(supabaseUrl, supabaseKey);
     console.log('Supabase client initialized');
 
-    const { message, userMetrics, messageHistory } = await req.json();
-
+    // Verify OpenAI API key is set
     const openaiKey = Deno.env.get('OPENAI_API_KEY');
+    console.log('OpenAI API key found:', !!openaiKey);
+    
     if (!openaiKey) {
       console.error('OpenAI API key not found');
       throw new Error('OpenAI API key not found in environment variables');
     }
+
+    const { message, userMetrics, messageHistory } = await req.json();
+    console.log('Request payload received:', { 
+      messageReceived: !!message, 
+      metricsReceived: !!userMetrics,
+      historyLength: messageHistory?.length 
+    });
 
     console.log('Initializing OpenAI...');
     const openai = new OpenAIApi(
@@ -50,6 +65,8 @@ serve(async (req) => {
       console.error('Error fetching recipes:', recipesError);
       throw recipesError;
     }
+
+    console.log('Recipes fetched successfully:', recipes?.length);
 
     // Prepare the system message with context
     const systemMessage = {
@@ -82,8 +99,8 @@ serve(async (req) => {
       max_tokens: 500,
     });
 
-    const aiResponse = completion.data.choices[0].message?.content || 'Sorry, I could not process your request.';
     console.log('Received response from OpenAI');
+    const aiResponse = completion.data.choices[0].message?.content || 'Sorry, I could not process your request.';
 
     return new Response(
       JSON.stringify({ message: aiResponse }),
