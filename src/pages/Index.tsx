@@ -114,7 +114,7 @@ const Index = () => {
   };
 
   return (
-    <>
+    <div className="min-h-screen bg-background">
       {!session && <PreviewMessage />}
       <DashboardLayout
         hasMetrics={hasMetrics}
@@ -140,7 +140,7 @@ const Index = () => {
         }}
         onSaveMetrics={saveUserMetrics}
       />
-    </>
+    </div>
   );
 };
 
