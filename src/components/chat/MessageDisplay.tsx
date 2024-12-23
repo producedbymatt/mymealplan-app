@@ -19,7 +19,7 @@ const MessageDisplay = ({ messages, isLoading, messagesEndRef, onLogMeal }: Mess
     return (
       <div className={`flex ${message.role === 'assistant' ? 'justify-start' : 'justify-end'} mb-4`}>
         <div
-          className={`max-w-[80%] p-4 rounded-lg ${
+          className={`max-w-[80%] p-4 rounded-lg animate-hue-rotate ${
             message.role === 'assistant'
               ? 'bg-gradient-to-r from-blue-950/90 to-green-950/90 text-white'
               : 'bg-gradient-to-r from-orange-800/90 via-orange-700/90 to-orange-800/90 text-white'
