@@ -6,6 +6,7 @@ import StatsCards from "./StatsCards";
 import MotivationalMessage from "./MotivationalMessage";
 import { useState, useEffect } from "react";
 import { useWeightLogs } from "@/hooks/useWeightLogs";
+import { supabase } from "@/lib/supabase";
 
 interface WeightEntry {
   date: string;
@@ -40,9 +41,24 @@ const DashboardContent = ({
 }: DashboardContentProps) => {
   const [weightEntries, setWeightEntries] = useState<WeightEntry[]>([]);
   const [displayedCalories, setDisplayedCalories] = useState(recommendedCalories);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const { loadWeightLogs } = useWeightLogs(false);
 
-  // Update displayed calories when recommendedCalories prop changes
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsAuthenticated(!!session);
+    };
+    
+    checkAuth();
+    
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setIsAuthenticated(!!session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
   useEffect(() => {
     console.log('Updating displayed calories to:', recommendedCalories);
     setDisplayedCalories(recommendedCalories);
@@ -58,8 +74,10 @@ const DashboardContent = ({
   };
 
   useEffect(() => {
-    loadEntries();
-  }, []);
+    if (isAuthenticated) {
+      loadEntries();
+    }
+  }, [isAuthenticated]);
 
   return (
     <div>
@@ -68,9 +86,10 @@ const DashboardContent = ({
         recommendedCalories={displayedCalories}
         hasMetrics={hasMetrics}
         weightEntries={weightEntries}
+        isAuthenticated={isAuthenticated}
       />
       
-      {hasMetrics && (
+      {hasMetrics && isAuthenticated && (
         <div className="mt-8">
           <MotivationalMessage
             currentWeight={userMetrics.currentWeight}

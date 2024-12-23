@@ -15,14 +15,21 @@ interface StatsCardsProps {
   recommendedCalories: number;
   hasMetrics: boolean;
   weightEntries?: { date: string; weight: number; }[];
+  isAuthenticated?: boolean;
 }
 
 const calculateWeightForBMI = (height: number, targetBMI: number) => {
   return Math.round((targetBMI * height * height) / 703);
 };
 
-const StatsCards = ({ metrics, recommendedCalories, hasMetrics, weightEntries = [] }: StatsCardsProps) => {
-  if (!hasMetrics) {
+const StatsCards = ({ 
+  metrics, 
+  recommendedCalories, 
+  hasMetrics, 
+  weightEntries = [],
+  isAuthenticated = true
+}: StatsCardsProps) => {
+  if (!hasMetrics && isAuthenticated) {
     return (
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
         <Card>
@@ -75,6 +82,7 @@ const StatsCards = ({ metrics, recommendedCalories, hasMetrics, weightEntries = 
         targetDays={metrics.targetDays}
         recommendedCalories={recommendedCalories}
         startingWeight={metrics.currentWeight}
+        isAuthenticated={isAuthenticated}
       />
     </div>
   );
