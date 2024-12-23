@@ -33,6 +33,11 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
   // Sort dates in descending order
   const sortedDates = Object.keys(groupedMeals).sort((a, b) => b.localeCompare(a));
 
+  // Calculate daily total calories
+  const getDailyTotal = (meals: MealLog[]) => {
+    return meals.reduce((total, meal) => total + meal.calories, 0);
+  };
+
   return (
     <div className="bg-background rounded-lg shadow">
       <Table>
@@ -57,9 +62,14 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
               )}
               <TableRow className="bg-gradient-to-r from-blue-950/90 to-green-950/90 text-white hover:from-blue-950/90 hover:to-green-950/90 rounded-lg">
                 <TableCell colSpan={5} className="pb-2 pt-4 rounded-lg">
-                  <h3 className="text-lg font-semibold">
-                    {format(new Date(date), "EEEE, MMMM do")}
-                  </h3>
+                  <div className="flex justify-between items-center">
+                    <h3 className="text-lg font-semibold">
+                      {format(new Date(date), "EEEE, MMMM do")}
+                    </h3>
+                    <span className="text-lg font-semibold">
+                      Total: {getDailyTotal(groupedMeals[date])} calories
+                    </span>
+                  </div>
                 </TableCell>
               </TableRow>
               <TableRow>
