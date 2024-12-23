@@ -98,12 +98,11 @@ const ChatWindow = () => {
               }`}
             >
               <ReactMarkdown 
-                className="prose dark:prose-invert prose-sm max-w-none"
+                className="prose dark:prose-invert prose-sm max-w-none [&>p]:mb-4 [&>p:last-child]:mb-0"
                 components={{
-                  // Override default element styling
-                  p: ({children}) => <p className="m-0">{children}</p>,
-                  ul: ({children}) => <ul className="m-0 ml-4">{children}</ul>,
-                  ol: ({children}) => <ol className="m-0 ml-4">{children}</ol>,
+                  p: ({children}) => <p className="whitespace-pre-line">{children}</p>,
+                  ul: ({children}) => <ul className="m-0 ml-4 space-y-1">{children}</ul>,
+                  ol: ({children}) => <ol className="m-0 ml-4 space-y-1">{children}</ol>,
                   li: ({children}) => <li className="m-0">{children}</li>,
                   strong: ({children}) => <strong className="font-bold">{children}</strong>,
                 }}
