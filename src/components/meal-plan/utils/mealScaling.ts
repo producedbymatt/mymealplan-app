@@ -30,7 +30,7 @@ export const scaleMeal = (originalMeal: Meal, targetCalories: number): Meal => {
       unit
     });
     
-    const remainingParts = parts.slice(2).join(" ").replace(/\(\d+) cal\)/, `(${scaledCalories} cal)`);
+    const remainingParts = parts.slice(2).join(" ").replace(/\(\d+ cal\)/, `(${scaledCalories} cal)`);
     return `${scaledAmount} ${unit} ${remainingParts}`;
   });
 
