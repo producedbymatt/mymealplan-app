@@ -70,6 +70,7 @@ const StatsCards = ({
         underweightWeight={underweightWeight}
         normalWeight={normalWeight}
         overweightWeight={overweightWeight}
+        isAuthenticated={isAuthenticated}
       />
 
       <MetricCards 
