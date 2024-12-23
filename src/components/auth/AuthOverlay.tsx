@@ -16,7 +16,7 @@ const AuthOverlay = () => {
         <Button
           variant="ghost"
           size="icon"
-          className="absolute left-4 top-4 text-white hover:text-white/80"
+          className="absolute left-4 top-4 text-white hover:text-white/80 hover:bg-[#0EA5E9]"
           onClick={handleBack}
         >
           <ArrowLeft className="h-4 w-4" />
