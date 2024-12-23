@@ -6,7 +6,6 @@ import {
 } from "@/components/ui/card";
 import BMISlider from "../BMISlider";
 import BMICategories from "../BMICategories";
-import LiquidBackground from "./LiquidBackground";
 
 interface BMICardProps {
   bmi: number;
@@ -87,10 +86,7 @@ const BMICard = ({
   const gradientClass = isAuthenticated ? bmiCategory.gradient : getDefaultGradient();
 
   return (
-    <Card className="w-full border-none relative overflow-hidden">
-      {/* Liquid background */}
-      <LiquidBackground />
-      
+    <Card className={`w-full border-none relative overflow-hidden`}>
       {/* Black overlay */}
       <div className="absolute inset-0 bg-black/50 z-10" />
       
