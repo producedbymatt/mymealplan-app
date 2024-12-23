@@ -2,7 +2,7 @@ import React from "react";
 
 const Header = () => {
   return (
-    <div className="mt-8 mb-8">
+    <div className="pt-8 mb-8">
       <h2 className="text-2xl font-bold text-center">
         Track Your Health Journey
       </h2>
