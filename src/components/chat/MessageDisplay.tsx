@@ -15,12 +15,12 @@ interface MessageDisplayProps {
 const MessageDisplay = ({ messages, isLoading, messagesEndRef, onLogMeal }: MessageDisplayProps) => {
   const renderMessage = (message: Message) => {
     const mealInfo = message.role === 'assistant' ? extractMealInfo(message.content) : null;
-    const shouldShowLogButtons = message.role === 'assistant' && mealInfo;
+    const shouldShowLogButtons = message.role === 'assistant' && 
+      message.content.toLowerCase().includes('would you like to log this meal?');
 
     console.log('Message content:', message.content);
-    console.log('Is assistant message:', message.role === 'assistant');
+    console.log('Should show log buttons:', shouldShowLogButtons);
     console.log('Meal info:', mealInfo);
-    console.log('Should show buttons:', shouldShowLogButtons);
 
     return (
       <div className={`flex ${message.role === 'assistant' ? 'justify-start' : 'justify-end'} mb-4`}>
@@ -35,7 +35,7 @@ const MessageDisplay = ({ messages, isLoading, messagesEndRef, onLogMeal }: Mess
             {message.content}
           </ReactMarkdown>
           
-          {shouldShowLogButtons && (
+          {shouldShowLogButtons && mealInfo && (
             <div className="mt-4 flex gap-2">
               <Button
                 onClick={() => onLogMeal(mealInfo.meal_name, mealInfo.calories)}
