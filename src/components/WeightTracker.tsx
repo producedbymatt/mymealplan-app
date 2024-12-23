@@ -68,7 +68,12 @@ const WeightTracker = ({ onWeightEntriesChange }: WeightTrackerProps) => {
             placeholder="Enter today's weight (lbs)"
             className="flex-1"
           />
-          <Button type="submit">Log Weight</Button>
+          <Button 
+            type="submit"
+            className="bg-gradient-to-r from-blue-950/90 to-green-950/90 hover:from-blue-950 hover:to-green-950"
+          >
+            Log Weight
+          </Button>
         </form>
 
         <WeightChart entries={entries} />
