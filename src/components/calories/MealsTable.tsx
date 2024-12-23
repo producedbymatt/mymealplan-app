@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { format, isToday } from "date-fns";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -84,20 +84,23 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
         {sortedDates.map((date, dateIndex) => (
           <AccordionItem key={date} value={date}>
             {dateIndex > 0 && <Separator className="my-2" />}
-            <AccordionTrigger className="w-full px-0">
-              <div className="w-full bg-gradient-to-r from-blue-950/90 to-green-950/90 text-white rounded-lg flex justify-between items-center p-4">
-                <h3 className="text-lg font-semibold">
-                  {format(new Date(date), "EEEE, MMMM do")}
-                </h3>
-                <div className="flex items-center gap-4">
-                  <span className="text-lg font-semibold">
-                    Total: {getDailyTotal(groupedMeals[date])} calories
-                  </span>
+            <div className="w-full bg-gradient-to-r from-blue-950/90 to-green-950/90 text-white rounded-lg">
+              <AccordionTrigger className="w-full px-4 py-4 [&[data-state=open]>div>svg]:rotate-180">
+                <div className="flex justify-between items-center w-full">
+                  <h3 className="text-lg font-semibold">
+                    {format(new Date(date), "EEEE, MMMM do")}
+                  </h3>
+                  <div className="flex items-center gap-4">
+                    <span className="text-lg font-semibold">
+                      Total: {getDailyTotal(groupedMeals[date])} calories
+                    </span>
+                    <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
+                  </div>
                 </div>
-              </div>
-            </AccordionTrigger>
+              </AccordionTrigger>
+            </div>
             
-            <AccordionContent>
+            <AccordionContent className="px-4 pt-2">
               <div className="rounded-lg overflow-hidden mt-2">
                 <Table>
                   <TableBody>
