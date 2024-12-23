@@ -1,12 +1,10 @@
-import { Message } from '../types';
-
 export const extractMealInfo = (content: string) => {
   console.log('Extracting meal info from:', content);
   
-  // Look for meal name in bold (between ** **)
-  const mealNameMatch = content.match(/\*\*(.*?)\*\*/);
+  // Look for meal name in quotes
+  const mealNameMatch = content.match(/'([^']+)'/);
   if (!mealNameMatch) {
-    console.log('No meal name found in bold text');
+    console.log('No meal name found in quotes');
     return null;
   }
 

@@ -66,7 +66,6 @@ serve(async (req) => {
 
     console.log('Recipes fetched successfully:', recipes?.length);
 
-    // Format recipes for better AI understanding and consistent display
     const formattedRecipes = recipes.map(recipe => ({
       name: recipe.name,
       type: recipe.meal_type,
@@ -101,8 +100,8 @@ Key Guidelines to Follow:
 8. Clear Communication: Use simple language unless technical details are requested.
 
 When users ask about calories in food:
-1. ALWAYS start your response with "Based on your description, your" followed by the meal name in bold and the total calories. For example:
-   Based on your description, your **Grilled Chicken Sandwich** contains approximately 450 calories.
+1. ALWAYS start your response with "Based on your description, your '" followed by the meal name in quotes and the total calories. For example:
+   Based on your description, your 'Grilled Chicken Sandwich' contains approximately 450 calories.
 
 2. Then, ALWAYS provide the caloric breakdown with each component on a new line:
    Here's the breakdown:
@@ -117,8 +116,8 @@ When users ask about calories in food:
 3. End with "Would you like to log this meal? If you need any tips or modifications, feel free to ask! [appropriate emoji]"
 
 When users mention making or eating food:
-1. ALWAYS start your response with "Based on your description, your" followed by the meal name in bold and the total calories:
-   Based on your description, your **Homemade Veggie Stir-Fry** contains approximately 380 calories.
+1. ALWAYS start your response with "Based on your description, your '" followed by the meal name in quotes and the total calories:
+   Based on your description, your 'Homemade Veggie Stir-Fry' contains approximately 380 calories.
 
 2. Then ALWAYS provide the caloric breakdown with each component on a new line:
    Here's the breakdown:
