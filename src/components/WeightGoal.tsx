@@ -45,9 +45,9 @@ const WeightGoal = ({ onGoalSet }: WeightGoalProps) => {
         .from("user_metrics")
         .select("target_weight, target_days, updated_at")
         .eq("user_id", user.id)
-        .order('created_at', { ascending: false })
+        .order('updated_at', { ascending: false })
         .limit(1)
-        .single();
+        .maybeSingle();
 
       if (error) {
         console.error("Error loading weight goal:", error);

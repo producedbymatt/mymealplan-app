@@ -36,9 +36,9 @@ const Profile = () => {
         .from("user_metrics")
         .select("*")
         .eq("user_id", user.id)
-        .order('created_at', { ascending: false })
+        .order('updated_at', { ascending: false })
         .limit(1)
-        .single();
+        .maybeSingle();
 
       if (error) {
         console.error("Error loading metrics:", error);
