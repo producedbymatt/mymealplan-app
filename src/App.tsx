@@ -11,6 +11,7 @@ import Profile from "./pages/Profile";
 import AuthOverlay from "./components/auth/AuthOverlay";
 import { supabase } from "@/lib/supabase";
 import Navigation from "./components/Navigation";
+import ChatBubble from "./components/chat/ChatBubble";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<any>(null);
@@ -155,9 +156,9 @@ const App = () => (
               </ProtectedRoute>
             }
           />
-          {/* Catch-all route - redirects to dashboard for any unmatched routes */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        <ChatBubble />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
