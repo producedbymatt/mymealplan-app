@@ -26,23 +26,24 @@ const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
   const [isInteracting, setIsInteracting] = React.useState(false);
   const sliderRef = React.useRef<HTMLDivElement>(null);
   const resetTimeoutRef = React.useRef<NodeJS.Timeout>();
-  const [markerPosition, setMarkerPosition] = React.useState({ x: 0, y: 0 });
+  const [tooltipPosition, setTooltipPosition] = React.useState({ x: 0, y: 0 });
 
-  const updateMarkerPosition = () => {
+  const updateTooltipPosition = (value: number = sliderValue[0]) => {
     if (sliderRef.current) {
       const slider = sliderRef.current;
       const sliderRect = slider.getBoundingClientRect();
-      const percentage = (constrainedBMI - 15) / (40 - 15);
+      const percentage = (value - 15) / (40 - 15);
       const x = percentage * sliderRect.width;
-      setMarkerPosition({ x, y: sliderRect.top });
+      setTooltipPosition({ x, y: sliderRect.top });
     }
   };
 
   React.useEffect(() => {
-    updateMarkerPosition();
-    window.addEventListener('resize', updateMarkerPosition);
+    updateTooltipPosition(constrainedBMI);
+    const handleResize = () => updateTooltipPosition();
+    window.addEventListener('resize', handleResize);
     return () => {
-      window.removeEventListener('resize', updateMarkerPosition);
+      window.removeEventListener('resize', handleResize);
       if (resetTimeoutRef.current) {
         clearTimeout(resetTimeoutRef.current);
       }
@@ -52,7 +53,7 @@ const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
   const handleSliderChange = (value: number[]) => {
     setSliderValue(value);
     onBMIChange(value);
-    updateMarkerPosition();
+    updateTooltipPosition(value[0]);
   };
 
   const startInteraction = () => {
@@ -75,7 +76,6 @@ const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
   
   const currentBMIPercentage = Math.max(0, Math.min(100, ((constrainedBMI - 15) / (40 - 15)) * 100));
 
-  // Calculate the offset for the marker based on its position
   const getMarkerOffset = () => {
     if (currentBMIPercentage > 85) {
       return '-100%';
@@ -99,9 +99,9 @@ const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
           isInteracting ? 'opacity-100' : 'opacity-0'
         }`}
         style={{ 
-          left: `${markerPosition.x}px`,
+          left: `${tooltipPosition.x}px`,
           transform: 'translateX(-50%)',
-          transition: "all 0.1s ease-out"
+          transition: "left 0.1s ease-out"
         }}
       >
         <div className="text-center text-sm">
