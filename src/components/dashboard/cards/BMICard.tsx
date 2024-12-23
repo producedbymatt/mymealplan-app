@@ -47,11 +47,15 @@ const BMICard = ({
   const bmiCategory = getBMICategory(bmi, gender);
 
   return (
-    <Card className={`w-full border-none ${bmiCategory.gradient}`}>
-      <CardHeader className="text-center">
+    <Card className="w-full border-none relative overflow-hidden">
+      {/* Animated gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-950/90 via-green-950/90 to-blue-950/90 animate-gradient-x" />
+      
+      {/* Content */}
+      <CardHeader className="text-center relative z-10">
         <CardTitle>Current BMI</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-4 relative z-10">
         <div className="text-center">
           <div className="text-3xl font-bold">{bmi.toFixed(1)}</div>
           <p className={`text-sm ${bmiCategory.color} font-semibold`}>
