@@ -45,23 +45,24 @@ const Index = () => {
         .select('*')
         .eq('user_id', userId)
         .order('updated_at', { ascending: false })
-        .limit(1);
+        .limit(1)
+        .maybeSingle();
 
       if (error) {
         console.error('Error loading user metrics:', error);
         return;
       }
 
-      if (data && data.length > 0) {
-        console.log('Loaded user metrics:', data[0]);
+      if (data) {
+        console.log('Loaded user metrics:', data);
         setUserMetrics({
-          height: data[0].height || 0,
-          currentWeight: data[0].current_weight || 0,
-          targetWeight: data[0].target_weight || 0,
-          targetDays: data[0].target_days || 0,
-          gender: data[0].gender as "male" | "female" | undefined,
+          height: data.height || 0,
+          currentWeight: data.current_weight || 0,
+          targetWeight: data.target_weight || 0,
+          targetDays: data.target_days || 0,
+          gender: data.gender as "male" | "female" | undefined,
         });
-        setRecommendedCalories(data[0].recommended_calories || 1200);
+        setRecommendedCalories(data.recommended_calories || 1200);
         setHasMetrics(true);
       } else {
         console.log('No metrics found for user');
