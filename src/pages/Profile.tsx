@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import Footer from "@/components/Footer";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -84,7 +85,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 min-h-screen flex flex-col">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Profile Settings</h1>
         <Button 
@@ -95,7 +96,7 @@ const Profile = () => {
           Sign Out
         </Button>
       </div>
-      <div className="grid gap-8 md:grid-cols-2">
+      <div className="grid gap-8 md:grid-cols-2 flex-grow">
         <div>
           <UserDetailsForm />
         </div>
@@ -103,6 +104,7 @@ const Profile = () => {
           <UserMetricsCard metrics={metrics} onMetricsUpdate={handleMetricsUpdate} />
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
