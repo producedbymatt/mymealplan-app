@@ -9,6 +9,7 @@ interface CalorieResultsProps {
   warningColor: string;
   bmr: number;
   activityLevel: number;
+  selectedActivityKey: string;
 }
 
 const CalorieResults = ({
@@ -22,10 +23,19 @@ const CalorieResults = ({
   warningColor,
   bmr,
   activityLevel,
+  selectedActivityKey,
 }: CalorieResultsProps) => {
   const tdee = Math.round(bmr * activityLevel);
   const calorieDeficitOrSurplus = Math.abs(dailyCalories - tdee);
   const weeklyWeightChange = (calorieDeficitOrSurplus * 7) / 3500; // 3500 calories = 1 pound
+
+  // Format activity level string to be more readable
+  const formatActivityLevel = (level: string) => {
+    return level
+      .split('_')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
+  };
 
   return (
     <div className="space-y-4">
@@ -33,6 +43,9 @@ const CalorieResults = ({
         <p className="text-lg font-semibold">
           Recommended Daily Calories:
           <span className="block text-2xl text-green-500 dark:text-green-400">{dailyCalories} calories</span>
+        </p>
+        <p className="text-sm text-muted-foreground mt-1">
+          Based on {formatActivityLevel(selectedActivityKey)} activity level
         </p>
       </div>
 

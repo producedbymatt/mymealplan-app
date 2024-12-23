@@ -206,6 +206,7 @@ const CalorieCalculator = ({
           warningColor={weightChangeWarning.color}
           bmr={bmr}
           activityLevel={activityLevel}
+          selectedActivityKey={selectedActivityKey}
         />
       </div>
     </Card>
