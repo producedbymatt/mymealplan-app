@@ -36,19 +36,19 @@ const CalorieResults = ({
         </p>
       </div>
 
-      <div className="bg-blue-50 dark:bg-blue-950/50 p-4 rounded-lg space-y-2 text-center">
-        <h3 className="font-semibold text-blue-800 dark:text-blue-300">Your Daily Energy Breakdown:</h3>
-        <p className="text-sm text-blue-700 dark:text-blue-300">
+      <div className="bg-gradient-to-r from-blue-950/90 to-green-950/90 p-4 rounded-lg space-y-2 text-center">
+        <h3 className="font-semibold text-white">Your Daily Energy Breakdown:</h3>
+        <p className="text-sm text-white">
           <span className="font-bold">•</span> Basal Metabolic Rate (BMR): <span className="font-medium">{Math.round(bmr)} calories</span>
           <br />
           <span className="text-xs">This is what your body burns at complete rest</span>
         </p>
-        <p className="text-sm text-blue-700 dark:text-blue-300">
+        <p className="text-sm text-white">
           <span className="font-bold">•</span> Total Daily Energy Expenditure (TDEE): <span className="font-medium">{tdee} calories</span>
           <br />
           <span className="text-xs">This is your BMR adjusted for your activity level</span>
         </p>
-        <p className="text-sm text-blue-700 dark:text-blue-300">
+        <p className="text-sm text-white">
           <span className="font-bold">•</span> Daily {dailyCalories > tdee ? "Surplus" : "Deficit"}: <span className="font-medium">{calorieDeficitOrSurplus} calories</span>
           <br />
           <span className="text-xs">
