@@ -60,16 +60,23 @@ const CalorieCalculator = ({
           return;
         }
 
-        if (data && data.length > 0) {
+        if (data && data.length > 0 && data[0].activity_level) {
           const storedLevel = data[0].activity_level as ActivityLevelKey;
           console.log('Retrieved activity level from database:', storedLevel);
           console.log('Retrieved recommended calories from database:', data[0].recommended_calories);
           
-          setSelectedActivityKey(storedLevel || "sedentary");
-          setActivityLevel(ACTIVITY_LEVELS[storedLevel || "sedentary"].value);
-          setSavedCalories(data[0].recommended_calories);
-          // Store the saved activity level in localStorage for comparison
-          localStorage.setItem('saved_activity_level', storedLevel || "sedentary");
+          // Only set the activity level if it's a valid key in ACTIVITY_LEVELS
+          if (ACTIVITY_LEVELS[storedLevel]) {
+            setSelectedActivityKey(storedLevel);
+            setActivityLevel(ACTIVITY_LEVELS[storedLevel].value);
+            setSavedCalories(data[0].recommended_calories);
+            localStorage.setItem('saved_activity_level', storedLevel);
+          } else {
+            console.warn('Invalid activity level found in database:', storedLevel);
+            setSelectedActivityKey("sedentary");
+            setActivityLevel(ACTIVITY_LEVELS.sedentary.value);
+            localStorage.setItem('saved_activity_level', "sedentary");
+          }
         } else {
           console.log('No saved activity level found, using default');
           setSelectedActivityKey("sedentary");
