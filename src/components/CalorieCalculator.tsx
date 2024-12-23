@@ -32,57 +32,8 @@ const CalorieCalculator = ({
 }: CalorieCalculatorProps) => {
   const [activityLevel, setActivityLevel] = useState<number>(ACTIVITY_LEVELS.sedentary.value);
   const [selectedActivityKey, setSelectedActivityKey] = useState<ActivityLevelKey>("sedentary");
-  const [isLoading, setIsLoading] = useState(true);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [savedCalories, setSavedCalories] = useState<number | null>(null);
-
-  useEffect(() => {
-    const initializeActivityLevel = async () => {
-      try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) {
-          console.log('No user found, using default activity level');
-          setIsLoading(false);
-          return;
-        }
-
-        console.log('Loading activity level and calories for user:', user.id);
-        const { data, error } = await supabase
-          .from('user_metrics')
-          .select('activity_level, recommended_calories')
-          .eq('user_id', user.id)
-          .order('created_at', { ascending: false })
-          .limit(1);
-
-        if (error) {
-          console.error('Error loading activity level:', error);
-          setIsLoading(false);
-          return;
-        }
-
-        if (data && data.length > 0) {
-          const storedLevel = data[0].activity_level as ActivityLevelKey;
-          console.log('Retrieved activity level from database:', storedLevel);
-          console.log('Retrieved recommended calories from database:', data[0].recommended_calories);
-          
-          setSelectedActivityKey(storedLevel || "sedentary");
-          setActivityLevel(ACTIVITY_LEVELS[storedLevel || "sedentary"].value);
-          setSavedCalories(data[0].recommended_calories);
-        } else {
-          console.log('No saved activity level found, using default');
-          setSelectedActivityKey("sedentary");
-          setActivityLevel(ACTIVITY_LEVELS.sedentary.value);
-        }
-      } catch (err) {
-        console.error('Error in initializeActivityLevel:', err);
-      } finally {
-        setIsLoading(false);
-        console.log('Activity level initialization complete');
-      }
-    };
-
-    initializeActivityLevel();
-  }, []);
 
   const saveActivityLevel = async () => {
     try {
@@ -143,16 +94,11 @@ const CalorieCalculator = ({
   };
 
   const handleActivityChange = (value: ActivityLevelKey) => {
-    if (isLoading) {
-      console.log('Skipping activity change - still loading');
-      return;
-    }
-
     console.log('Activity level changed to:', value);
     setSelectedActivityKey(value);
     setActivityLevel(ACTIVITY_LEVELS[value].value);
     setHasUnsavedChanges(true);
-    setSavedCalories(null); // Clear saved calories when activity level changes
+    setSavedCalories(null);
   };
 
   const bmr = calculateBMR(currentWeight, height);
@@ -169,10 +115,6 @@ const CalorieCalculator = ({
   useEffect(() => {
     onCaloriesCalculated?.(dailyCalories);
   }, [dailyCalories, onCaloriesCalculated]);
-
-  if (isLoading) {
-    return null;
-  }
 
   return (
     <Card className="p-6 w-full max-w-2xl mx-auto mt-4">
