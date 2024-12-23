@@ -7,6 +7,7 @@ import MotivationalMessage from "./MotivationalMessage";
 import { useState, useEffect } from "react";
 import { useWeightLogs } from "@/hooks/useWeightLogs";
 import { supabase } from "@/lib/supabase";
+import { Loader2 } from "lucide-react";
 
 interface WeightEntry {
   date: string;
@@ -42,12 +43,18 @@ const DashboardContent = ({
   const [weightEntries, setWeightEntries] = useState<WeightEntry[]>([]);
   const [displayedCalories, setDisplayedCalories] = useState(recommendedCalories);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { loadWeightLogs } = useWeightLogs(false);
 
   useEffect(() => {
     const checkAuth = async () => {
+      setIsLoading(true);
       const { data: { session } } = await supabase.auth.getSession();
       setIsAuthenticated(!!session);
+      if (session) {
+        await loadEntries();
+      }
+      setIsLoading(false);
     };
     
     checkAuth();
@@ -73,11 +80,13 @@ const DashboardContent = ({
     }
   };
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      loadEntries();
-    }
-  }, [isAuthenticated]);
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div>
