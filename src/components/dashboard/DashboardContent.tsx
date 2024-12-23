@@ -89,15 +89,13 @@ const DashboardContent = ({
         isAuthenticated={isAuthenticated}
       />
       
-      {hasMetrics && isAuthenticated && (
-        <div className="mt-8">
-          <MotivationalMessage
-            currentWeight={userMetrics.currentWeight}
-            targetWeight={userMetrics.targetWeight}
-            targetDays={userMetrics.targetDays}
-          />
-        </div>
-      )}
+      <div className="mt-8">
+        <MotivationalMessage
+          currentWeight={userMetrics.currentWeight}
+          targetWeight={userMetrics.targetWeight}
+          targetDays={userMetrics.targetDays}
+        />
+      </div>
       
       <div className="grid gap-8 md:grid-cols-2">
         <div>
