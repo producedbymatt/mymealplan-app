@@ -104,7 +104,7 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
                     {groupedMeals[date].map((log) => (
                       <TableRow 
                         key={log.id} 
-                        className="bg-background hover:bg-[#0EA5E9] hover:text-white transition-colors"
+                        className="bg-background hover:bg-[#0EA5E9]/50 hover:text-white transition-colors"
                       >
                         <TableCell className="w-1/4">{log.meal_name}</TableCell>
                         <TableCell className="w-1/6">{log.calories}</TableCell>
