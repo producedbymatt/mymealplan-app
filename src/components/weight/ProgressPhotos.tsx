@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
 import PhotoUploader from "./photos/PhotoUploader";
 import PhotoGallery from "./photos/PhotoGallery";
+import heic2any from "heic2any";
 
 interface Photo {
   id: string;
@@ -67,8 +68,27 @@ const ProgressPhotos = () => {
     }
   };
 
+  const convertHeicToJpg = async (file: File): Promise<File> => {
+    try {
+      console.log('Converting HEIC to JPG...');
+      const blob = await heic2any({
+        blob: file,
+        toType: 'image/jpeg',
+        quality: 0.85
+      }) as Blob;
+      
+      console.log('HEIC conversion successful');
+      return new File([blob], file.name.replace(/\.heic$/i, '.jpg'), {
+        type: 'image/jpeg'
+      });
+    } catch (error) {
+      console.error('Error converting HEIC to JPG:', error);
+      throw new Error('Failed to convert HEIC image');
+    }
+  };
+
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
+    let file = event.target.files?.[0];
     if (!file) return;
 
     // Validate file type
@@ -88,6 +108,12 @@ const ProgressPhotos = () => {
     setUploadProgress(0);
 
     try {
+      // Convert HEIC to JPG if necessary
+      if (file.type.toLowerCase() === 'image/heic') {
+        toast.info("Converting HEIC image...");
+        file = await convertHeicToJpg(file);
+      }
+
       const { data: { session } } = await supabase.auth.getSession();
       
       if (!session) {
@@ -97,14 +123,14 @@ const ProgressPhotos = () => {
       }
 
       // Upload to Supabase Storage with proper path structure
-      const fileExt = file.name.split('.').pop();
+      const fileExt = file.type === 'image/jpeg' ? 'jpg' : 'png';
       const fileName = `${Math.random()}.${fileExt}`;
       const filePath = `${session.user.id}/${fileName}`;
 
       console.log('Uploading file to path:', filePath);
       
       const { error: uploadError, data } = await supabase.storage
-        .from('user-uploads')  // Updated bucket name
+        .from('user-uploads')
         .upload(filePath, file, {
           upsert: false,
           contentType: file.type,
@@ -117,7 +143,7 @@ const ProgressPhotos = () => {
 
       // Get public URL
       const { data: { publicUrl } } = supabase.storage
-        .from('user-uploads')  // Updated bucket name
+        .from('user-uploads')
         .getPublicUrl(filePath);
 
       // Save to database
@@ -136,7 +162,7 @@ const ProgressPhotos = () => {
       await loadPhotos();
     } catch (error: any) {
       console.error('Error uploading photo:', error);
-      toast.error("Failed to upload photo. Please try again.");
+      toast.error(error.message || "Failed to upload photo. Please try again.");
     } finally {
       setUploading(false);
       setUploadProgress(0);
