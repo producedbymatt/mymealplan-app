@@ -47,7 +47,7 @@ const MealTimeSlot = ({ time, options, onRefresh, isLast, showFavoritesOnly }: M
       <div className="mt-4">
         <Button
           variant="ghost"
-          className="w-full flex items-center gap-2 text-muted-foreground hover:text-foreground"
+          className="w-full flex items-center gap-2 text-muted-foreground hover:text-blue-500"
           onClick={() => setShowAll(!showAll)}
         >
           {showAll ? (
