@@ -83,11 +83,11 @@ const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
       onTouchEnd={endInteraction}
     >
       <Card 
-        className={`absolute -top-2 left-0 p-2 bg-blue-950 shadow-lg rounded-lg z-20 w-36 transition-opacity duration-200 ${
+        className={`absolute -top-2 left-1/2 p-2 bg-blue-950 shadow-lg rounded-lg z-20 w-36 transition-opacity duration-200 ${
           isInteracting ? 'opacity-100' : 'opacity-0'
         }`}
         style={{ 
-          transform: `translateX(${Math.max(0, Math.min(thumbPosition.x - 48, (sliderRef.current?.offsetWidth || 0) - 144))}px)`,
+          transform: `translateX(calc(-50% + ${Math.max(0, Math.min(thumbPosition.x, (sliderRef.current?.offsetWidth || 0)))}px))`,
           transition: "transform 0.1s ease-out"
         }}
       >
