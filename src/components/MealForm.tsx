@@ -92,7 +92,11 @@ export const MealForm = ({ onSubmit, initialMeal, onCancel }: MealFormProps) => 
             </SelectTrigger>
             <SelectContent>
               {previousMeals.map((prevMeal) => (
-                <SelectItem key={prevMeal.id} value={prevMeal.id}>
+                <SelectItem 
+                  key={prevMeal.id} 
+                  value={prevMeal.id}
+                  className="hover:bg-[#0EA5E9] hover:text-white data-[highlighted]:bg-[#0EA5E9] data-[highlighted]:text-white"
+                >
                   {prevMeal.meal_name} ({prevMeal.calories} cal)
                 </SelectItem>
               ))}
