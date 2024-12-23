@@ -53,7 +53,7 @@ export const PhoneNumberForm = ({
             type="tel"
             value={phoneNumber}
             disabled
-            className="bg-gray-50"
+            className="border border-input"
           />
         </div>
         <div>
