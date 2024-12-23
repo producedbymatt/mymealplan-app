@@ -79,7 +79,6 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
-  // Add dark mode by default and detect changes
   useEffect(() => {
     document.documentElement.classList.add('dark');
     setIsDarkMode(true);
@@ -104,7 +103,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div className="min-h-screen">
-      <div className="w-full bg-background">
+      <div className="w-full bg-background pt-6">
         <div className="container mx-auto flex flex-col items-center">
           <img 
             src={isDarkMode 
