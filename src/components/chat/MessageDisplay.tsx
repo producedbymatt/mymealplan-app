@@ -22,7 +22,7 @@ const MessageDisplay = ({ messages, isLoading, messagesEndRef, onLogMeal }: Mess
           className={`max-w-[80%] p-4 rounded-lg ${
             message.role === 'assistant'
               ? 'bg-gradient-to-r from-blue-950/90 to-green-950/90 text-white'
-              : 'bg-gradient-to-r from-orange-600/90 via-yellow-500/90 to-orange-600/90 text-white'
+              : 'bg-gradient-to-r from-orange-800/90 via-orange-700/90 to-orange-800/90 text-white'
           }`}
         >
           <ReactMarkdown className="prose prose-invert">
