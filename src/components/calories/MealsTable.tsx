@@ -34,7 +34,7 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
   const sortedDates = Object.keys(groupedMeals).sort((a, b) => b.localeCompare(a));
 
   return (
-    <div className="bg-white rounded-lg shadow">
+    <div className="bg-background rounded-lg shadow">
       <Table>
         <TableHeader>
           <TableRow>
@@ -57,18 +57,18 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
               )}
               <TableRow>
                 <TableCell colSpan={5} className="pb-2 pt-4">
-                  <h3 className="text-lg font-semibold text-gray-900">
+                  <h3 className="text-lg font-semibold text-foreground">
                     {format(new Date(date), "EEEE, MMMM do")}
                   </h3>
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell colSpan={5} className="p-0">
-                  <div className="border-2 border-black rounded-lg overflow-hidden">
+                  <div className="border-2 border-foreground rounded-lg overflow-hidden">
                     <Table>
                       <TableBody>
                         {groupedMeals[date].map((log) => (
-                          <TableRow key={log.id} className="bg-white">
+                          <TableRow key={log.id} className="bg-background">
                             <TableCell className="w-1/4">{log.meal_name}</TableCell>
                             <TableCell className="w-1/6">{log.calories}</TableCell>
                             <TableCell className="w-1/6">
