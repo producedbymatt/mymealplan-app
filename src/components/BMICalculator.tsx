@@ -2,8 +2,7 @@ import React, { useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
-import { supabase } from "@/lib/supabase";
+import { useToast } from "@/hooks/use-toast";
 import {
   Select,
   SelectContent,
@@ -15,6 +14,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { updateUserMetrics } from "@/utils/metricsUtils";
 
 interface BMICalculatorProps {
   onBMICalculated: (bmi: number) => void;
@@ -37,53 +37,6 @@ const BMICalculator = ({ onBMICalculated, onMetricsUpdate }: BMICalculatorProps)
     localStorage.setItem("bmiCalculatorOpen", isOpen.toString());
   }, [isOpen]);
 
-  const updateUserMetrics = async (heightInInches: number, weightInPounds: number) => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        console.log('No user found, skipping metrics update');
-        return;
-      }
-
-      console.log('Updating user metrics:', { height: heightInInches, weight: weightInPounds });
-
-      const { data: existingMetrics } = await supabase
-        .from('user_metrics')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .maybeSingle();
-
-      const metricsToUpdate = {
-        user_id: user.id,
-        height: heightInInches,
-        current_weight: weightInPounds,
-        target_weight: existingMetrics?.target_weight,
-        target_days: existingMetrics?.target_days,
-        recommended_calories: existingMetrics?.recommended_calories,
-        gender: gender,
-        updated_at: new Date().toISOString()
-      };
-
-      const { error } = await supabase
-        .from('user_metrics')
-        .upsert(metricsToUpdate);
-
-      if (error) {
-        console.error('Error updating metrics:', error);
-        toast.error("Failed to save your metrics");
-        return;
-      }
-
-      console.log('Successfully updated user metrics');
-      toast.success("Your metrics have been updated");
-    } catch (err) {
-      console.error('Exception while updating metrics:', err);
-      toast.error("An error occurred while saving your metrics");
-    }
-  };
-
   const calculateBMI = async (e: React.FormEvent) => {
     e.preventDefault();
     const heightInInches = parseInt(feet) * 12 + parseInt(inches);
@@ -105,7 +58,7 @@ const BMICalculator = ({ onBMICalculated, onMetricsUpdate }: BMICalculatorProps)
     onMetricsUpdate(heightInInches, weightInPounds);
     
     // Update metrics in the database
-    await updateUserMetrics(heightInInches, weightInPounds);
+    await updateUserMetrics(heightInInches, weightInPounds, gender);
   };
 
   const getBMICategory = (bmi: number, gender: "male" | "female") => {
