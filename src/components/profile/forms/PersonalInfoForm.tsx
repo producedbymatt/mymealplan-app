@@ -9,12 +9,13 @@ import {
 
 interface UserDetails {
   full_name: string | null;
+  email: string | null;
   date_of_birth: string | null;
 }
 
 export const PersonalInfoForm = ({ userDetails, setUserDetails }: { 
   userDetails: UserDetails; 
-  setUserDetails: (details: UserDetails) => void;
+  setUserDetails: React.Dispatch<React.SetStateAction<UserDetails>>;
 }) => {
   const [loading, setLoading] = useState(false);
 
@@ -59,7 +60,7 @@ export const PersonalInfoForm = ({ userDetails, setUserDetails }: {
             type="text"
             value={userDetails.full_name || ""}
             onChange={(e) =>
-              setUserDetails({ ...userDetails, full_name: e.target.value })
+              setUserDetails(prev => ({ ...prev, full_name: e.target.value }))
             }
           />
         </div>
@@ -72,7 +73,7 @@ export const PersonalInfoForm = ({ userDetails, setUserDetails }: {
             type="date"
             value={userDetails.date_of_birth || ""}
             onChange={(e) =>
-              setUserDetails({ ...userDetails, date_of_birth: e.target.value })
+              setUserDetails(prev => ({ ...prev, date_of_birth: e.target.value }))
             }
           />
         </div>
