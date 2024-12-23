@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { format, isToday } from "date-fns";
 import { Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -44,8 +44,23 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
     return meals.reduce((total, meal) => total + meal.calories, 0);
   };
 
-  // Find today's date in yyyy-MM-dd format for default expanded section
+  // Find today's date in yyyy-MM-dd format
   const today = format(new Date(), "yyyy-MM-dd");
+  
+  // State to track expanded sections
+  const [expandedSections, setExpandedSections] = useState<string[]>([today]);
+
+  // Effect to ensure today's section stays expanded
+  useEffect(() => {
+    if (!expandedSections.includes(today)) {
+      setExpandedSections(prev => [...prev, today]);
+    }
+  }, [expandedSections]);
+
+  // Handle accordion state changes
+  const handleAccordionChange = (value: string[]) => {
+    setExpandedSections(value.includes(today) ? value : [...value, today]);
+  };
 
   return (
     <div className="bg-background rounded-lg shadow">
@@ -61,7 +76,11 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
         </TableHeader>
       </Table>
       
-      <Accordion type="single" defaultValue={today} collapsible>
+      <Accordion 
+        type="multiple" 
+        value={expandedSections}
+        onValueChange={handleAccordionChange}
+      >
         {sortedDates.map((date, dateIndex) => (
           <AccordionItem key={date} value={date}>
             {dateIndex > 0 && <Separator className="my-2" />}
