@@ -21,7 +21,6 @@ const getBMICategory = (bmi: number) => {
 };
 
 const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
-  // Constrain BMI value between 15 and 40
   const constrainedBMI = Math.max(15, Math.min(40, bmi));
   const [sliderValue, setSliderValue] = React.useState([constrainedBMI]);
   const [thumbPosition, setThumbPosition] = React.useState({ x: 0, y: 0 });
@@ -33,16 +32,14 @@ const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
     setSliderValue(value);
     onBMIChange(value);
     
-    // Update tooltip position after slider value changes
     if (sliderRef.current) {
       const slider = sliderRef.current;
       const sliderRect = slider.getBoundingClientRect();
-      const percentage = (value[0] - 15) / (40 - 15); // normalize value between min (15) and max (40)
+      const percentage = (value[0] - 15) / (40 - 15);
       const x = percentage * sliderRect.width;
       setThumbPosition({ x, y: sliderRect.top });
     }
 
-    // Clear any existing reset timeout
     if (resetTimeoutRef.current) {
       clearTimeout(resetTimeoutRef.current);
     }
@@ -57,14 +54,12 @@ const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
 
   const endInteraction = () => {
     setIsInteracting(false);
-    // Set a timeout to reset the slider value
     resetTimeoutRef.current = setTimeout(() => {
       setSliderValue([constrainedBMI]);
       onBMIChange([constrainedBMI]);
-    }, 1000); // Reset after 1 second of no interaction
+    }, 1000);
   };
 
-  // Cleanup timeout on unmount
   React.useEffect(() => {
     return () => {
       if (resetTimeoutRef.current) {
@@ -76,7 +71,6 @@ const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
   const simulatedWeight = calculateWeightFromBMI(sliderValue[0], height);
   const bmiCategory = getBMICategory(sliderValue[0]);
   
-  // Calculate the position for the current BMI marker, constrained between 0% and 100%
   const currentBMIPercentage = Math.max(0, Math.min(100, ((constrainedBMI - 15) / (40 - 15)) * 100));
 
   return (
@@ -89,7 +83,7 @@ const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
       onTouchEnd={endInteraction}
     >
       <Card 
-        className={`absolute -top-2 left-0 p-2 bg-blue-900 shadow-lg rounded-lg z-20 w-36 transition-opacity duration-200 ${
+        className={`absolute -top-2 left-0 p-2 bg-blue-950 shadow-lg rounded-lg z-20 w-36 transition-opacity duration-200 ${
           isInteracting ? 'opacity-100' : 'opacity-0'
         }`}
         style={{ 
@@ -106,16 +100,15 @@ const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
         </div>
       </Card>
       <div className="relative">
-        {/* Current BMI Marker */}
         <div 
           className="absolute top-1/2 -translate-y-1/2 w-1 h-8 bg-primary z-10 shadow-md"
           style={{ 
             left: `${currentBMIPercentage}%`,
             marginTop: "-2px",
-            background: "rgb(30, 58, 138)" // Using the dark blue color
+            background: "rgb(30, 58, 138)"
           }}
         >
-          <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-blue-900 text-white px-2 py-0.5 rounded text-xs font-medium whitespace-nowrap shadow-sm">
+          <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-blue-950 text-white px-2 py-0.5 rounded text-xs font-medium whitespace-nowrap shadow-sm">
             Current: {bmi.toFixed(1)}
           </div>
         </div>
