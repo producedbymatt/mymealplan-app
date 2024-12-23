@@ -15,9 +15,10 @@ interface MealFormProps {
   onSubmit: (meal: { meal_name: string; calories: number }) => void;
   initialMeal?: MealLog;
   onCancel?: () => void;
+  submitButtonText?: string;
 }
 
-export const MealForm = ({ onSubmit, initialMeal, onCancel }: MealFormProps) => {
+export const MealForm = ({ onSubmit, initialMeal, onCancel, submitButtonText }: MealFormProps) => {
   const [meal, setMeal] = useState({
     meal_name: initialMeal?.meal_name || "",
     calories: initialMeal?.calories?.toString() || "",
@@ -121,7 +122,7 @@ export const MealForm = ({ onSubmit, initialMeal, onCancel }: MealFormProps) => 
       </div>
       <div className="flex gap-2">
         <Button type="submit" className="w-full bg-gradient-to-r from-blue-950/90 to-green-950/90 hover:from-blue-950 hover:to-green-950">
-          {initialMeal ? "Update Meal" : "Add Meal"}
+          {submitButtonText || (initialMeal ? "Update Meal" : "Add Meal")}
         </Button>
         {onCancel && (
           <Button type="button" variant="outline" onClick={onCancel}>

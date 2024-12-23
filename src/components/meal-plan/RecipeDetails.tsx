@@ -11,6 +11,8 @@ import { MealForm } from "@/components/MealForm";
 import { Meal } from "./types";
 import { useState } from "react";
 import { MealLog } from "@/hooks/useMealLogs";
+import { useMealLogs } from "@/hooks/useMealLogs";
+import { supabase } from "@/lib/supabase";
 
 interface RecipeDetailsProps {
   meal: Meal;
@@ -18,6 +20,19 @@ interface RecipeDetailsProps {
 
 const RecipeDetails = ({ meal }: RecipeDetailsProps) => {
   const [showMealForm, setShowMealForm] = useState(false);
+  const [userId, setUserId] = useState<string | undefined>();
+
+  // Get the addMeal function from useMealLogs
+  const { addMeal } = useMealLogs(userId);
+
+  // Get current user on mount
+  React.useEffect(() => {
+    const getSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setUserId(session?.user?.id);
+    };
+    getSession();
+  }, []);
 
   const handleAddToLog = () => {
     setShowMealForm(true);
@@ -72,11 +87,15 @@ const RecipeDetails = ({ meal }: RecipeDetailsProps) => {
           </DialogHeader>
           <MealForm
             initialMeal={initialMealLog as MealLog}
-            onSubmit={(mealData) => {
+            onSubmit={async (mealData) => {
               console.log('Adding meal to log:', mealData);
+              if (addMeal) {
+                await addMeal(mealData);
+              }
               setShowMealForm(false);
             }}
             onCancel={() => setShowMealForm(false)}
+            submitButtonText="Log Meal"
           />
         </DialogContent>
       </Dialog>
