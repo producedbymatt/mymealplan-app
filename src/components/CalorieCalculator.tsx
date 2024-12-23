@@ -34,6 +34,7 @@ const CalorieCalculator = ({
   const [selectedActivityKey, setSelectedActivityKey] = useState<ActivityLevelKey>("sedentary");
   const [isLoading, setIsLoading] = useState(true);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [savedCalories, setSavedCalories] = useState<number | null>(null);
 
   useEffect(() => {
     const initializeActivityLevel = async () => {
@@ -45,10 +46,10 @@ const CalorieCalculator = ({
           return;
         }
 
-        console.log('Loading activity level for user:', user.id);
+        console.log('Loading activity level and calories for user:', user.id);
         const { data, error } = await supabase
           .from('user_metrics')
-          .select('activity_level')
+          .select('activity_level, recommended_calories')
           .eq('user_id', user.id)
           .order('created_at', { ascending: false })
           .limit(1);
@@ -59,11 +60,14 @@ const CalorieCalculator = ({
           return;
         }
 
-        if (data && data.length > 0 && data[0].activity_level) {
+        if (data && data.length > 0) {
           const storedLevel = data[0].activity_level as ActivityLevelKey;
           console.log('Retrieved activity level from database:', storedLevel);
-          setSelectedActivityKey(storedLevel);
-          setActivityLevel(ACTIVITY_LEVELS[storedLevel].value);
+          console.log('Retrieved recommended calories from database:', data[0].recommended_calories);
+          
+          setSelectedActivityKey(storedLevel || "sedentary");
+          setActivityLevel(ACTIVITY_LEVELS[storedLevel || "sedentary"].value);
+          setSavedCalories(data[0].recommended_calories);
         } else {
           console.log('No saved activity level found, using default');
           setSelectedActivityKey("sedentary");
@@ -97,6 +101,14 @@ const CalorieCalculator = ({
         .limit(1)
         .single();
 
+      const calculatedCalories = calculateDailyCalories(
+        calculateBMR(currentWeight, height),
+        activityLevel,
+        targetWeight,
+        currentWeight,
+        targetDays
+      );
+
       const metricsToUpdate = {
         user_id: user.id,
         activity_level: selectedActivityKey,
@@ -104,6 +116,7 @@ const CalorieCalculator = ({
         current_weight: existingMetrics?.current_weight || currentWeight,
         target_weight: existingMetrics?.target_weight || targetWeight,
         target_days: existingMetrics?.target_days || targetDays,
+        recommended_calories: calculatedCalories,
         updated_at: new Date().toISOString()
       };
 
@@ -118,6 +131,8 @@ const CalorieCalculator = ({
       }
 
       console.log('Successfully saved activity level:', selectedActivityKey);
+      console.log('Successfully saved recommended calories:', calculatedCalories);
+      setSavedCalories(calculatedCalories);
       toast.success("Activity level updated");
       setHasUnsavedChanges(false);
       onSaveMetrics?.();
@@ -137,10 +152,14 @@ const CalorieCalculator = ({
     setSelectedActivityKey(value);
     setActivityLevel(ACTIVITY_LEVELS[value].value);
     setHasUnsavedChanges(true);
+    setSavedCalories(null); // Clear saved calories when activity level changes
   };
 
   const bmr = calculateBMR(currentWeight, height);
-  const dailyCalories = calculateDailyCalories(bmr, activityLevel, targetWeight, currentWeight, targetDays);
+  const dailyCalories = hasUnsavedChanges 
+    ? calculateDailyCalories(bmr, activityLevel, targetWeight, currentWeight, targetDays)
+    : (savedCalories || calculateDailyCalories(bmr, activityLevel, targetWeight, currentWeight, targetDays));
+  
   const weightDifference = targetWeight - currentWeight;
   const isGainingWeight = weightDifference > 0;
   const weeklyChange = Math.abs((weightDifference / targetDays) * 7);
