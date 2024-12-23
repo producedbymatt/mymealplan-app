@@ -6,7 +6,6 @@ import {
 } from "@/components/ui/card";
 import BMISlider from "../BMISlider";
 import BMICategories from "../BMICategories";
-import { useState } from "react";
 
 interface BMICardProps {
   bmi: number;
@@ -22,15 +21,15 @@ interface BMICardProps {
 
 const getBMICategory = (bmi: number, gender: "male" | "female" = "male") => {
   if (gender === "female") {
-    if (bmi < 18.5) return { category: "Underweight", color: "text-blue-500", gradient: "bg-gradient-to-r from-blue-50 to-indigo-50" };
-    if (bmi < 24) return { category: "Normal weight", color: "text-green-500", gradient: "bg-gradient-to-r from-green-50 to-emerald-50" };
-    if (bmi < 29) return { category: "Overweight", color: "text-yellow-500", gradient: "bg-gradient-to-r from-yellow-50 to-amber-50" };
-    return { category: "Obese", color: "text-red-500", gradient: "bg-gradient-to-r from-red-50 to-orange-50" };
+    if (bmi < 18.5) return { category: "Underweight", color: "text-blue-500", gradient: "bg-gradient-to-br from-blue-500/30 to-indigo-500/50" };
+    if (bmi < 24) return { category: "Normal weight", color: "text-green-500", gradient: "bg-gradient-to-br from-green-500/30 to-emerald-500/50" };
+    if (bmi < 29) return { category: "Overweight", color: "text-yellow-500", gradient: "bg-gradient-to-br from-yellow-500/30 to-amber-500/50" };
+    return { category: "Obese", color: "text-red-500", gradient: "bg-gradient-to-br from-red-500/30 to-orange-500/50" };
   } else {
-    if (bmi < 18.5) return { category: "Underweight", color: "text-blue-500", gradient: "bg-gradient-to-r from-blue-50 to-indigo-50" };
-    if (bmi < 25) return { category: "Normal weight", color: "text-green-500", gradient: "bg-gradient-to-r from-green-50 to-emerald-50" };
-    if (bmi < 30) return { category: "Overweight", color: "text-yellow-500", gradient: "bg-gradient-to-r from-yellow-50 to-amber-50" };
-    return { category: "Obese", color: "text-red-500", gradient: "bg-gradient-to-r from-red-50 to-orange-50" };
+    if (bmi < 18.5) return { category: "Underweight", color: "text-blue-500", gradient: "bg-gradient-to-br from-blue-500/30 to-indigo-500/50" };
+    if (bmi < 25) return { category: "Normal weight", color: "text-green-500", gradient: "bg-gradient-to-br from-green-500/30 to-emerald-500/50" };
+    if (bmi < 30) return { category: "Overweight", color: "text-yellow-500", gradient: "bg-gradient-to-br from-yellow-500/30 to-amber-500/50" };
+    return { category: "Obese", color: "text-red-500", gradient: "bg-gradient-to-br from-red-500/30 to-orange-500/50" };
   }
 };
 
@@ -45,7 +44,6 @@ const BMICard = ({
   normalWeight,
   overweightWeight 
 }: BMICardProps) => {
-  const [simulatedBMI, setSimulatedBMI] = useState<number | null>(null);
   const bmiCategory = getBMICategory(bmi, gender);
 
   return (
@@ -68,7 +66,7 @@ const BMICard = ({
           <BMISlider 
             bmi={bmi} 
             height={height}
-            onBMIChange={(value) => setSimulatedBMI(value[0])}
+            onBMIChange={() => {}}
           />
           
           <BMICategories
