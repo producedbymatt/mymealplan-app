@@ -72,10 +72,10 @@ const BMICalculator = ({ onBMICalculated, onMetricsUpdate }: BMICalculatorProps)
   };
 
   return (
-    <Card className="p-6 w-full">
+    <Card className="w-full">
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-bold text-center">BMI Calculator</h2>
+        <div className="flex items-center justify-between p-6">
+          <h2 className="text-2xl font-bold">BMI Calculator</h2>
           <CollapsibleTrigger asChild>
             <Button variant="ghost" size="sm">
               {isOpen ? (
@@ -86,7 +86,7 @@ const BMICalculator = ({ onBMICalculated, onMetricsUpdate }: BMICalculatorProps)
             </Button>
           </CollapsibleTrigger>
         </div>
-        <CollapsibleContent>
+        <CollapsibleContent className="px-6 pb-6">
           <form onSubmit={calculateBMI} className="space-y-4">
             <div className="space-y-2">
               <label className="block text-sm font-medium mb-1">Gender</label>
