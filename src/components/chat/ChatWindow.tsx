@@ -20,17 +20,10 @@ const TypingIndicator = () => (
 );
 
 const ChatWindow = () => {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      role: 'assistant',
-      content: "Welcome to Your Health Coach! 🌟\n\n" +
-               "Hi there! I'm here to help you achieve your health and fitness goals, one step at a time. Whether you're looking to lose weight, gain muscle, eat healthier, or just feel your best, I've got your back. 💪\n\n" +
-               "Ask me anything about nutrition, exercise, calorie counts, recipes, or strategies to stay on track. Let's create a plan that works for you and keeps you motivated along the way!\n\n" +
-               "Remember, every small step counts—let's start this journey together! 🚀"
-    }
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -40,6 +33,57 @@ const ChatWindow = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages, isLoading]);
+
+  // Load chat history when component mounts
+  useEffect(() => {
+    const loadChatHistory = async () => {
+      try {
+        const { data: session } = await supabase.auth.getSession();
+        if (!session.session) return;
+
+        console.log('Loading chat history...');
+        const { data: chatHistory, error } = await supabase
+          .from('chat_messages')
+          .select('*')
+          .order('created_at', { ascending: true });
+
+        if (error) {
+          console.error('Error loading chat history:', error);
+          toast.error("Failed to load chat history");
+          return;
+        }
+
+        if (chatHistory && chatHistory.length > 0) {
+          console.log('Chat history loaded:', chatHistory.length, 'messages');
+          setMessages(chatHistory.map(msg => ({
+            role: msg.role as 'user' | 'assistant',
+            content: msg.content
+          })));
+        } else {
+          console.log('No chat history found, setting welcome message');
+          const welcomeMessage = {
+            role: 'assistant' as const,
+            content: "Welcome to Your Health Coach! 🌟\n\n" +
+                     "Hi there! I'm here to help you achieve your health and fitness goals, one step at a time. Whether you're looking to lose weight, gain muscle, eat healthier, or just feel your best, I've got your back. 💪\n\n" +
+                     "Ask me anything about nutrition, exercise, calorie counts, recipes, or strategies to stay on track. Let's create a plan that works for you and keeps you motivated along the way!\n\n" +
+                     "Remember, every small step counts—let's start this journey together! 🚀"
+          };
+          setMessages([welcomeMessage]);
+          // Save welcome message to database
+          await supabase.from('chat_messages').insert({
+            role: welcomeMessage.role,
+            content: welcomeMessage.content
+          });
+        }
+        setIsInitialized(true);
+      } catch (error) {
+        console.error('Error in loadChatHistory:', error);
+        toast.error("Failed to initialize chat");
+      }
+    };
+
+    loadChatHistory();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,6 +110,20 @@ const ChatWindow = () => {
         return;
       }
 
+      // Save user message to database
+      const { error: insertError } = await supabase
+        .from('chat_messages')
+        .insert({
+          role: 'user',
+          content: userMessage
+        });
+
+      if (insertError) {
+        console.error('Error saving user message:', insertError);
+        toast.error("Failed to save message");
+        return;
+      }
+
       console.log('Calling chat function...');
       const { data: response, error } = await supabase.functions.invoke('chat-health-coach', {
         body: {
@@ -80,6 +138,21 @@ const ChatWindow = () => {
       }
 
       console.log('Received response:', response);
+      
+      // Save assistant response to database
+      const { error: assistantInsertError } = await supabase
+        .from('chat_messages')
+        .insert({
+          role: 'assistant',
+          content: response.message
+        });
+
+      if (assistantInsertError) {
+        console.error('Error saving assistant message:', assistantInsertError);
+        toast.error("Failed to save response");
+        return;
+      }
+
       setMessages(prev => [...prev, { role: 'assistant', content: response.message }]);
     } catch (error) {
       console.error('Chat error:', error);
