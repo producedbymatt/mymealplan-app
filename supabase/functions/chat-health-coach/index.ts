@@ -101,30 +101,24 @@ serve(async (req) => {
 
 *Ingredients:*
 • [ingredient 1]
-
 • [ingredient 2]
-
 • [ingredient 3]
+• [ingredient 4]
 
 *Instructions:*
 1. [instruction 1]
-
 2. [instruction 2]
-
 3. [instruction 3]
+4. [instruction 4]
 
 Available recipes: ${JSON.stringify(formattedRecipes, null, 2)}
 
 You can help users with:
 
 1. Recipe suggestions based on meal type, category, or nutritional requirements
-
 2. Detailed recipe instructions and ingredients
-
 3. Nutritional information for specific recipes
-
 4. General health and nutrition advice
-
 5. Diet-related questions
 
 When suggesting recipes:
