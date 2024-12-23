@@ -85,7 +85,7 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
           <AccordionItem key={date} value={date}>
             {dateIndex > 0 && <Separator className="my-2" />}
             <div className="w-full bg-gradient-to-r from-blue-950/90 to-green-950/90 text-white rounded-lg">
-              <AccordionTrigger className="w-full px-4 py-4 [&[data-state=open]>div>svg]:rotate-180">
+              <AccordionTrigger className="w-full px-4 py-4 [&[data-state=open]>div>svg]:rotate-180 [&>svg]:hidden">
                 <div className="flex justify-between items-center w-full">
                   <h3 className="text-lg font-semibold">
                     {format(new Date(date), "EEEE, MMMM do")}
