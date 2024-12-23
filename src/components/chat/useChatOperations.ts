@@ -11,12 +11,16 @@ export const useChatOperations = () => {
   const loadChatHistory = async () => {
     try {
       const { data: session } = await supabase.auth.getSession();
-      if (!session.session) return;
+      if (!session.session) {
+        console.log('No authenticated session found');
+        return;
+      }
 
       console.log('Loading chat history...');
       const { data: chatHistory, error } = await supabase
         .from('chat_messages')
         .select('*')
+        .eq('user_id', session.session.user.id)
         .order('created_at', { ascending: true });
 
       if (error) {
@@ -40,11 +44,24 @@ export const useChatOperations = () => {
                    "Ask me anything about nutrition, exercise, calorie counts, recipes, or strategies to stay on track. Let's create a plan that works for you and keeps you motivated along the way!\n\n" +
                    "Remember, every small step counts—let's start this journey together! 🚀"
         };
+
+        // Get the current user's ID before inserting the welcome message
+        const userId = session.session.user.id;
+        const { error: insertError } = await supabase
+          .from('chat_messages')
+          .insert({
+            role: welcomeMessage.role,
+            content: welcomeMessage.content,
+            user_id: userId
+          });
+
+        if (insertError) {
+          console.error('Error saving welcome message:', insertError);
+          toast.error("Failed to initialize chat");
+          return;
+        }
+
         setMessages([welcomeMessage]);
-        await supabase.from('chat_messages').insert({
-          role: welcomeMessage.role,
-          content: welcomeMessage.content
-        });
       }
       setIsInitialized(true);
     } catch (error) {
@@ -55,27 +72,24 @@ export const useChatOperations = () => {
 
   const sendMessage = async (userMessage: string) => {
     try {
-      console.log('Checking user authentication...');
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       
-      if (userError) {
-        console.error('Auth error:', userError);
-        toast.error("Authentication error");
-        return;
-      }
-
-      if (!user) {
-        console.log('No authenticated user found');
+      if (sessionError || !session) {
+        console.error('Auth error:', sessionError);
         toast.error("Please log in to use the chat feature");
         return;
       }
+
+      setIsLoading(true);
+      const userId = session.user.id;
 
       // Save user message to database
       const { error: insertError } = await supabase
         .from('chat_messages')
         .insert({
           role: 'user',
-          content: userMessage
+          content: userMessage,
+          user_id: userId
         });
 
       if (insertError) {
@@ -104,7 +118,8 @@ export const useChatOperations = () => {
         .from('chat_messages')
         .insert({
           role: 'assistant',
-          content: response.message
+          content: response.message,
+          user_id: userId
         });
 
       if (assistantInsertError) {
@@ -120,6 +135,8 @@ export const useChatOperations = () => {
     } catch (error) {
       console.error('Chat error:', error);
       toast.error("Failed to get response from health coach");
+    } finally {
+      setIsLoading(false);
     }
   };
 
