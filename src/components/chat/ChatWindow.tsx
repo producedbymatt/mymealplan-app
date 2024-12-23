@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Send } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
+import ReactMarkdown from 'react-markdown';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -14,7 +15,11 @@ const ChatWindow = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: "Hi! I'm your AI health coach. I can help you with recipe suggestions, nutritional information, and general health questions. How can I assist you today?"
+      content: "Hi! I'm your AI health coach. I can help you with:\n\n" +
+               "* Recipe suggestions\n" +
+               "* Nutritional information\n" +
+               "* General health questions\n\n" +
+               "How can I assist you today?"
     }
   ]);
   const [input, setInput] = useState('');
@@ -92,7 +97,19 @@ const ChatWindow = () => {
                   : 'bg-gray-100 dark:bg-gray-700'
               }`}
             >
-              {message.content}
+              <ReactMarkdown 
+                className="prose dark:prose-invert prose-sm max-w-none"
+                components={{
+                  // Override default element styling
+                  p: ({children}) => <p className="m-0">{children}</p>,
+                  ul: ({children}) => <ul className="m-0 ml-4">{children}</ul>,
+                  ol: ({children}) => <ol className="m-0 ml-4">{children}</ol>,
+                  li: ({children}) => <li className="m-0">{children}</li>,
+                  strong: ({children}) => <strong className="font-bold">{children}</strong>,
+                }}
+              >
+                {message.content}
+              </ReactMarkdown>
             </div>
           </div>
         ))}
