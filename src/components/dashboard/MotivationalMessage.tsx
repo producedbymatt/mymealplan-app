@@ -12,18 +12,10 @@ const MotivationalMessage = ({ currentWeight, targetWeight, targetDays }: Motiva
       <Card className="p-4 mb-8 relative overflow-hidden">
         {/* Animated gradient background */}
         <div className="absolute inset-0 bg-gradient-to-r from-orange-600/90 via-yellow-500/90 to-orange-600/90 animate-gradient-x" />
-        {/* Content with wave animation */}
-        <div className="flex justify-center items-center space-x-1">
-          {Array.from("Set your weight goal and timeline to get personalized motivation and tracking! 🎯").map((char, i) => (
-            <span
-              key={i}
-              className="relative z-10 text-lg font-medium text-white animate-wave"
-              style={{ animationDelay: `${i * 0.05}s` }}
-            >
-              {char}
-            </span>
-          ))}
-        </div>
+        {/* Content */}
+        <p className="text-center text-lg font-medium text-white relative z-10">
+          Set your weight goal and timeline to get personalized motivation and tracking! 🎯
+        </p>
       </Card>
     );
   }
@@ -62,18 +54,10 @@ const MotivationalMessage = ({ currentWeight, targetWeight, targetDays }: Motiva
     <Card className="p-4 mb-8 relative overflow-hidden">
       {/* Animated gradient background */}
       <div className="absolute inset-0 bg-gradient-to-r from-orange-600/90 via-yellow-500/90 to-orange-600/90 animate-gradient-x" />
-      {/* Content with wave animation */}
-      <div className="flex justify-center items-center flex-wrap space-x-1">
-        {Array.from(getMessage()).map((char, i) => (
-          <span
-            key={i}
-            className="relative z-10 text-lg font-medium text-white animate-wave"
-            style={{ animationDelay: `${i * 0.05}s` }}
-          >
-            {char}
-          </span>
-        ))}
-      </div>
+      {/* Content */}
+      <p className="text-center text-lg font-medium text-white relative z-10">
+        {getMessage()}
+      </p>
     </Card>
   );
 };
