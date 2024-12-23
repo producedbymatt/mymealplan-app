@@ -1,19 +1,19 @@
-import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-import { Configuration, OpenAIApi } from 'https://esm.sh/openai@3.1.0'
+import "https://deno.land/x/xhr@0.1.0/mod.ts";
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { Configuration, OpenAIApi } from "https://esm.sh/openai@3.1.0";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
+};
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
+    return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    // Log the request method and headers
     console.log('Request method:', req.method);
     console.log('Request headers:', Object.fromEntries(req.headers.entries()));
 
@@ -32,7 +32,6 @@ serve(async (req) => {
     const supabaseClient = createClient(supabaseUrl, supabaseKey);
     console.log('Supabase client initialized');
 
-    // Verify OpenAI API key is set
     const openaiKey = Deno.env.get('OPENAI_API_KEY');
     console.log('OpenAI API key found:', !!openaiKey);
     
@@ -41,10 +40,9 @@ serve(async (req) => {
       throw new Error('OpenAI API key not found in environment variables');
     }
 
-    const { message, userMetrics, messageHistory } = await req.json();
+    const { message, messageHistory } = await req.json();
     console.log('Request payload received:', { 
-      messageReceived: !!message, 
-      metricsReceived: !!userMetrics,
+      messageReceived: !!message,
       historyLength: messageHistory?.length 
     });
 
@@ -55,7 +53,6 @@ serve(async (req) => {
       })
     );
 
-    // Fetch all recipes from the database
     console.log('Fetching recipes...');
     const { data: recipes, error: recipesError } = await supabaseClient
       .from('recipes')
@@ -68,20 +65,17 @@ serve(async (req) => {
 
     console.log('Recipes fetched successfully:', recipes?.length);
 
-    // Prepare the system message with context
     const systemMessage = {
       role: 'system',
-      content: `You are a helpful AI health coach. You have access to the user's metrics: ${JSON.stringify(userMetrics)} 
-                and all available recipes in the database: ${JSON.stringify(recipes)}. 
+      content: `You are a helpful AI health coach with access to our recipe database: ${JSON.stringify(recipes)}. 
                 You can help users with:
-                1. Identifying and tracking health goals
-                2. Recipe modifications and substitutions
-                3. Calorie estimations for custom recipes
-                4. Scaling recipes for different serving sizes
+                1. Recipe suggestions and modifications
+                2. General health and nutrition advice
+                3. Diet-related questions
+                4. Calorie and nutrient information for recipes
                 Always be encouraging and supportive while keeping health and nutrition in mind.`
-    }
+    };
 
-    // Prepare the conversation history
     const messages = [
       systemMessage,
       ...messageHistory.map((msg: any) => ({
@@ -89,7 +83,7 @@ serve(async (req) => {
         content: msg.content,
       })),
       { role: 'user', content: message },
-    ]
+    ];
 
     console.log('Sending request to OpenAI...');
     const completion = await openai.createChatCompletion({
@@ -107,7 +101,7 @@ serve(async (req) => {
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       },
-    )
+    );
   } catch (error) {
     console.error('Error in chat-health-coach function:', error);
     return new Response(
@@ -119,6 +113,6 @@ serve(async (req) => {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       },
-    )
+    );
   }
-})
+});

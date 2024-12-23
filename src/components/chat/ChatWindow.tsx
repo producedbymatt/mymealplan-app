@@ -14,53 +14,12 @@ const ChatWindow = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: "Hi! I'm your AI health coach. I can help you with your health goals, recipe modifications, and calorie estimates. How can I assist you today?"
+      content: "Hi! I'm your AI health coach. I can help you with recipe suggestions, nutritional information, and general health questions. How can I assist you today?"
     }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  // Add connection check on component mount
-  useEffect(() => {
-    checkSupabaseConnection();
-  }, []);
-
-  const checkSupabaseConnection = async () => {
-    try {
-      console.log('Checking Supabase connection...');
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      
-      if (sessionError) {
-        console.error('Session error:', sessionError);
-        toast.error('Error connecting to Supabase');
-        return;
-      }
-
-      if (!session) {
-        console.log('No active session found');
-        return;
-      }
-
-      console.log('Session found:', session);
-      
-      // Test database connection
-      const { data, error } = await supabase
-        .from('user_metrics')
-        .select('count')
-        .limit(1);
-
-      if (error) {
-        console.error('Database connection error:', error);
-        toast.error('Error connecting to database');
-      } else {
-        console.log('Successfully connected to Supabase database');
-      }
-    } catch (err) {
-      console.error('Connection check error:', err);
-      toast.error('Error checking connection');
-    }
-  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -95,24 +54,10 @@ const ChatWindow = () => {
         return;
       }
 
-      console.log('Fetching user metrics...');
-      const { data: userMetrics, error: metricsError } = await supabase
-        .from('user_metrics')
-        .select('*')
-        .eq('user_id', user.id)
-        .single();
-
-      if (metricsError) {
-        console.error('Metrics error:', metricsError);
-        toast.error("Error fetching user metrics");
-        return;
-      }
-
       console.log('Calling chat function...');
       const { data: response, error } = await supabase.functions.invoke('chat-health-coach', {
         body: {
           message: userMessage,
-          userMetrics,
           messageHistory: messages
         }
       });
