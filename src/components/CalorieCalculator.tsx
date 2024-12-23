@@ -68,10 +68,13 @@ const CalorieCalculator = ({
           setSelectedActivityKey(storedLevel || "sedentary");
           setActivityLevel(ACTIVITY_LEVELS[storedLevel || "sedentary"].value);
           setSavedCalories(data[0].recommended_calories);
+          // Store the saved activity level in localStorage for comparison
+          localStorage.setItem('saved_activity_level', storedLevel || "sedentary");
         } else {
           console.log('No saved activity level found, using default');
           setSelectedActivityKey("sedentary");
           setActivityLevel(ACTIVITY_LEVELS.sedentary.value);
+          localStorage.setItem('saved_activity_level', "sedentary");
         }
       } catch (err) {
         console.error('Error in initializeActivityLevel:', err);
@@ -133,6 +136,7 @@ const CalorieCalculator = ({
       console.log('Successfully saved activity level:', selectedActivityKey);
       console.log('Successfully saved recommended calories:', calculatedCalories);
       setSavedCalories(calculatedCalories);
+      localStorage.setItem('saved_activity_level', selectedActivityKey);
       toast.success("Activity level updated");
       setHasUnsavedChanges(false);
       onSaveMetrics?.();

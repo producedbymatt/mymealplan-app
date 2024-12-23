@@ -46,6 +46,8 @@ const CalorieResults = ({
         </p>
         <p className="text-sm text-muted-foreground mt-1">
           Based on {formatActivityLevel(selectedActivityKey)} activity level
+          {/* Add an asterisk to indicate unsaved changes */}
+          {selectedActivityKey !== localStorage.getItem('saved_activity_level') && ' *'}
         </p>
       </div>
 
