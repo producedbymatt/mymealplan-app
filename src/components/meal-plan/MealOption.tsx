@@ -32,7 +32,7 @@ const MealOption = ({ meal, showFavoritesOnly, onFavoriteChange }: MealOptionPro
   };
 
   const handlePortionsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseFloat(e.target.value);
+    const value = Math.round(parseFloat(e.target.value));
     if (value > 0) {
       setPortions(value);
     }
@@ -70,8 +70,8 @@ const MealOption = ({ meal, showFavoritesOnly, onFavoriteChange }: MealOptionPro
                   <span className="text-sm text-gray-200">Portions:</span>
                   <Input
                     type="number"
-                    min="0.25"
-                    step="0.25"
+                    min="1"
+                    step="1"
                     value={portions}
                     onChange={handlePortionsChange}
                     onClick={(e) => e.stopPropagation()}
