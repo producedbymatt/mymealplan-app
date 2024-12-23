@@ -61,12 +61,10 @@ export default {
         },
         "gradient-x": {
           "0%, 100%": {
-            "background-size": "200% 200%",
-            "background-position": "left center",
+            "background-image": "linear-gradient(to right, rgb(23 37 84 / 0.9), rgb(20 83 45 / 0.9), rgb(23 37 84 / 0.9))",
           },
           "50%": {
-            "background-size": "200% 200%",
-            "background-position": "right center",
+            "background-image": "linear-gradient(to right, rgb(234 88 12 / 0.9), rgb(234 179 8 / 0.9), rgb(234 88 12 / 0.9))",
           },
         },
       },
