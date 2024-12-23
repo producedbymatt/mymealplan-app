@@ -23,26 +23,36 @@ const getBMICategory = (bmi: number) => {
 const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
   const constrainedBMI = Math.max(15, Math.min(40, bmi));
   const [sliderValue, setSliderValue] = React.useState([constrainedBMI]);
-  const [thumbPosition, setThumbPosition] = React.useState({ x: 0, y: 0 });
   const [isInteracting, setIsInteracting] = React.useState(false);
   const sliderRef = React.useRef<HTMLDivElement>(null);
   const resetTimeoutRef = React.useRef<NodeJS.Timeout>();
+  const [markerPosition, setMarkerPosition] = React.useState({ x: 0, y: 0 });
+
+  const updateMarkerPosition = () => {
+    if (sliderRef.current) {
+      const slider = sliderRef.current;
+      const sliderRect = slider.getBoundingClientRect();
+      const percentage = (constrainedBMI - 15) / (40 - 15);
+      const x = percentage * sliderRect.width;
+      setMarkerPosition({ x, y: sliderRect.top });
+    }
+  };
+
+  React.useEffect(() => {
+    updateMarkerPosition();
+    window.addEventListener('resize', updateMarkerPosition);
+    return () => {
+      window.removeEventListener('resize', updateMarkerPosition);
+      if (resetTimeoutRef.current) {
+        clearTimeout(resetTimeoutRef.current);
+      }
+    };
+  }, [constrainedBMI]);
 
   const handleSliderChange = (value: number[]) => {
     setSliderValue(value);
     onBMIChange(value);
-    
-    if (sliderRef.current) {
-      const slider = sliderRef.current;
-      const sliderRect = slider.getBoundingClientRect();
-      const percentage = (value[0] - 15) / (40 - 15);
-      const x = percentage * sliderRect.width;
-      setThumbPosition({ x, y: sliderRect.top });
-    }
-
-    if (resetTimeoutRef.current) {
-      clearTimeout(resetTimeoutRef.current);
-    }
+    updateMarkerPosition();
   };
 
   const startInteraction = () => {
@@ -60,14 +70,6 @@ const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
     }, 1000);
   };
 
-  React.useEffect(() => {
-    return () => {
-      if (resetTimeoutRef.current) {
-        clearTimeout(resetTimeoutRef.current);
-      }
-    };
-  }, []);
-
   const simulatedWeight = calculateWeightFromBMI(sliderValue[0], height);
   const bmiCategory = getBMICategory(sliderValue[0]);
   
@@ -76,11 +78,11 @@ const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
   // Calculate the offset for the marker based on its position
   const getMarkerOffset = () => {
     if (currentBMIPercentage > 85) {
-      return '-100%'; // Move completely to the left when near the right edge
+      return '-100%';
     } else if (currentBMIPercentage < 15) {
-      return '0'; // Keep at default position when near the left edge
+      return '0';
     }
-    return '-50%'; // Center position for middle areas
+    return '-50%';
   };
 
   return (
@@ -97,7 +99,7 @@ const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
           isInteracting ? 'opacity-100' : 'opacity-0'
         }`}
         style={{ 
-          left: `${Math.max(0, Math.min(thumbPosition.x, (sliderRef.current?.offsetWidth || 0)))}px`,
+          left: `${markerPosition.x}px`,
           transform: 'translateX(-50%)',
           transition: "all 0.1s ease-out"
         }}
