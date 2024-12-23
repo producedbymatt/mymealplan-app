@@ -11,16 +11,15 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
   const [userId, setUserId] = useState<string | undefined>();
   const [favoriteMeals, setFavoriteMeals] = useState<Meal[]>([]);
 
-  // Get current user on mount
   useEffect(() => {
-    const loadUser = async () => {
+    const getSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       setUserId(session?.user?.id);
       if (session?.user?.id) {
         loadFavoriteMeals(session.user.id);
       }
     };
-    loadUser();
+    getSession();
   }, []);
 
   const loadFavoriteMeals = async (uid: string) => {
@@ -54,7 +53,7 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
     setFavoriteMeals(prev => prev.filter(meal => meal.name !== mealName));
   };
 
-  const generateMealOptions = (timeSlot: string, caloriesPerMeal: number, excludeNames: Set<string>) => {
+  const generateMealOptions = (timeSlot: string, caloriesPerMeal: number, excludeNames: Set<string>, count: number = 2) => {
     const allOptions = getMealOptionsForTime(timeSlot);
     const availableOptions = allOptions.filter(meal => !excludeNames.has(meal.name));
     
@@ -64,7 +63,18 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
       return [scaleMeal(allOptions[Math.floor(Math.random() * allOptions.length)], caloriesPerMeal)];
     }
 
-    return [scaleMeal(availableOptions[Math.floor(Math.random() * availableOptions.length)], caloriesPerMeal)];
+    // Get multiple random meals
+    const selectedMeals: Meal[] = [];
+    const tempAvailable = [...availableOptions];
+    
+    for (let i = 0; i < count && tempAvailable.length > 0; i++) {
+      const randomIndex = Math.floor(Math.random() * tempAvailable.length);
+      const selectedMeal = tempAvailable[randomIndex];
+      selectedMeals.push(scaleMeal(selectedMeal, caloriesPerMeal));
+      tempAvailable.splice(randomIndex, 1);
+    }
+
+    return selectedMeals;
   };
 
   // Update meal plan when calories change
@@ -76,7 +86,7 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
     setUsedRecipes(new Set());
     
     const newMealPlan = timeSlots.map(time => {
-      const options = generateMealOptions(time, caloriesPerMeal, new Set());
+      const options = generateMealOptions(time, caloriesPerMeal, new Set(), 2);
       options.forEach(meal => {
         setUsedRecipes(prev => new Set([...prev, meal.name]));
       });

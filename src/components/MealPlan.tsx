@@ -41,7 +41,8 @@ const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: Me
       const newOptions = generateMealOptions(
         newPlan[timeSlotIndex].time, 
         caloriesPerMeal,
-        usedRecipes
+        usedRecipes,
+        2 // Now requesting 2 meal options
       );
       
       newOptions.forEach(meal => {
