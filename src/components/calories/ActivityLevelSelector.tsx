@@ -31,7 +31,7 @@ const ActivityLevelSelector = ({
             <SelectItem 
               key={key} 
               value={key}
-              className="hover:bg-blue-900 hover:text-white hover:border hover:border-white"
+              className="hover:bg-[#0EA5E9] hover:text-white"
             >
               {label}
             </SelectItem>
