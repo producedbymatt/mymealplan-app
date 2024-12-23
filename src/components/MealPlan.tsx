@@ -93,7 +93,7 @@ const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: Me
           variant="outline"
           size="sm"
           onClick={toggleFavoritesFilter}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 hover:text-white hover:bg-blue-900 hover:border hover:border-white"
         >
           {showFavoritesOnly ? (
             <>
