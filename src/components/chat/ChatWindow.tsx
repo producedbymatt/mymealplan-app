@@ -11,14 +11,12 @@ import {
 } from "@/components/ui/dialog";
 import { useMealLogs } from '@/hooks/useMealLogs';
 import { supabase } from '@/lib/supabase';
-import { Message } from './types';
 
 const ChatWindow = () => {
   const [input, setInput] = useState('');
   const [showMealForm, setShowMealForm] = useState(false);
   const [mealToLog, setMealToLog] = useState<{ meal_name: string; calories: number } | null>(null);
   const [userId, setUserId] = useState<string | undefined>();
-  const [localMessages, setLocalMessages] = useState<Message[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { messages, isLoading, sendMessage } = useChatOperations();
   const { addMeal } = useMealLogs(userId);
@@ -31,18 +29,13 @@ const ChatWindow = () => {
     getSession();
   }, []);
 
-  // Update local messages when the server messages change
-  useEffect(() => {
-    setLocalMessages(messages);
-  }, [messages]);
-
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
     scrollToBottom();
-  }, [localMessages, isLoading]);
+  }, [messages, isLoading]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,11 +43,6 @@ const ChatWindow = () => {
 
     const userMessage = input.trim();
     setInput('');
-    
-    // Immediately add the user message to local state
-    setLocalMessages(prev => [...prev, { role: 'user', content: userMessage }]);
-    
-    // Then send the message to get AI response
     await sendMessage(userMessage);
   };
 
@@ -76,7 +64,7 @@ const ChatWindow = () => {
   return (
     <div className="flex flex-col h-[calc(600px-64px)]">
       <MessageDisplay 
-        messages={localMessages}
+        messages={messages}
         isLoading={isLoading}
         messagesEndRef={messagesEndRef}
         onLogMeal={handleMealLog}
