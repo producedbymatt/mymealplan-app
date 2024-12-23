@@ -4,6 +4,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import BMISlider from "../BMISlider";
+import BMICategories from "../BMICategories";
 
 interface BMICardProps {
   bmi: number;
@@ -97,6 +99,20 @@ const BMICard = ({
           <p className="text-xs text-white mt-1">
             Based on current weight: {mostRecentWeight} lbs, height: {heightFeet}'{heightInches}"
           </p>
+        </div>
+
+        <div className="mt-6 space-y-6">
+          <BMISlider 
+            bmi={bmi} 
+            height={height}
+            onBMIChange={() => {}}
+          />
+          
+          <BMICategories
+            underweightWeight={underweightWeight}
+            normalWeight={normalWeight}
+            overweightWeight={overweightWeight}
+          />
         </div>
       </CardContent>
     </Card>
