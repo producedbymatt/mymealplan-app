@@ -73,6 +73,16 @@ const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
   
   const currentBMIPercentage = Math.max(0, Math.min(100, ((constrainedBMI - 15) / (40 - 15)) * 100));
 
+  // Calculate the offset for the marker based on its position
+  const getMarkerOffset = () => {
+    if (currentBMIPercentage > 85) {
+      return '-100%'; // Move completely to the left when near the right edge
+    } else if (currentBMIPercentage < 15) {
+      return '0'; // Keep at default position when near the left edge
+    }
+    return '-50%'; // Center position for middle areas
+  };
+
   return (
     <div 
       className="relative pt-16" 
@@ -109,7 +119,13 @@ const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
             background: "rgb(30, 58, 138)"
           }}
         >
-          <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-blue-950 text-white px-2 py-0.5 rounded text-xs font-medium whitespace-nowrap shadow-sm">
+          <div 
+            className="absolute -top-7 bg-blue-950 text-white px-2 py-0.5 rounded text-xs font-medium whitespace-nowrap shadow-sm"
+            style={{ 
+              left: '50%',
+              transform: `translateX(${getMarkerOffset()})`,
+            }}
+          >
             Current: {bmi.toFixed(1)}
           </div>
         </div>
