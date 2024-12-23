@@ -13,7 +13,7 @@ const MotivationalMessage = ({ currentWeight, targetWeight, targetDays }: Motiva
         {/* Animated gradient background */}
         <div className="absolute inset-0 bg-gradient-to-r from-orange-600/90 via-yellow-500/90 to-orange-600/90 animate-gradient-x" />
         {/* Content */}
-        <p className="text-center text-lg font-medium text-white relative z-10">
+        <p className="text-center text-lg font-medium text-white relative z-10 animate-text-bloom">
           Set your weight goal and timeline to get personalized motivation and tracking! 🎯
         </p>
       </Card>
@@ -55,7 +55,7 @@ const MotivationalMessage = ({ currentWeight, targetWeight, targetDays }: Motiva
       {/* Animated gradient background */}
       <div className="absolute inset-0 bg-gradient-to-r from-orange-600/90 via-yellow-500/90 to-orange-600/90 animate-gradient-x" />
       {/* Content */}
-      <p className="text-center text-lg font-medium text-white relative z-10">
+      <p className="text-center text-lg font-medium text-white relative z-10 animate-text-bloom">
         {getMessage()}
       </p>
     </Card>

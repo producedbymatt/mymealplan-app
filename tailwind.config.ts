@@ -69,12 +69,27 @@ export default {
             "background-position": "right center",
           },
         },
+        "text-bloom": {
+          "0%": {
+            filter: "brightness(1) blur(0)",
+            textShadow: "0 0 0 transparent"
+          },
+          "50%": {
+            filter: "brightness(1.2) blur(2px)",
+            textShadow: "0 0 10px rgba(255,255,255,0.8)"
+          },
+          "100%": {
+            filter: "brightness(1) blur(0)",
+            textShadow: "0 0 0 transparent"
+          }
+        }
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "progress-fill": "progress-fill 1s ease-in-out",
         "gradient-x": "gradient-x 15s ease infinite",
+        "text-bloom": "text-bloom 3s ease-in-out infinite"
       },
     },
   },
