@@ -22,9 +22,6 @@ const MetricCards = ({
   heightFeet,
   heightInches,
   targetWeight,
-  daysRemaining,
-  formattedTargetDate,
-  targetDays,
   recommendedCalories,
   startingWeight,
 }: MetricCardsProps) => {
@@ -64,9 +61,6 @@ const MetricCards = ({
           <p className="text-xs text-white/80 mt-1">
             {targetWeight ? `${Math.abs(mostRecentWeight - targetWeight)} lbs to go` : "Set a goal to track progress"}
           </p>
-          {targetWeight && (
-            <p className="text-xs text-white/80 mt-1">Target Date: {formattedTargetDate}</p>
-          )}
         </CardContent>
       </Card>
 
@@ -85,9 +79,6 @@ const MetricCards = ({
               ? `${isWeightLoss ? 'Lost' : 'Gained'} since starting` 
               : "Start logging to track progress"}
           </p>
-          {targetDays > 0 && (
-            <p className="text-xs text-white/80 mt-1">{daysRemaining} days remaining</p>
-          )}
         </CardContent>
       </Card>
 
