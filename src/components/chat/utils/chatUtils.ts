@@ -6,9 +6,9 @@ export const extractMealInfo = (message: string): { meal_name: string; calories:
   const calories = parseInt(calorieMatches[1]);
   if (isNaN(calories)) return null;
 
-  // Look for meal name patterns
-  // This is a simple implementation - you might want to make it more sophisticated
-  const mealNameMatch = message.match(/made\s+(?:a|an|some)?\s*([^,.!?]+)/i);
+  // Extract meal name from AI response
+  // This will match any text between quotes that appears before the calorie count
+  const mealNameMatch = message.match(/"([^"]+)"/);
   if (!mealNameMatch) return null;
 
   const mealName = mealNameMatch[1].trim();
