@@ -55,19 +55,10 @@ const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: Me
       
       return newPlan;
     });
-
-    toast({
-      title: "Meal options refreshed",
-      description: "New meal suggestions have been generated.",
-    });
   };
 
   const toggleFavoritesFilter = () => {
     setShowFavoritesOnly(!showFavoritesOnly);
-    toast({
-      title: showFavoritesOnly ? "Showing all meals" : "Showing favorites only",
-      description: showFavoritesOnly ? "Displaying all available meal options" : "Filtering to show your favorite meals",
-    });
   };
 
   const handleFavoriteChange = (meal: Meal, isFavorite: boolean) => {
