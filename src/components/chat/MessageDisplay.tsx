@@ -16,8 +16,8 @@ const MessageDisplay = ({ messages, isLoading, messagesEndRef, onLogMeal }: Mess
   const renderMessage = (message: Message) => {
     const mealInfo = message.role === 'assistant' ? extractMealInfo(message.content) : null;
     const shouldShowLogButtons = message.role === 'assistant' && 
-      (message.content.toLowerCase().includes('would you like to log this') || 
-       message.content.toLowerCase().includes('calories'));
+      message.content.toLowerCase().includes('contains approximately') &&
+      message.content.toLowerCase().includes('calories');
 
     console.log('Message content:', message.content);
     console.log('Should show log buttons:', shouldShowLogButtons);
