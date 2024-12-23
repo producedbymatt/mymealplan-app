@@ -7,11 +7,15 @@ interface CaloriesSummaryCardProps {
 
 const CaloriesSummaryCard = ({ todayCalories, recommendedCalories }: CaloriesSummaryCardProps) => {
   return (
-    <Card className="bg-gradient-to-r from-blue-950/90 to-green-950/90">
-      <CardHeader>
+    <Card className="relative overflow-hidden">
+      {/* Animated gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-950/90 via-green-950/90 to-blue-950/90 animate-gradient-x" />
+      
+      {/* Content */}
+      <CardHeader className="relative z-10">
         <CardTitle className="text-white">Today's Calories</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="relative z-10">
         <div className="flex justify-between items-center">
           <p className="text-4xl font-bold text-white">{todayCalories}</p>
           {recommendedCalories && (
