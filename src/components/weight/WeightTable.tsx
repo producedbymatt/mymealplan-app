@@ -62,9 +62,9 @@ const WeightTable = ({ entries, showMore, onToggleShowMore, onEdit, onDelete }: 
           {entries.map((entry) => (
             <TableRow 
               key={entry.id}
-              className="bg-background hover:bg-[#0EA5E9] hover:text-white transition-colors"
+              className="bg-background hover:bg-[#0EA5E9] hover:text-white transition-colors rounded-lg overflow-hidden"
             >
-              <TableCell>{format(new Date(entry.created_at!), 'MMM dd, yyyy')}</TableCell>
+              <TableCell className="rounded-l-lg">{format(new Date(entry.created_at!), 'MMM dd, yyyy')}</TableCell>
               <TableCell>{format(new Date(entry.created_at!), 'h:mm a')}</TableCell>
               <TableCell>
                 {editingId === entry.id ? (
@@ -78,7 +78,7 @@ const WeightTable = ({ entries, showMore, onToggleShowMore, onEdit, onDelete }: 
                   entry.weight
                 )}
               </TableCell>
-              <TableCell className="text-right">
+              <TableCell className="text-right rounded-r-lg">
                 <div className="flex justify-end gap-2">
                   <Button
                     variant="ghost"
