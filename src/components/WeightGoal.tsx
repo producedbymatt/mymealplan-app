@@ -142,8 +142,8 @@ const WeightGoal = ({ onGoalSet }: WeightGoalProps) => {
   };
 
   return (
-    <Card>
-      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+    <Card className="h-full">
+      <Collapsible open={isOpen} onOpenChange={setIsOpen} className="h-full">
         <div className="flex items-center justify-between p-6">
           <CardTitle>Set Weight Goal</CardTitle>
           <CollapsibleTrigger asChild>

@@ -72,10 +72,10 @@ const BMICalculator = ({ onBMICalculated, onMetricsUpdate }: BMICalculatorProps)
   };
 
   return (
-    <Card className="p-6 w-full">
-      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-bold text-center">BMI Calculator</h2>
+    <Card className="p-6 w-full h-full">
+      <Collapsible open={isOpen} onOpenChange={setIsOpen} className="h-full">
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-bold">BMI Calculator</h2>
           <CollapsibleTrigger asChild>
             <Button variant="ghost" size="sm">
               {isOpen ? (
@@ -86,7 +86,7 @@ const BMICalculator = ({ onBMICalculated, onMetricsUpdate }: BMICalculatorProps)
             </Button>
           </CollapsibleTrigger>
         </div>
-        <CollapsibleContent>
+        <CollapsibleContent className="pt-6">
           <form onSubmit={calculateBMI} className="space-y-4">
             <div className="space-y-2">
               <label className="block text-sm font-medium mb-1">Gender</label>
@@ -113,7 +113,7 @@ const BMICalculator = ({ onBMICalculated, onMetricsUpdate }: BMICalculatorProps)
                     <SelectTrigger>
                       <SelectValue placeholder="Feet" />
                     </SelectTrigger>
-                    <SelectContent className="bg-white">
+                    <SelectContent>
                       {Array.from({ length: 8 }, (_, i) => i + 4).map((foot) => (
                         <SelectItem key={foot} value={foot.toString()}>
                           {foot} ft
@@ -127,7 +127,7 @@ const BMICalculator = ({ onBMICalculated, onMetricsUpdate }: BMICalculatorProps)
                     <SelectTrigger>
                       <SelectValue placeholder="Inches" />
                     </SelectTrigger>
-                    <SelectContent className="bg-white">
+                    <SelectContent>
                       {Array.from({ length: 12 }, (_, i) => i).map((inch) => (
                         <SelectItem key={inch} value={inch.toString()}>
                           {inch} in
