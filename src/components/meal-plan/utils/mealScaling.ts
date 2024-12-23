@@ -4,8 +4,8 @@ export const scaleMeal = (originalMeal: Meal, targetCalories: number): Meal => {
   const scaleFactor = targetCalories / originalMeal.calories;
   let totalCalories = 0;
   
-  // Scale ingredients and track quantities
-  const quantityMap = new Map<string, { original: number; scaled: number }>();
+  // Scale ingredients and track quantities with their units
+  const quantityMap = new Map<string, { original: number; scaled: number; unit: string }>();
   
   const scaledIngredients = originalMeal.recipe.ingredients.map(ingredient => {
     const parts = ingredient.split(" ");
@@ -20,15 +20,17 @@ export const scaleMeal = (originalMeal: Meal, targetCalories: number): Meal => {
     const scaledCalories = Math.round(originalCalories * scaleFactor);
     totalCalories += scaledCalories;
     
-    const scaledAmount = Math.round(amount * scaleFactor);
+    const scaledAmount = Math.round(amount * scaleFactor * 10) / 10; // Round to 1 decimal
     
-    // Store the original and scaled amounts for use in instructions
-    quantityMap.set(`${amount} ${unit}`, {
+    // Store the original and scaled amounts with their unit for instructions
+    const key = `${amount}${unit}`;
+    quantityMap.set(key, {
       original: amount,
-      scaled: scaledAmount
+      scaled: scaledAmount,
+      unit
     });
     
-    const remainingParts = parts.slice(2).join(" ").replace(/\(\d+ cal\)/, `(${scaledCalories} cal)`);
+    const remainingParts = parts.slice(2).join(" ").replace(/\(\d+) cal\)/, `(${scaledCalories} cal)`);
     return `${scaledAmount} ${unit} ${remainingParts}`;
   });
 
@@ -36,11 +38,13 @@ export const scaleMeal = (originalMeal: Meal, targetCalories: number): Meal => {
   const scaledInstructions = originalMeal.recipe.instructions.map(instruction => {
     let scaledInstruction = instruction;
     
-    // Look for quantity patterns (e.g., "1 cup", "2 tablespoons")
-    quantityMap.forEach(({ original, scaled }, originalQty) => {
-      const regex = new RegExp(`\\b${originalQty}\\b`, 'g');
+    // Look for quantity patterns in instructions
+    quantityMap.forEach(({ original, scaled, unit }, key) => {
+      // Create a regex that matches the number with optional decimals followed by the unit
+      const numberPattern = original.toString().replace('.', '\\.');
+      const regex = new RegExp(`\\b${numberPattern}\\s*${unit}\\b`, 'g');
+      
       if (regex.test(instruction)) {
-        const [amount, unit] = originalQty.split(" ");
         scaledInstruction = scaledInstruction.replace(
           regex,
           `${scaled} ${unit}`
@@ -51,12 +55,17 @@ export const scaleMeal = (originalMeal: Meal, targetCalories: number): Meal => {
     return scaledInstruction;
   });
 
+  // Calculate scaled macros
+  const scaledProtein = Math.round(originalMeal.protein * scaleFactor);
+  const scaledCarbs = Math.round(originalMeal.carbs * scaleFactor);
+  const scaledFat = Math.round(originalMeal.fat * scaleFactor);
+
   return {
     ...originalMeal,
     calories: Math.round(totalCalories),
-    protein: Math.round(originalMeal.protein * scaleFactor),
-    carbs: Math.round(originalMeal.carbs * scaleFactor),
-    fat: Math.round(originalMeal.fat * scaleFactor),
+    protein: scaledProtein,
+    carbs: scaledCarbs,
+    fat: scaledFat,
     recipe: {
       ...originalMeal.recipe,
       ingredients: scaledIngredients,
