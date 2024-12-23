@@ -188,7 +188,7 @@ const CalorieCalculator = ({
           <div className="flex justify-end">
             <Button 
               onClick={saveActivityLevel}
-              className="bg-primary hover:bg-primary/90"
+              className="bg-gradient-to-r from-blue-950/90 to-green-950/90 hover:from-blue-950 hover:to-green-950"
             >
               Save Activity Level
             </Button>
