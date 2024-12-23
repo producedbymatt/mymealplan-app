@@ -57,7 +57,7 @@ const BMICard = ({
           <p className={`text-sm ${bmiCategory.color} font-semibold`}>
             Category: {getBMICategory(bmi, gender).category}
           </p>
-          <p className="text-xs text-muted-foreground mt-1">
+          <p className="text-xs text-white mt-1">
             Based on current weight: {mostRecentWeight} lbs, height: {heightFeet}'{heightInches}"
           </p>
         </div>
