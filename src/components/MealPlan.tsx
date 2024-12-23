@@ -74,18 +74,18 @@ const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: Me
 
   if (favoritesLoading) {
     return (
-      <Card className="p-6 w-full max-w-2xl mx-auto">
+      <Card className="p-6 w-full max-w-2xl mx-auto bg-background">
         <div>Loading favorites...</div>
       </Card>
     );
   }
 
   return (
-    <Card className="p-6 w-full max-w-2xl mx-auto">
+    <Card className="p-6 w-full max-w-2xl mx-auto bg-background">
       <div className="flex justify-between items-center mb-4">
         <div>
           <h2 className="text-2xl font-bold">Today's Meal Plan</h2>
-          <p className="text-gray-600">
+          <p className="text-muted-foreground">
             {showFavoritesOnly ? 'Your favorite meals' : 'Three balanced meals throughout the day'}
           </p>
         </div>
