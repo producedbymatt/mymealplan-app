@@ -13,23 +13,43 @@ serve(async (req) => {
   }
 
   try {
-    const { message, userMetrics, messageHistory } = await req.json()
+    console.log('Initializing Supabase client...');
+    const supabaseUrl = Deno.env.get('SUPABASE_URL');
+    const supabaseKey = Deno.env.get('SUPABASE_ANON_KEY');
 
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? ''
-    )
+    if (!supabaseUrl || !supabaseKey) {
+      console.error('Missing Supabase configuration');
+      throw new Error('Missing Supabase configuration');
+    }
 
+    const supabaseClient = createClient(supabaseUrl, supabaseKey);
+    console.log('Supabase client initialized');
+
+    const { message, userMetrics, messageHistory } = await req.json();
+
+    const openaiKey = Deno.env.get('OPENAI_API_KEY');
+    if (!openaiKey) {
+      console.error('OpenAI API key not found');
+      throw new Error('OpenAI API key not found in environment variables');
+    }
+
+    console.log('Initializing OpenAI...');
     const openai = new OpenAIApi(
       new Configuration({
-        apiKey: Deno.env.get('OPENAI_API_KEY'),
+        apiKey: openaiKey,
       })
-    )
+    );
 
     // Fetch all recipes from the database
-    const { data: recipes } = await supabaseClient
+    console.log('Fetching recipes...');
+    const { data: recipes, error: recipesError } = await supabaseClient
       .from('recipes')
-      .select('*')
+      .select('*');
+
+    if (recipesError) {
+      console.error('Error fetching recipes:', recipesError);
+      throw recipesError;
+    }
 
     // Prepare the system message with context
     const systemMessage = {
@@ -54,15 +74,16 @@ serve(async (req) => {
       { role: 'user', content: message },
     ]
 
-    // Get response from OpenAI
+    console.log('Sending request to OpenAI...');
     const completion = await openai.createChatCompletion({
       model: 'gpt-4',
       messages,
       temperature: 0.7,
       max_tokens: 500,
-    })
+    });
 
-    const aiResponse = completion.data.choices[0].message?.content || 'Sorry, I could not process your request.'
+    const aiResponse = completion.data.choices[0].message?.content || 'Sorry, I could not process your request.';
+    console.log('Received response from OpenAI');
 
     return new Response(
       JSON.stringify({ message: aiResponse }),
@@ -71,9 +92,12 @@ serve(async (req) => {
       },
     )
   } catch (error) {
-    console.error(error)
+    console.error('Error in chat-health-coach function:', error);
     return new Response(
-      JSON.stringify({ error: 'There was an error processing your request' }),
+      JSON.stringify({ 
+        error: 'There was an error processing your request',
+        details: error.message 
+      }),
       {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
