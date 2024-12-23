@@ -26,6 +26,7 @@ interface MealsTableProps {
 }
 
 const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
+  // Group meals by date
   const groupedMeals = mealLogs.reduce((groups: { [key: string]: MealLog[] }, meal) => {
     const date = format(new Date(meal.created_at), "yyyy-MM-dd");
     if (!groups[date]) {
@@ -84,7 +85,7 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
           <AccordionItem key={date} value={date}>
             {dateIndex > 0 && <Separator className="my-2" />}
             <div className="w-full bg-gradient-to-r from-blue-950/90 to-green-950/90 text-white rounded-lg">
-              <AccordionTrigger className="w-full px-4 py-4 [&>svg]:hidden">
+              <AccordionTrigger className="w-full px-4 py-4 [&[data-state=open]>div>svg]:rotate-180 [&>svg]:hidden">
                 <div className="flex justify-between items-center w-full">
                   <h3 className="text-lg font-semibold">
                     {format(new Date(date), "EEEE, MMMM do")}
@@ -93,13 +94,13 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
                     <span className="text-lg font-semibold">
                       Total: {getDailyTotal(groupedMeals[date])} calories
                     </span>
-                    <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200 [&[data-state=open]]:rotate-180" />
+                    <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
                   </div>
                 </div>
               </AccordionTrigger>
             </div>
             
-            <AccordionContent className="px-4 pt-2 text-white bg-gradient-to-r from-blue-950/90 to-green-950/90 rounded-b-lg">
+            <AccordionContent className="px-4 pt-2">
               <div className="rounded-lg overflow-hidden mt-2">
                 <Table>
                   <TableBody>
