@@ -1,5 +1,5 @@
 import React from "react";
-import { format } from "date-fns";
+import { format, isToday } from "date-fns";
 import { Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,6 +11,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { MealLog } from "@/hooks/useMealLogs";
 
 interface MealsTableProps {
@@ -38,6 +44,9 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
     return meals.reduce((total, meal) => total + meal.calories, 0);
   };
 
+  // Find today's date in yyyy-MM-dd format for default expanded section
+  const today = format(new Date(), "yyyy-MM-dd");
+
   return (
     <div className="bg-background rounded-lg shadow">
       <Table>
@@ -50,79 +59,73 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
             <TableHead className="w-1/6 text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody>
-          {sortedDates.map((date, dateIndex) => (
-            <React.Fragment key={date}>
-              {dateIndex > 0 && (
-                <TableRow>
-                  <TableCell colSpan={5} className="p-0">
-                    <Separator className="my-2" />
-                  </TableCell>
-                </TableRow>
-              )}
-              <TableRow className="bg-gradient-to-r from-blue-950/90 to-green-950/90 text-white hover:from-blue-950/90 hover:to-green-950/90 rounded-lg">
-                <TableCell colSpan={5} className="pb-2 pt-4 rounded-lg">
-                  <div className="flex justify-between items-center">
-                    <h3 className="text-lg font-semibold">
-                      {format(new Date(date), "EEEE, MMMM do")}
-                    </h3>
-                    <span className="text-lg font-semibold">
-                      Total: {getDailyTotal(groupedMeals[date])} calories
-                    </span>
-                  </div>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell colSpan={5} className="p-0">
-                  <div className="border-2 border-foreground rounded-lg overflow-hidden">
-                    <Table>
-                      <TableBody>
-                        {groupedMeals[date].map((log) => (
-                          <TableRow 
-                            key={log.id} 
-                            className="bg-background hover:bg-[#0EA5E9] hover:text-white transition-colors"
-                          >
-                            <TableCell className="w-1/4">{log.meal_name}</TableCell>
-                            <TableCell className="w-1/6">{log.calories}</TableCell>
-                            <TableCell className="w-1/6">
-                              {format(new Date(log.created_at), "h:mm a")}
-                            </TableCell>
-                            <TableCell className="w-1/4">
-                              {format(new Date(log.created_at), "MMM d, yyyy")}
-                            </TableCell>
-                            <TableCell className="w-1/6 text-right">
-                              <div className="flex justify-end gap-2">
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  onClick={() => onEdit(log)}
-                                >
-                                  <Pencil className="h-4 w-4" />
-                                </Button>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  onClick={() => {
-                                    if (window.confirm("Are you sure you want to delete this meal?")) {
-                                      onDelete(log.id);
-                                    }
-                                  }}
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              </div>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
-                </TableCell>
-              </TableRow>
-            </React.Fragment>
-          ))}
-        </TableBody>
       </Table>
+      
+      <Accordion type="single" defaultValue={today} collapsible>
+        {sortedDates.map((date, dateIndex) => (
+          <AccordionItem key={date} value={date}>
+            {dateIndex > 0 && <Separator className="my-2" />}
+            <AccordionTrigger className="w-full">
+              <div className="w-full bg-gradient-to-r from-blue-950/90 to-green-950/90 text-white rounded-lg">
+                <div className="flex justify-between items-center p-4">
+                  <h3 className="text-lg font-semibold">
+                    {format(new Date(date), "EEEE, MMMM do")}
+                  </h3>
+                  <span className="text-lg font-semibold">
+                    Total: {getDailyTotal(groupedMeals[date])} calories
+                  </span>
+                </div>
+              </div>
+            </AccordionTrigger>
+            
+            <AccordionContent>
+              <div className="border-2 border-foreground rounded-lg overflow-hidden mt-2">
+                <Table>
+                  <TableBody>
+                    {groupedMeals[date].map((log) => (
+                      <TableRow 
+                        key={log.id} 
+                        className="bg-background hover:bg-[#0EA5E9] hover:text-white transition-colors"
+                      >
+                        <TableCell className="w-1/4">{log.meal_name}</TableCell>
+                        <TableCell className="w-1/6">{log.calories}</TableCell>
+                        <TableCell className="w-1/6">
+                          {format(new Date(log.created_at), "h:mm a")}
+                        </TableCell>
+                        <TableCell className="w-1/4">
+                          {format(new Date(log.created_at), "MMM d, yyyy")}
+                        </TableCell>
+                        <TableCell className="w-1/6 text-right">
+                          <div className="flex justify-end gap-2">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => onEdit(log)}
+                            >
+                              <Pencil className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => {
+                                if (window.confirm("Are you sure you want to delete this meal?")) {
+                                  onDelete(log.id);
+                                }
+                              }}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        ))}
+      </Accordion>
     </div>
   );
 };
