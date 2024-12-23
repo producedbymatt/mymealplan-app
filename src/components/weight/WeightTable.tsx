@@ -51,7 +51,7 @@ const WeightTable = ({ entries, showMore, onToggleShowMore, onEdit, onDelete }: 
     <div className="mt-4">
       <Table>
         <TableHeader>
-          <TableRow>
+          <TableRow className="hover:bg-transparent">
             <TableHead>Date</TableHead>
             <TableHead>Time</TableHead>
             <TableHead>Weight (lbs)</TableHead>
