@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Message } from './types';
 import TypingIndicator from './TypingIndicator';
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { MealForm } from "@/components/MealForm";
+import { extractMealInfo } from './utils/chatUtils';
 
 interface MessageDisplayProps {
   messages: Message[];
@@ -10,6 +14,17 @@ interface MessageDisplayProps {
 }
 
 const MessageDisplay = ({ messages, isLoading, messagesEndRef }: MessageDisplayProps) => {
+  const [showMealForm, setShowMealForm] = useState(false);
+  const [mealToLog, setMealToLog] = useState<{ meal_name: string; calories: number } | null>(null);
+
+  const handleLogMeal = (message: string) => {
+    const mealInfo = extractMealInfo(message);
+    if (mealInfo) {
+      setMealToLog(mealInfo);
+      setShowMealForm(true);
+    }
+  };
+
   return (
     <div className="flex-1 overflow-y-auto p-4 space-y-4">
       {messages.map((message, index) => (
@@ -39,6 +54,26 @@ const MessageDisplay = ({ messages, isLoading, messagesEndRef }: MessageDisplayP
             >
               {message.content}
             </ReactMarkdown>
+            {message.role === 'assistant' && extractMealInfo(message.content) && (
+              <div className="mt-4 flex gap-2">
+                <Button
+                  variant="default"
+                  size="sm"
+                  onClick={() => handleLogMeal(message.content)}
+                  className="bg-gradient-to-r from-blue-950/90 to-green-950/90 hover:from-blue-950 hover:to-green-950"
+                >
+                  Log this meal
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {}}
+                  className="hover:bg-[#0EA5E9] hover:text-white"
+                >
+                  No, thanks
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       ))}
@@ -48,6 +83,35 @@ const MessageDisplay = ({ messages, isLoading, messagesEndRef }: MessageDisplayP
         </div>
       )}
       <div ref={messagesEndRef} />
+
+      <Dialog open={showMealForm} onOpenChange={setShowMealForm}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Add Meal to Log</DialogTitle>
+          </DialogHeader>
+          {mealToLog && (
+            <MealForm
+              initialMeal={{
+                id: '',
+                meal_name: mealToLog.meal_name,
+                calories: mealToLog.calories,
+                user_id: '',
+                created_at: new Date().toISOString(),
+              }}
+              onSubmit={async (mealData) => {
+                console.log('Adding meal to log:', mealData);
+                setShowMealForm(false);
+                setMealToLog(null);
+              }}
+              onCancel={() => {
+                setShowMealForm(false);
+                setMealToLog(null);
+              }}
+              submitButtonText="Log Meal"
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
