@@ -16,7 +16,8 @@ const MessageDisplay = ({ messages, isLoading, messagesEndRef, onLogMeal }: Mess
   const renderMessage = (message: Message) => {
     const mealInfo = message.role === 'assistant' ? extractMealInfo(message.content) : null;
     const shouldShowLogButtons = message.role === 'assistant' && 
-      message.content.toLowerCase().includes('would you like to log this meal?');
+      (message.content.toLowerCase().includes('would you like to log this') || 
+       message.content.toLowerCase().includes('calories'));
 
     console.log('Message content:', message.content);
     console.log('Should show log buttons:', shouldShowLogButtons);
@@ -35,10 +36,13 @@ const MessageDisplay = ({ messages, isLoading, messagesEndRef, onLogMeal }: Mess
             {message.content}
           </ReactMarkdown>
           
-          {shouldShowLogButtons && mealInfo && (
+          {shouldShowLogButtons && (
             <div className="mt-4 flex gap-2">
               <Button
-                onClick={() => onLogMeal(mealInfo.meal_name, mealInfo.calories)}
+                onClick={() => onLogMeal(
+                  mealInfo?.meal_name || "Unknown Food Item",
+                  mealInfo?.calories || 0
+                )}
                 variant="secondary"
                 className="bg-white text-blue-600 hover:bg-blue-50"
               >

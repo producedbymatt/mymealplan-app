@@ -5,21 +5,23 @@ export const extractMealInfo = (content: string) => {
   const mealNameMatch = content.match(/'([^']+)'/);
   if (!mealNameMatch) {
     console.log('No meal name found between single quotes');
-    return null;
   }
 
   // Look for calories number with more flexible pattern
   const caloriesMatch = content.match(/contains approximately (\d+) calories/i);
   if (!caloriesMatch) {
     console.log('No calories found');
-    return null;
   }
 
-  const mealInfo = {
-    meal_name: mealNameMatch[1].trim(),
-    calories: parseInt(caloriesMatch[1])
-  };
+  // If we have either calories or a meal name, return what we can
+  if (mealNameMatch || caloriesMatch) {
+    const mealInfo = {
+      meal_name: mealNameMatch ? mealNameMatch[1].trim() : "Unknown Food Item",
+      calories: caloriesMatch ? parseInt(caloriesMatch[1]) : 0
+    };
+    console.log('Extracted meal info:', mealInfo);
+    return mealInfo;
+  }
 
-  console.log('Extracted meal info:', mealInfo);
-  return mealInfo;
+  return null;
 };
