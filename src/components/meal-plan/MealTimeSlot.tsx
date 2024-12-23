@@ -29,7 +29,7 @@ const MealTimeSlot = ({ time, options, onRefresh, isLast, showFavoritesOnly }: M
           variant="outline"
           size="sm"
           onClick={onRefresh}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 hover:text-white hover:bg-blue-900 hover:border hover:border-white"
         >
           <RefreshCw className="h-4 w-4" />
           Refresh Options
