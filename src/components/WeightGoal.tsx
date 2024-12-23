@@ -147,7 +147,7 @@ const WeightGoal = ({ onGoalSet }: WeightGoalProps) => {
         <div className="flex items-center justify-between p-6">
           <CardTitle>Set Weight Goal</CardTitle>
           <CollapsibleTrigger asChild>
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="sm" className="hover:bg-[#0EA5E9] hover:text-white">
               {isOpen ? (
                 <ChevronUp className="h-4 w-4" />
               ) : (
