@@ -10,6 +10,7 @@ import {
 import { MealForm } from "@/components/MealForm";
 import { Meal } from "./types";
 import { useState } from "react";
+import { MealLog } from "@/hooks/useMealLogs";
 
 interface RecipeDetailsProps {
   meal: Meal;
@@ -20,6 +21,15 @@ const RecipeDetails = ({ meal }: RecipeDetailsProps) => {
 
   const handleAddToLog = () => {
     setShowMealForm(true);
+  };
+
+  // Create a partial MealLog object for the form
+  const initialMealLog: Partial<MealLog> = {
+    id: '', // Empty string as it's a new entry
+    meal_name: meal.name,
+    calories: meal.calories,
+    user_id: '', // This will be set by the form component
+    created_at: new Date().toISOString(),
   };
 
   return (
@@ -61,10 +71,7 @@ const RecipeDetails = ({ meal }: RecipeDetailsProps) => {
             <DialogTitle>Add Meal to Log</DialogTitle>
           </DialogHeader>
           <MealForm
-            initialMeal={{
-              meal_name: meal.name,
-              calories: meal.calories,
-            }}
+            initialMeal={initialMealLog as MealLog}
             onSubmit={(mealData) => {
               console.log('Adding meal to log:', mealData);
               setShowMealForm(false);
