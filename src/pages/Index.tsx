@@ -40,6 +40,7 @@ const Index = () => {
   const loadUserMetrics = async (userId: string) => {
     try {
       console.log('Loading user metrics for user:', userId);
+      
       const { data, error } = await supabase
         .from('user_metrics')
         .select('*')
@@ -50,6 +51,7 @@ const Index = () => {
 
       if (error) {
         console.error('Error loading user metrics:', error);
+        toast.error("Failed to load your metrics");
         return;
       }
 
@@ -70,6 +72,7 @@ const Index = () => {
       }
     } catch (err) {
       console.error('Exception while loading metrics:', err);
+      toast.error("An error occurred while loading your metrics");
     }
   };
 
