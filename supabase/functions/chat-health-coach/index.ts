@@ -17,6 +17,21 @@ serve(async (req) => {
     console.log('Request method:', req.method);
     console.log('Request headers:', Object.fromEntries(req.headers.entries()));
 
+    console.log('Initializing Supabase client...');
+    const supabaseUrl = Deno.env.get('SUPABASE_URL');
+    const supabaseKey = Deno.env.get('SUPABASE_ANON_KEY');
+
+    if (!supabaseUrl || !supabaseKey) {
+      console.error('Missing Supabase configuration');
+      throw new Error('Missing Supabase configuration');
+    }
+
+    console.log('Supabase URL found:', !!supabaseUrl);
+    console.log('Supabase Key found:', !!supabaseKey);
+
+    const supabaseClient = createClient(supabaseUrl, supabaseKey);
+    console.log('Supabase client initialized');
+
     const openaiKey = Deno.env.get('OPENAI_API_KEY');
     console.log('OpenAI API key found:', !!openaiKey);
     
@@ -25,62 +40,123 @@ serve(async (req) => {
       throw new Error('OpenAI API key not found in environment variables');
     }
 
-    const { message } = await req.json();
-    console.log('Received message:', message);
+    const { message, messageHistory } = await req.json();
+    console.log('Request payload received:', { 
+      messageReceived: !!message,
+      historyLength: messageHistory?.length 
+    });
 
     console.log('Initializing OpenAI...');
     const openai = new OpenAI({
       apiKey: openaiKey,
     });
 
-    // Create a thread if it doesn't exist
-    console.log('Creating thread...');
-    const thread = await openai.beta.threads.create();
-    console.log('Thread created:', thread.id);
+    console.log('Fetching recipes...');
+    const { data: recipes, error: recipesError } = await supabaseClient
+      .from('recipes')
+      .select('*');
 
-    // Add the user's message to the thread
-    console.log('Adding message to thread...');
-    await openai.beta.threads.messages.create(thread.id, {
-      role: "user",
-      content: message
-    });
-
-    // Run the assistant
-    console.log('Running assistant...');
-    const run = await openai.beta.threads.runs.create(thread.id, {
-      assistant_id: "asst_pYVLKcsL2tJ8FWTDjmCqjio8",
-      instructions: "You are a helpful health coach assistant. Provide clear, concise advice about nutrition, exercise, and general health topics."
-    });
-
-    // Poll for the run completion
-    let runStatus = await openai.beta.threads.runs.retrieve(thread.id, run.id);
-    console.log('Initial run status:', runStatus.status);
-
-    while (runStatus.status === "queued" || runStatus.status === "in_progress") {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      runStatus = await openai.beta.threads.runs.retrieve(thread.id, run.id);
-      console.log('Updated run status:', runStatus.status);
+    if (recipesError) {
+      console.error('Error fetching recipes:', recipesError);
+      throw recipesError;
     }
 
-    if (runStatus.status === "completed") {
-      // Get the assistant's response
-      console.log('Retrieving messages...');
-      const messages = await openai.beta.threads.messages.list(thread.id);
-      const lastMessage = messages.data[0];
-      const assistantResponse = lastMessage.content[0].text.value;
+    console.log('Recipes fetched successfully:', recipes?.length);
 
-      console.log('Assistant response:', assistantResponse);
+    // Format recipes for better AI understanding and consistent display
+    const formattedRecipes = recipes.map(recipe => ({
+      name: recipe.name,
+      type: recipe.meal_type,
+      category: recipe.category,
+      nutritionalInfo: {
+        calories: recipe.calories,
+        protein: recipe.protein,
+        carbs: recipe.carbs,
+        fat: recipe.fat
+      },
+      timing: {
+        prepTime: recipe.prep_time,
+        cookTime: recipe.cook_time
+      },
+      ingredients: recipe.ingredients,
+      instructions: recipe.instructions,
+      difficultyLevel: recipe.difficulty_level
+    }));
 
-      return new Response(
-        JSON.stringify({ message: assistantResponse }),
-        {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        },
-      );
-    } else {
-      throw new Error(`Run ended with status: ${runStatus.status}`);
-    }
+    const systemMessage = {
+      role: 'system',
+      content: `You are a helpful AI health coach with access to our recipe database. When suggesting recipes, always format them consistently using this template:
 
+**[Recipe Name]**
+
+*Nutritional Information:*
+• Calories: [calories] cal
+• Protein: [protein]g
+• Carbs: [carbs]g
+• Fat: [fat]g
+
+*Timing:*
+• Prep Time: [prep_time]
+• Cook Time: [cook_time]
+
+*Ingredients:*
+• [ingredient 1]
+• [ingredient 2]
+• [ingredient 3]
+• [ingredient 4]
+
+*Instructions:*
+1. [instruction 1]
+2. [instruction 2]
+3. [instruction 3]
+4. [instruction 4]
+
+Available recipes: ${JSON.stringify(formattedRecipes, null, 2)}
+
+You can help users with:
+1. Recipe suggestions based on meal type, category, or nutritional requirements
+2. Detailed recipe instructions and ingredients
+3. Nutritional information for specific recipes
+4. General health and nutrition advice
+5. Diet-related questions
+
+When suggesting recipes:
+• Consider the user's preferences and requirements
+• Include complete nutritional information
+• Provide full preparation instructions when asked
+• Suggest alternatives or modifications when appropriate
+
+Always be encouraging and supportive while keeping health and nutrition in mind.
+
+IMPORTANT: When formatting instructions, always use numbered lists with each step on its own line, starting with "1. " for the first step, "2. " for the second step, etc. Never combine steps into a single line.`
+    };
+
+    const messages = [
+      systemMessage,
+      ...messageHistory.map((msg: any) => ({
+        role: msg.role,
+        content: msg.content,
+      })),
+      { role: 'user', content: message },
+    ];
+
+    console.log('Sending request to OpenAI...');
+    const completion = await openai.chat.completions.create({
+      model: 'gpt-4o-mini',
+      messages,
+      temperature: 0.7,
+      max_tokens: 500,
+    });
+
+    console.log('Received response from OpenAI');
+    const aiResponse = completion.choices[0].message?.content || 'Sorry, I could not process your request.';
+
+    return new Response(
+      JSON.stringify({ message: aiResponse }),
+      {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      },
+    );
   } catch (error) {
     console.error('Error in chat-health-coach function:', error);
     return new Response(
