@@ -49,6 +49,9 @@ serve(async (req) => {
     console.log('Initializing OpenAI...');
     const openai = new OpenAI({
       apiKey: openaiKey,
+      defaultHeaders: {
+        'OpenAI-Beta': 'assistants=v2'
+      }
     });
 
     console.log('Fetching recipes...');
