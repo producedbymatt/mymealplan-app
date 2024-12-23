@@ -68,8 +68,8 @@ const CalorieResults = ({
         </p>
       </div>
 
-      <div className="bg-muted p-4 rounded-lg">
-        <p className="text-sm text-center">
+      <div className="bg-gradient-to-r from-blue-950/90 to-green-950/90 p-4 rounded-lg">
+        <p className="text-sm text-center text-white">
           To reach your goal weight of {targetWeight} lbs in {targetDays} days, you should aim to change approximately{" "}
           <span className="font-semibold">{weeklyChange.toFixed(1)} lbs per week</span>
         </p>
