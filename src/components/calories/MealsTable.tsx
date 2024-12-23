@@ -84,12 +84,12 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
         {sortedDates.map((date, dateIndex) => (
           <AccordionItem key={date} value={date}>
             {dateIndex > 0 && <Separator className="my-2" />}
-            <AccordionTrigger className="w-full">
-              <div className="w-full bg-gradient-to-r from-blue-950/90 to-green-950/90 text-white rounded-lg">
-                <div className="flex justify-between items-center p-4">
-                  <h3 className="text-lg font-semibold">
-                    {format(new Date(date), "EEEE, MMMM do")}
-                  </h3>
+            <AccordionTrigger className="w-full px-0">
+              <div className="w-full bg-gradient-to-r from-blue-950/90 to-green-950/90 text-white rounded-lg flex justify-between items-center p-4">
+                <h3 className="text-lg font-semibold">
+                  {format(new Date(date), "EEEE, MMMM do")}
+                </h3>
+                <div className="flex items-center gap-4">
                   <span className="text-lg font-semibold">
                     Total: {getDailyTotal(groupedMeals[date])} calories
                   </span>
