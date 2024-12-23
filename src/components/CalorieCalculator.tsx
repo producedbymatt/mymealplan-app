@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/lib/supabase";
-import { toast } from "sonner";
 import { ACTIVITY_LEVELS, ActivityLevelKey } from "./calories/constants";
 import { 
   calculateBMR, 
@@ -12,6 +10,7 @@ import {
 } from "./calories/utils";
 import ActivityLevelSelector from "./calories/ActivityLevelSelector";
 import CalorieResults from "./calories/CalorieResults";
+import { useActivityLevel } from "./calories/hooks/useActivityLevel";
 
 interface CalorieCalculatorProps {
   height: number;
@@ -30,125 +29,22 @@ const CalorieCalculator = ({
   onCaloriesCalculated,
   onSaveMetrics 
 }: CalorieCalculatorProps) => {
-  const [activityLevel, setActivityLevel] = useState<number>(ACTIVITY_LEVELS.sedentary.value);
-  const [selectedActivityKey, setSelectedActivityKey] = useState<ActivityLevelKey>("sedentary");
-  const [isLoading, setIsLoading] = useState(true);
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-  const [savedCalories, setSavedCalories] = useState<number | null>(null);
-
-  useEffect(() => {
-    const initializeActivityLevel = async () => {
-      try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) {
-          console.log('No user found, using default activity level');
-          setIsLoading(false);
-          return;
-        }
-
-        console.log('Loading activity level and calories for user:', user.id);
-        const { data, error } = await supabase
-          .from('user_metrics')
-          .select('activity_level, recommended_calories')
-          .eq('user_id', user.id)
-          .order('created_at', { ascending: false })
-          .limit(1)
-          .single();
-
-        if (error && error.code !== 'PGRST116') {
-          console.error('Error loading activity level:', error);
-          setIsLoading(false);
-          return;
-        }
-
-        console.log('Retrieved data from database:', data);
-
-        if (data?.activity_level && ACTIVITY_LEVELS[data.activity_level as ActivityLevelKey]) {
-          const storedLevel = data.activity_level as ActivityLevelKey;
-          console.log('Setting activity level to:', storedLevel);
-          setSelectedActivityKey(storedLevel);
-          setActivityLevel(ACTIVITY_LEVELS[storedLevel].value);
-          setSavedCalories(data.recommended_calories);
-        } else {
-          console.log('No valid activity level found, using default');
-          setSelectedActivityKey("sedentary");
-          setActivityLevel(ACTIVITY_LEVELS.sedentary.value);
-        }
-      } catch (err) {
-        console.error('Error in initializeActivityLevel:', err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    initializeActivityLevel();
-  }, []);
-
-  const saveActivityLevel = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        toast.error("Please log in to save your activity level");
-        return;
-      }
-
-      console.log('Attempting to save activity level:', selectedActivityKey);
-
-      const calculatedCalories = calculateDailyCalories(
-        calculateBMR(currentWeight, height),
-        activityLevel,
-        targetWeight,
-        currentWeight,
-        targetDays
-      );
-
-      const metricsToUpdate = {
-        user_id: user.id,
-        activity_level: selectedActivityKey,
-        height,
-        current_weight: currentWeight,
-        target_weight: targetWeight,
-        target_days: targetDays,
-        recommended_calories: calculatedCalories,
-        updated_at: new Date().toISOString()
-      };
-
-      console.log('Saving metrics:', metricsToUpdate);
-
-      const { error: upsertError } = await supabase
-        .from('user_metrics')
-        .upsert(metricsToUpdate);
-
-      if (upsertError) {
-        console.error('Error saving activity level:', upsertError);
-        toast.error("Failed to save activity level");
-        return;
-      }
-
-      console.log('Successfully saved activity level:', selectedActivityKey);
-      console.log('Successfully saved recommended calories:', calculatedCalories);
-      setSavedCalories(calculatedCalories);
-      toast.success("Activity level updated");
-      setHasUnsavedChanges(false);
-      onSaveMetrics?.();
-    } catch (err) {
-      console.error('Error in saveActivityLevel:', err);
-      toast.error("An error occurred while saving");
-    }
-  };
-
-  const handleActivityChange = (value: ActivityLevelKey) => {
-    if (isLoading) {
-      console.log('Skipping activity change - still loading');
-      return;
-    }
-
-    console.log('Activity level changed to:', value);
-    setSelectedActivityKey(value);
-    setActivityLevel(ACTIVITY_LEVELS[value].value);
-    setHasUnsavedChanges(true);
-    setSavedCalories(null);
-  };
+  const {
+    activityLevel,
+    selectedActivityKey,
+    isLoading,
+    hasUnsavedChanges,
+    savedCalories,
+    handleActivityChange,
+    saveActivityLevel
+  } = useActivityLevel(
+    height,
+    currentWeight,
+    targetWeight,
+    targetDays,
+    onCaloriesCalculated,
+    onSaveMetrics
+  );
 
   const bmr = calculateBMR(currentWeight, height);
   const dailyCalories = hasUnsavedChanges 
@@ -160,6 +56,17 @@ const CalorieCalculator = ({
   const weeklyChange = Math.abs((weightDifference / targetDays) * 7);
   const { minProtein, maxProtein } = calculateProteinNeeds(targetWeight, activityLevel);
   const weightChangeWarning = getWeightChangeWarning(weeklyChange, isGainingWeight);
+
+  const handleSave = async () => {
+    const calculatedCalories = calculateDailyCalories(
+      bmr,
+      activityLevel,
+      targetWeight,
+      currentWeight,
+      targetDays
+    );
+    await saveActivityLevel(calculatedCalories);
+  };
 
   useEffect(() => {
     onCaloriesCalculated?.(dailyCalories);
@@ -182,7 +89,7 @@ const CalorieCalculator = ({
         {hasUnsavedChanges && (
           <div className="flex justify-end">
             <Button 
-              onClick={saveActivityLevel}
+              onClick={handleSave}
               className="bg-gradient-to-r from-blue-950/90 to-green-950/90 hover:from-blue-950 hover:to-green-950"
             >
               Save Activity Level
