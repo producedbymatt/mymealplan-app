@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Heart } from "lucide-react";
 import {
@@ -10,6 +10,8 @@ import {
 import { Meal } from "./types";
 import { useFavoriteMeal } from "@/hooks/useFavoriteMeal";
 import RecipeDetails from "./RecipeDetails";
+import { Input } from "@/components/ui/input";
+import { scaleMeal } from "./utils/mealScaling";
 
 interface MealOptionProps {
   meal: Meal;
@@ -19,6 +21,7 @@ interface MealOptionProps {
 
 const MealOption = ({ meal, showFavoritesOnly, onFavoriteChange }: MealOptionProps) => {
   const { isFavorite, isLoading, toggleFavorite: toggleFavoriteState } = useFavoriteMeal(meal);
+  const [portions, setPortions] = useState(1);
 
   const toggleFavorite = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -28,9 +31,18 @@ const MealOption = ({ meal, showFavoritesOnly, onFavoriteChange }: MealOptionPro
     }
   };
 
+  const handlePortionsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseFloat(e.target.value);
+    if (value > 0) {
+      setPortions(value);
+    }
+  };
+
   if (showFavoritesOnly && !isFavorite) {
     return null;
   }
+
+  const scaledMeal = portions === 1 ? meal : scaleMeal(meal, meal.calories * portions);
 
   return (
     <Accordion type="single" collapsible>
@@ -53,19 +65,33 @@ const MealOption = ({ meal, showFavoritesOnly, onFavoriteChange }: MealOptionPro
                   />
                 </div>
               </div>
-              <Badge variant="secondary" className="whitespace-nowrap flex-shrink-0 bg-white/10 text-white hover:bg-white/20">
-                {meal.calories} cal
-              </Badge>
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-gray-200">Portions:</span>
+                  <Input
+                    type="number"
+                    min="0.25"
+                    step="0.25"
+                    value={portions}
+                    onChange={handlePortionsChange}
+                    onClick={(e) => e.stopPropagation()}
+                    className="w-20 h-8 text-sm bg-white/10 border-white/20 text-white"
+                  />
+                </div>
+                <Badge variant="secondary" className="whitespace-nowrap flex-shrink-0 bg-white/10 text-white hover:bg-white/20">
+                  {scaledMeal.calories} cal
+                </Badge>
+              </div>
             </div>
             <div className="flex gap-4 text-sm text-gray-200">
-              <span>Protein: {meal.protein}g</span>
-              <span>Carbs: {meal.carbs}g</span>
-              <span>Fat: {meal.fat}g</span>
+              <span>Protein: {scaledMeal.protein}g</span>
+              <span>Carbs: {scaledMeal.carbs}g</span>
+              <span>Fat: {scaledMeal.fat}g</span>
             </div>
           </div>
         </AccordionTrigger>
         <AccordionContent className="px-4 pt-2 text-white bg-gradient-to-r from-blue-950/90 to-green-950/90 rounded-b-lg">
-          <RecipeDetails meal={meal} />
+          <RecipeDetails meal={scaledMeal} />
         </AccordionContent>
       </AccordionItem>
     </Accordion>
