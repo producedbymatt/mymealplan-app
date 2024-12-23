@@ -54,7 +54,7 @@ const UserMetricsCard = ({ metrics, onMetricsUpdate }: UserMetricsCardProps) => 
         <Button
           onClick={() => setIsEditing(true)}
           variant="outline"
-          className="hover:bg-accent hover:text-accent-foreground"
+          className="bg-gradient-to-r from-blue-950/90 to-green-950/90 hover:from-blue-950 hover:to-green-950 text-white"
         >
           Edit
         </Button>
