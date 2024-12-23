@@ -112,10 +112,10 @@ const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
           style={{ 
             left: `${currentBMIPercentage}%`,
             marginTop: "-2px",
-            background: "linear-gradient(to bottom, #63B3ED, #4299E1)"
+            background: "rgb(30, 58, 138)" // Using the dark blue color
           }}
         >
-          <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-primary text-white px-2 py-0.5 rounded text-xs font-medium whitespace-nowrap shadow-sm">
+          <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-blue-900 text-white px-2 py-0.5 rounded text-xs font-medium whitespace-nowrap shadow-sm">
             Current: {bmi.toFixed(1)}
           </div>
         </div>
