@@ -29,12 +29,12 @@ const DashboardLayout = ({
   onSaveMetrics
 }: DashboardLayoutProps) => {
   return (
-    <div className="min-h-screen bg-gray-50 py-8 flex flex-col">
+    <div className="min-h-screen w-full bg-background py-8 flex flex-col">
       <div className="container mx-auto px-4 flex-grow">
-        <h1 className="text-4xl font-bold text-center mb-4">
+        <h1 className="text-4xl font-bold text-center mb-4 text-foreground">
           Your Goals, Your Meals, Your Plan.
         </h1>
-        <p className="text-lg text-gray-600 text-center mb-8 max-w-3xl mx-auto">
+        <p className="text-lg text-muted-foreground text-center mb-8 max-w-3xl mx-auto">
           Calculate your recommended daily calorie and protein intake, get a custom meal plan designed to meet your goals, and track your progress.
         </p>
 
