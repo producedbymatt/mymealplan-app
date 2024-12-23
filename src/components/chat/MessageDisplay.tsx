@@ -32,7 +32,7 @@ const MessageDisplay = ({ messages, isLoading, messagesEndRef, onLogMeal }: Mess
           {mealInfo && (
             <div className="mt-4 flex gap-2">
               <Button
-                onClick={() => onLogMeal(mealInfo.mealName, mealInfo.calories)}
+                onClick={() => onLogMeal(mealInfo.meal_name, mealInfo.calories)}
                 variant="secondary"
                 className="bg-white text-blue-600 hover:bg-blue-50"
               >
