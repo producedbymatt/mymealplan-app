@@ -105,6 +105,9 @@ const ChatWindow = () => {
                   ol: ({children}) => <ol className="m-0 ml-4 space-y-1">{children}</ol>,
                   li: ({children}) => <li className="m-0">{children}</li>,
                   strong: ({children}) => <strong className="font-bold">{children}</strong>,
+                  h1: ({children}) => <h1 className="mt-6 mb-4 text-xl font-bold">{children}</h1>,
+                  h2: ({children}) => <h2 className="mt-6 mb-3 text-lg font-bold">{children}</h2>,
+                  h3: ({children}) => <h3 className="mt-6 mb-2 text-md font-bold">{children}</h3>,
                 }}
               >
                 {message.content}
