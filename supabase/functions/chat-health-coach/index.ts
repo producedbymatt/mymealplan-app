@@ -48,7 +48,7 @@ serve(async (req) => {
     // Run the assistant
     console.log('Running assistant...');
     const run = await openai.beta.threads.runs.create(thread.id, {
-      assistant_id: "asst_abc123", // Replace with your actual assistant ID
+      assistant_id: "asst_pYVLKcsL2tJ8FWTDjmCqjio8",
       instructions: "You are a helpful health coach assistant. Provide clear, concise advice about nutrition, exercise, and general health topics."
     });
 
