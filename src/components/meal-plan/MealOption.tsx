@@ -26,7 +26,7 @@ const MealOption = ({ meal, showFavoritesOnly }: MealOptionProps) => {
   return (
     <Accordion type="single" collapsible>
       <AccordionItem value="item-1">
-        <AccordionTrigger className="p-4 bg-muted rounded-lg hover:bg-muted/80 transition-colors">
+        <AccordionTrigger className="p-4 bg-gradient-to-r from-blue-950/90 to-green-950/90 rounded-lg hover:bg-gradient-to-r hover:from-blue-900/90 hover:to-green-900/90 transition-colors text-white">
           <div className="flex-1 text-left">
             <div className="flex justify-between items-start gap-2">
               <div className="flex-1">
@@ -38,17 +38,17 @@ const MealOption = ({ meal, showFavoritesOnly }: MealOptionProps) => {
                     } ${
                       isFavorite
                         ? "fill-red-500 stroke-red-500"
-                        : "stroke-gray-400 hover:stroke-red-500"
+                        : "stroke-gray-200 hover:stroke-red-500"
                     }`}
                     onClick={toggleFavorite}
                   />
                 </div>
               </div>
-              <Badge variant="secondary" className="whitespace-nowrap flex-shrink-0">
+              <Badge variant="secondary" className="whitespace-nowrap flex-shrink-0 bg-white/10 text-white hover:bg-white/20">
                 {meal.calories} cal
               </Badge>
             </div>
-            <div className="flex gap-4 text-sm text-gray-600">
+            <div className="flex gap-4 text-sm text-gray-200">
               <span>Protein: {meal.protein}g</span>
               <span>Carbs: {meal.carbs}g</span>
               <span>Fat: {meal.fat}g</span>
