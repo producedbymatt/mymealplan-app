@@ -96,7 +96,7 @@ export const MealForm = ({ onSubmit, initialMeal, onCancel, submitButtonText }: 
                 <SelectItem 
                   key={prevMeal.id} 
                   value={prevMeal.id}
-                  className="hover:bg-[#0EA5E9] hover:text-white data-[highlighted]:bg-[#0EA5E9] data-[highlighted]:text-white"
+                  className="hover:bg-[#0EA5E9]/50 hover:text-white data-[highlighted]:bg-[#0EA5E9]/50 data-[highlighted]:text-white"
                 >
                   {prevMeal.meal_name} ({prevMeal.calories} cal)
                 </SelectItem>
