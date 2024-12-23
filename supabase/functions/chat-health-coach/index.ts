@@ -114,7 +114,6 @@ serve(async (req) => {
 Available recipes: ${JSON.stringify(formattedRecipes, null, 2)}
 
 You can help users with:
-
 1. Recipe suggestions based on meal type, category, or nutritional requirements
 2. Detailed recipe instructions and ingredients
 3. Nutritional information for specific recipes
@@ -127,7 +126,9 @@ When suggesting recipes:
 • Provide full preparation instructions when asked
 • Suggest alternatives or modifications when appropriate
 
-Always be encouraging and supportive while keeping health and nutrition in mind.`
+Always be encouraging and supportive while keeping health and nutrition in mind.
+
+IMPORTANT: When formatting instructions, always use numbered lists with each step on its own line, starting with "1. " for the first step, "2. " for the second step, etc. Never combine steps into a single line.`
     };
 
     const messages = [
