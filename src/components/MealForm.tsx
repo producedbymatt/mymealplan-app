@@ -120,7 +120,7 @@ export const MealForm = ({ onSubmit, initialMeal, onCancel }: MealFormProps) => 
         />
       </div>
       <div className="flex gap-2">
-        <Button type="submit" className="w-full">
+        <Button type="submit" className="w-full bg-gradient-to-r from-blue-950/90 to-green-950/90 hover:from-blue-950 hover:to-green-950">
           {initialMeal ? "Update Meal" : "Add Meal"}
         </Button>
         {onCancel && (
