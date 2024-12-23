@@ -89,7 +89,7 @@ const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
       onTouchEnd={endInteraction}
     >
       <Card 
-        className={`absolute -top-2 left-0 p-2 bg-white shadow-lg rounded-lg z-20 w-36 transition-opacity duration-200 ${
+        className={`absolute -top-2 left-0 p-2 bg-blue-900 shadow-lg rounded-lg z-20 w-36 transition-opacity duration-200 ${
           isInteracting ? 'opacity-100' : 'opacity-0'
         }`}
         style={{ 
@@ -98,8 +98,8 @@ const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
         }}
       >
         <div className="text-center text-sm">
-          <div className="font-semibold">BMI: {sliderValue[0].toFixed(1)}</div>
-          <div className="text-muted-foreground">{simulatedWeight} lbs</div>
+          <div className="font-semibold text-white">BMI: {sliderValue[0].toFixed(1)}</div>
+          <div className="text-white">{simulatedWeight} lbs</div>
           <div className={`text-xs font-medium ${bmiCategory.color}`}>
             {bmiCategory.category}
           </div>
