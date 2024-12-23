@@ -63,8 +63,8 @@ export const SignUpForm = ({ onSuccess, onToggleForm }: SignUpFormProps) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <h2 className="text-2xl font-bold text-center mb-6">Sign In or Sign Up for Free</h2>
-      <p className="text-gray-600 text-center mb-6">
+      <h2 className="text-2xl font-bold text-center mb-6 text-white">Sign In or Sign Up for Free</h2>
+      <p className="text-gray-300 text-center mb-6">
         Create an account to unlock all features including weight tracking, BMI calculation, and personalized meal plans.
       </p>
       
@@ -108,11 +108,15 @@ export const SignUpForm = ({ onSuccess, onToggleForm }: SignUpFormProps) => {
         )}
       </div>
 
-      <Button type="submit" className="w-full" disabled={loading || !!passwordError}>
+      <Button 
+        type="submit" 
+        className="w-full bg-gradient-to-r from-blue-950/90 to-green-950/90 hover:from-blue-950 hover:to-green-950" 
+        disabled={loading || !!passwordError}
+      >
         {loading ? "Loading..." : "Sign Up"}
       </Button>
 
-      <p className="text-center text-sm">
+      <p className="text-center text-sm text-white">
         Already have an account?{" "}
         <button
           type="button"
