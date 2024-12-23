@@ -55,8 +55,8 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
                   </TableCell>
                 </TableRow>
               )}
-              <TableRow className="bg-gradient-to-r from-blue-950/90 to-green-950/90 text-white hover:from-blue-950/90 hover:to-green-950/90">
-                <TableCell colSpan={5} className="pb-2 pt-4">
+              <TableRow className="bg-gradient-to-r from-blue-950/90 to-green-950/90 text-white hover:from-blue-950/90 hover:to-green-950/90 rounded-lg">
+                <TableCell colSpan={5} className="pb-2 pt-4 rounded-lg">
                   <h3 className="text-lg font-semibold">
                     {format(new Date(date), "EEEE, MMMM do")}
                   </h3>
