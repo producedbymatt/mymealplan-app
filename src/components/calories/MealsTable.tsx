@@ -26,7 +26,6 @@ interface MealsTableProps {
 }
 
 const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
-  // Group meals by date
   const groupedMeals = mealLogs.reduce((groups: { [key: string]: MealLog[] }, meal) => {
     const date = format(new Date(meal.created_at), "yyyy-MM-dd");
     if (!groups[date]) {
@@ -94,13 +93,13 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
                     <span className="text-lg font-semibold">
                       Total: {getDailyTotal(groupedMeals[date])} calories
                     </span>
-                    <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200 data-[state=open]:rotate-180" />
+                    <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200 [&[data-state=open]]:rotate-180" />
                   </div>
                 </div>
               </AccordionTrigger>
             </div>
             
-            <AccordionContent className="px-4 pt-2">
+            <AccordionContent className="px-4 pt-2 text-white bg-gradient-to-r from-blue-950/90 to-green-950/90 rounded-b-lg">
               <div className="rounded-lg overflow-hidden mt-2">
                 <Table>
                   <TableBody>
