@@ -66,7 +66,7 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
     <div className="bg-background rounded-lg shadow">
       <Table>
         <TableHeader>
-          <TableRow>
+          <TableRow className="hover:bg-transparent">
             <TableHead className="w-1/4">Meal Name</TableHead>
             <TableHead className="w-1/6">Calories</TableHead>
             <TableHead className="w-1/6">Time</TableHead>
