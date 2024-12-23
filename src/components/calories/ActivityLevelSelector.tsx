@@ -24,7 +24,7 @@ const ActivityLevelSelector = ({
         onValueChange={(value) => onActivityChange(value as ActivityLevelKey)}
       >
         <SelectTrigger className="w-full">
-          <SelectValue placeholder="Select your activity level" />
+          <SelectValue placeholder="Update your Activity Level" />
         </SelectTrigger>
         <SelectContent>
           {Object.entries(ACTIVITY_LEVELS).map(([key, { label }]) => (
