@@ -100,10 +100,18 @@ serve(async (req) => {
 • Cook Time: [cook_time]
 
 *Ingredients:*
-[List each ingredient on a new line with two newlines between items]
+• [ingredient 1]
+
+• [ingredient 2]
+
+• [ingredient 3]
 
 *Instructions:*
-[Number each instruction and add two newlines between steps]
+1. [instruction 1]
+
+2. [instruction 2]
+
+3. [instruction 3]
 
 Available recipes: ${JSON.stringify(formattedRecipes, null, 2)}
 
