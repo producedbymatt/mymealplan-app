@@ -75,21 +75,28 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-const Layout = ({ children }: { children: React.ReactNode }) => (
-  <div className="min-h-screen">
-    <div className="w-full bg-background">
-      <div className="container mx-auto flex flex-col items-center">
-        <img 
-          src="/lovable-uploads/67003c76-1908-4b2f-93d3-01ea4a4cf510.png" 
-          alt="MyMealPlan Logo" 
-          className="h-24 w-auto mb-4"
-        />
-        <Navigation />
+const Layout = ({ children }: { children: React.ReactNode }) => {
+  // Add dark mode by default
+  useEffect(() => {
+    document.documentElement.classList.add('dark');
+  }, []);
+
+  return (
+    <div className="min-h-screen">
+      <div className="w-full bg-background">
+        <div className="container mx-auto flex flex-col items-center">
+          <img 
+            src="/lovable-uploads/67003c76-1908-4b2f-93d3-01ea4a4cf510.png" 
+            alt="MyMealPlan Logo" 
+            className="h-24 w-auto mb-4"
+          />
+          <Navigation />
+        </div>
       </div>
+      {children}
     </div>
-    {children}
-  </div>
-);
+  );
+};
 
 const queryClient = new QueryClient();
 
