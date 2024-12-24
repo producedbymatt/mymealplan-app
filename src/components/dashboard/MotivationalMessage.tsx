@@ -1,6 +1,4 @@
 import { Card } from "@/components/ui/card";
-import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
 
 interface MotivationalMessageProps {
   currentWeight: number;
@@ -9,46 +7,15 @@ interface MotivationalMessageProps {
 }
 
 const MotivationalMessage = ({ currentWeight, targetWeight, targetDays }: MotivationalMessageProps) => {
-  const [greeting, setGreeting] = useState<string>("");
-
-  useEffect(() => {
-    const fetchGreeting = async () => {
-      try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return;
-
-        const { data, error } = await supabase.functions.invoke('generate-greeting', {
-          body: { userId: user.id }
-        });
-
-        if (error) {
-          console.error('Error fetching greeting:', error);
-          return;
-        }
-        
-        setGreeting(data.greeting);
-      } catch (error) {
-        console.error('Error in fetchGreeting:', error);
-      }
-    };
-
-    fetchGreeting();
-  }, []);
-
   if (!targetWeight || !targetDays) {
     return (
       <Card className="p-4 mb-8 relative overflow-hidden">
+        {/* Animated gradient background */}
         <div className="absolute inset-0 bg-gradient-to-r from-orange-600/90 via-yellow-500/90 to-orange-600/90 animate-gradient-x" />
-        <div className="relative z-10 space-y-4">
-          {greeting && (
-            <p className="text-center text-lg font-medium text-white">
-              {greeting}
-            </p>
-          )}
-          <p className="text-center text-lg font-medium text-white">
-            Set your weight goal and timeline to get personalized motivation and tracking! 🎯
-          </p>
-        </div>
+        {/* Content */}
+        <p className="text-center text-lg font-medium text-white relative z-10">
+          Set your weight goal and timeline to get personalized motivation and tracking! 🎯
+        </p>
       </Card>
     );
   }
@@ -85,17 +52,12 @@ const MotivationalMessage = ({ currentWeight, targetWeight, targetDays }: Motiva
 
   return (
     <Card className="p-4 mb-8 relative overflow-hidden">
+      {/* Animated gradient background */}
       <div className="absolute inset-0 bg-gradient-to-r from-orange-600/90 via-yellow-500/90 to-orange-600/90 animate-gradient-x" />
-      <div className="relative z-10 space-y-4">
-        {greeting && (
-          <p className="text-center text-lg font-medium text-white">
-            {greeting}
-          </p>
-        )}
-        <p className="text-center text-lg font-medium text-white">
-          {getMessage()}
-        </p>
-      </div>
+      {/* Content */}
+      <p className="text-center text-lg font-medium text-white relative z-10">
+        {getMessage()}
+      </p>
     </Card>
   );
 };
