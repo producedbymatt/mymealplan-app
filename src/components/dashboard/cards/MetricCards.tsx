@@ -61,6 +61,28 @@ const MetricCards = ({
     };
 
     fetchCalories();
+
+    // Set up real-time subscription
+    const channel = supabase
+      .channel('schema-db-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'user_metrics'
+        },
+        async (payload) => {
+          console.log('Received real-time update for user_metrics:', payload);
+          // Refetch calories when user_metrics changes
+          await fetchCalories();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [isAuthenticated]);
 
   const calculateWeightLoss = () => {
