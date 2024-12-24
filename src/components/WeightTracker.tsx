@@ -6,6 +6,8 @@ import { useWeightLogs, WeightEntry } from "@/hooks/useWeightLogs";
 import WeightChart from "./weight/WeightChart";
 import WeightTable from "./weight/WeightTable";
 import ProgressPhotos from "./weight/ProgressPhotos";
+import { supabase } from "@/lib/supabase";
+import { toast } from "sonner";
 
 interface WeightTrackerProps {
   onWeightEntriesChange?: (entries: WeightEntry[]) => void;
@@ -21,6 +23,38 @@ const WeightTracker = ({ onWeightEntriesChange }: WeightTrackerProps) => {
     loadWeightLogs();
   }, [showMore]);
 
+  const updateUserMetrics = async (weight: number) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        console.error('No user found');
+        return;
+      }
+
+      console.log('Updating user metrics with new weight:', weight);
+      
+      const { error } = await supabase
+        .from('user_metrics')
+        .update({ 
+          current_weight: weight,
+          updated_at: new Date().toISOString()
+        })
+        .eq('user_id', user.id);
+
+      if (error) {
+        console.error('Error updating user metrics:', error);
+        toast.error("Failed to update your metrics");
+        return;
+      }
+
+      console.log('Successfully updated user metrics');
+      toast.success("Your metrics have been updated");
+    } catch (err) {
+      console.error('Exception while updating metrics:', err);
+      toast.error("An error occurred while updating your metrics");
+    }
+  };
+
   const handleAddWeight = async (e: React.FormEvent) => {
     e.preventDefault();
     const weight = parseFloat(newWeight);
@@ -31,6 +65,9 @@ const WeightTracker = ({ onWeightEntriesChange }: WeightTrackerProps) => {
 
     const success = await addWeight(weight);
     if (success) {
+      // Update user metrics with the new weight
+      await updateUserMetrics(weight);
+      
       setNewWeight("");
       if (onWeightEntriesChange) {
         onWeightEntriesChange(entries);
@@ -40,8 +77,13 @@ const WeightTracker = ({ onWeightEntriesChange }: WeightTrackerProps) => {
 
   const handleEdit = async (id: string, weight: number) => {
     const success = await editWeight(id, weight);
-    if (success && onWeightEntriesChange) {
-      onWeightEntriesChange(entries);
+    if (success) {
+      // Update user metrics when weight is edited
+      await updateUserMetrics(weight);
+      
+      if (onWeightEntriesChange) {
+        onWeightEntriesChange(entries);
+      }
     }
   };
 
