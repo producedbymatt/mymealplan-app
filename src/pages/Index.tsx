@@ -155,35 +155,35 @@ const Index = () => {
         />
 
         <div className="container mx-auto px-4 space-y-8 flex-grow">
-          <div className="max-w-4xl mx-auto">
-            {/* Two-column layout for BMI Calculator and Weight Goal */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-              <div className="w-full">
-                <BMICalculator
-                  onBMICalculated={(calculatedBMI) => setBmi(calculatedBMI)}
-                  onMetricsUpdate={(height, weight) => {
-                    setUserMetrics(prev => ({
-                      ...prev,
-                      height,
-                      currentWeight: weight
-                    }));
-                  }}
-                />
-              </div>
-              <div className="w-full">
-                <WeightGoal
-                  onGoalSet={(weight, days) => {
-                    setUserMetrics(prev => ({
-                      ...prev,
-                      targetWeight: weight,
-                      targetDays: days
-                    }));
-                  }}
-                />
-              </div>
+          {/* Two-column layout for BMI Calculator and Weight Goal */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+            <div className="w-full">
+              <BMICalculator
+                onBMICalculated={(calculatedBMI) => setBmi(calculatedBMI)}
+                onMetricsUpdate={(height, weight) => {
+                  setUserMetrics(prev => ({
+                    ...prev,
+                    height,
+                    currentWeight: weight
+                  }));
+                }}
+              />
             </div>
+            <div className="w-full">
+              <WeightGoal
+                onGoalSet={(weight, days) => {
+                  setUserMetrics(prev => ({
+                    ...prev,
+                    targetWeight: weight,
+                    targetDays: days
+                  }));
+                }}
+              />
+            </div>
+          </div>
 
-            {hasMetrics && (
+          {hasMetrics && (
+            <div className="max-w-4xl mx-auto">
               <CalorieCalculator
                 height={userMetrics.height}
                 currentWeight={userMetrics.currentWeight}
@@ -197,8 +197,10 @@ const Index = () => {
                 }}
                 onSaveMetrics={saveUserMetrics}
               />
-            )}
+            </div>
+          )}
 
+          <div className="max-w-4xl mx-auto">
             <MealPlan
               dailyCalories={userMetrics.recommended_calories}
             />
