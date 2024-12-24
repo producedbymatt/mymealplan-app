@@ -13,7 +13,7 @@ const Index = () => {
     gender: undefined as "male" | "female" | undefined,
   });
   
-  const [recommendedCalories, setRecommendedCalories] = useState(1200);
+  const [recommendedCalories, setRecommendedCalories] = useState(0);
   const [session, setSession] = useState<any>(null);
   const [hasMetrics, setHasMetrics] = useState(false);
 
@@ -64,7 +64,7 @@ const Index = () => {
           targetDays: data.target_days || 0,
           gender: data.gender as "male" | "female" | undefined,
         });
-        setRecommendedCalories(data.recommended_calories || 1200);
+        setRecommendedCalories(data.recommended_calories || 0);
         setHasMetrics(true);
       } else {
         console.log('No metrics found for user');
@@ -97,7 +97,7 @@ const Index = () => {
           current_weight: userMetrics.currentWeight || 0,
           target_weight: userMetrics.targetWeight || 0,
           target_days: userMetrics.targetDays || 0,
-          recommended_calories: recommendedCalories || 1200,
+          recommended_calories: recommendedCalories || 0,
           gender: userMetrics.gender,
           updated_at: new Date().toISOString(),
         });

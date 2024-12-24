@@ -18,10 +18,6 @@ interface StatsCardsProps {
   isAuthenticated?: boolean;
 }
 
-const calculateWeightForBMI = (height: number, targetBMI: number) => {
-  return Math.round((targetBMI * height * height) / 703);
-};
-
 const StatsCards = ({ 
   metrics, 
   recommendedCalories, 
@@ -87,6 +83,10 @@ const StatsCards = ({
       />
     </div>
   );
+};
+
+const calculateWeightForBMI = (height: number, targetBMI: number) => {
+  return Math.round((targetBMI * height * height) / 703);
 };
 
 export default StatsCards;
