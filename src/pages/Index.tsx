@@ -15,6 +15,7 @@ const Index = () => {
     targetWeight: 0,
     targetDays: 0,
     gender: undefined as "male" | "female" | undefined,
+    recommended_calories: undefined as number | undefined
   });
   
   const [session, setSession] = useState<any>(null);
@@ -100,6 +101,7 @@ const Index = () => {
           target_weight: userMetrics.targetWeight || 0,
           target_days: userMetrics.targetDays || 0,
           gender: userMetrics.gender,
+          recommended_calories: userMetrics.recommended_calories,
           updated_at: new Date().toISOString(),
         });
 
@@ -141,6 +143,10 @@ const Index = () => {
           }}
           onCaloriesCalculated={(calories: number) => {
             console.log("Setting recommended calories:", calories);
+            setUserMetrics(prev => ({
+              ...prev,
+              recommended_calories: calories
+            }));
           }}
           onSaveMetrics={saveUserMetrics}
         />
@@ -168,7 +174,7 @@ const Index = () => {
           />
 
           <MealPlan
-            dailyCalories={userMetrics?.recommended_calories}
+            dailyCalories={userMetrics.recommended_calories}
           />
         </div>
       </div>
