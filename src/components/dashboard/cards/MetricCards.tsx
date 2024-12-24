@@ -41,6 +41,12 @@ const MetricCards = ({
     return value ? `${value}${suffix}` : "Not Set";
   };
 
+  const formatCalories = (calories: number) => {
+    if (!isAuthenticated) return "N/A";
+    if (!calories) return "Not Set";
+    return `${Math.round(calories)} cal`;
+  };
+
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       <Card className="p-4 relative overflow-hidden">
@@ -104,9 +110,9 @@ const MetricCards = ({
           <CardTitle className="text-white">Daily Calories</CardTitle>
         </CardHeader>
         <CardContent className="relative z-10 p-0 mt-2">
-          <div className="text-2xl font-bold text-white">{formatValue(recommendedCalories)}</div>
+          <div className="text-2xl font-bold text-white">{formatCalories(recommendedCalories)}</div>
           <p className="text-xs text-white/80 mt-1">
-            {isAuthenticated ? "Recommended intake" : "Sign in for recommendations"}
+            {isAuthenticated ? "Recommended daily intake" : "Sign in for recommendations"}
           </p>
         </CardContent>
       </Card>
