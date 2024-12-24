@@ -23,26 +23,31 @@ serve(async (req) => {
     }
 
     const { userId } = await req.json();
+    console.log('Generating greeting for user:', userId);
     
     const supabase = createClient(supabaseUrl, supabaseKey);
     
-    // Get user's first name from profiles
+    // Get user's first name from profiles using maybeSingle() instead of single()
     const { data: profile, error: profileError } = await supabase
       .from('profiles')
       .select('first_name')
       .eq('id', userId)
-      .single();
+      .maybeSingle();
 
     if (profileError) {
+      console.error('Error fetching profile:', profileError);
       throw profileError;
     }
 
+    console.log('Profile data:', profile);
     const firstName = profile?.first_name || 'friend';
+    console.log('Using first name:', firstName);
 
     const openai = new OpenAI({
       apiKey: openaiKey,
     });
 
+    console.log('Generating OpenAI completion...');
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
@@ -60,13 +65,14 @@ serve(async (req) => {
     });
 
     const greeting = completion.choices[0].message?.content || `Welcome back, ${firstName}!`;
+    console.log('Generated greeting:', greeting);
 
     return new Response(
       JSON.stringify({ greeting }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
     );
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Error in generate-greeting function:', error);
     return new Response(
       JSON.stringify({ error: error.message }),
       { 
