@@ -155,48 +155,46 @@ const Index = () => {
         />
 
         <div className="container mx-auto px-4 space-y-8 flex-grow">
-          <div className="max-w-4xl mx-auto w-full space-y-8">
-            <BMICalculator
-              onBMICalculated={(calculatedBMI) => setBmi(calculatedBMI)}
-              onMetricsUpdate={(height, weight) => {
+          <BMICalculator
+            onBMICalculated={(calculatedBMI) => setBmi(calculatedBMI)}
+            onMetricsUpdate={(height, weight) => {
+              setUserMetrics(prev => ({
+                ...prev,
+                height,
+                currentWeight: weight
+              }));
+            }}
+          />
+
+          <WeightGoal
+            onGoalSet={(weight, days) => {
+              setUserMetrics(prev => ({
+                ...prev,
+                targetWeight: weight,
+                targetDays: days
+              }));
+            }}
+          />
+
+          {hasMetrics && (
+            <CalorieCalculator
+              height={userMetrics.height}
+              currentWeight={userMetrics.currentWeight}
+              targetWeight={userMetrics.targetWeight}
+              targetDays={userMetrics.targetDays}
+              onCaloriesCalculated={(calories) => {
                 setUserMetrics(prev => ({
                   ...prev,
-                  height,
-                  currentWeight: weight
+                  recommended_calories: calories
                 }));
               }}
+              onSaveMetrics={saveUserMetrics}
             />
+          )}
 
-            <WeightGoal
-              onGoalSet={(weight, days) => {
-                setUserMetrics(prev => ({
-                  ...prev,
-                  targetWeight: weight,
-                  targetDays: days
-                }));
-              }}
-            />
-
-            {hasMetrics && (
-              <CalorieCalculator
-                height={userMetrics.height}
-                currentWeight={userMetrics.currentWeight}
-                targetWeight={userMetrics.targetWeight}
-                targetDays={userMetrics.targetDays}
-                onCaloriesCalculated={(calories) => {
-                  setUserMetrics(prev => ({
-                    ...prev,
-                    recommended_calories: calories
-                  }));
-                }}
-                onSaveMetrics={saveUserMetrics}
-              />
-            )}
-
-            <MealPlan
-              dailyCalories={userMetrics.recommended_calories}
-            />
-          </div>
+          <MealPlan
+            dailyCalories={userMetrics.recommended_calories}
+          />
         </div>
         <Footer />
       </div>
