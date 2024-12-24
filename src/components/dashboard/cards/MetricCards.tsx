@@ -181,7 +181,7 @@ const MetricCards = ({
           <Button 
             variant="ghost" 
             size="icon"
-            className="h-8 w-8 text-white hover:text-white/80"
+            className="h-8 w-8 text-white hover:text-white/80 hover:bg-blue-900 hover:border hover:border-white"
             onClick={() => handleRefresh('weight')}
             disabled={isRefreshingWeight}
           >
@@ -203,7 +203,7 @@ const MetricCards = ({
           <Button 
             variant="ghost" 
             size="icon"
-            className="h-8 w-8 text-white hover:text-white/80"
+            className="h-8 w-8 text-white hover:text-white/80 hover:bg-blue-900 hover:border hover:border-white"
             onClick={() => handleRefresh('target')}
             disabled={isRefreshingTarget}
           >
@@ -231,7 +231,7 @@ const MetricCards = ({
           <Button 
             variant="ghost" 
             size="icon"
-            className="h-8 w-8 text-white hover:text-white/80"
+            className="h-8 w-8 text-white hover:text-white/80 hover:bg-blue-900 hover:border hover:border-white"
             onClick={() => handleRefresh('progress')}
             disabled={isRefreshingProgress}
           >
@@ -272,7 +272,7 @@ const MetricCards = ({
           <Button 
             variant="ghost" 
             size="icon"
-            className="h-8 w-8 text-white hover:text-white/80"
+            className="h-8 w-8 text-white hover:text-white/80 hover:bg-blue-900 hover:border hover:border-white"
             onClick={() => handleRefresh('calories')}
             disabled={isRefreshingCalories}
           >
