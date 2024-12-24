@@ -12,7 +12,6 @@ interface StatsCardsProps {
     created_at?: string;
     gender?: "male" | "female";
   };
-  recommendedCalories: number;
   hasMetrics: boolean;
   weightEntries?: { date: string; weight: number; }[];
   isAuthenticated?: boolean;
@@ -20,7 +19,6 @@ interface StatsCardsProps {
 
 const StatsCards = ({ 
   metrics, 
-  recommendedCalories, 
   hasMetrics, 
   weightEntries = [],
   isAuthenticated = true
@@ -77,7 +75,6 @@ const StatsCards = ({
         daysRemaining={daysRemaining}
         formattedTargetDate={formattedTargetDate}
         targetDays={metrics.targetDays}
-        recommendedCalories={recommendedCalories}
         startingWeight={metrics.currentWeight}
         isAuthenticated={isAuthenticated}
       />

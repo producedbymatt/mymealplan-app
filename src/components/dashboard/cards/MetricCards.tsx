@@ -4,6 +4,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
 
 interface MetricCardsProps {
   mostRecentWeight: number;
@@ -13,7 +15,6 @@ interface MetricCardsProps {
   daysRemaining: number;
   formattedTargetDate: string;
   targetDays: number;
-  recommendedCalories: number;
   startingWeight?: number;
   isAuthenticated?: boolean;
 }
@@ -23,10 +24,45 @@ const MetricCards = ({
   heightFeet,
   heightInches,
   targetWeight,
-  recommendedCalories,
   startingWeight,
   isAuthenticated = true,
 }: MetricCardsProps) => {
+  const [recommendedCalories, setRecommendedCalories] = useState<number | null>(null);
+
+  useEffect(() => {
+    const fetchCalories = async () => {
+      if (!isAuthenticated) return;
+
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        console.log('Fetching calories for user:', user.id);
+        const { data, error } = await supabase
+          .from('user_metrics')
+          .select('recommended_calories')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .single();
+
+        if (error) {
+          console.error('Error fetching calories:', error);
+          return;
+        }
+
+        if (data) {
+          console.log('Fetched recommended calories:', data.recommended_calories);
+          setRecommendedCalories(data.recommended_calories);
+        }
+      } catch (err) {
+        console.error('Exception while fetching calories:', err);
+      }
+    };
+
+    fetchCalories();
+  }, [isAuthenticated]);
+
   const calculateWeightLoss = () => {
     if (!startingWeight) return 0;
     const weightLoss = startingWeight - mostRecentWeight;
@@ -41,7 +77,7 @@ const MetricCards = ({
     return value ? `${value}${suffix}` : "Not Set";
   };
 
-  const formatCalories = (calories: number) => {
+  const formatCalories = (calories: number | null) => {
     if (!isAuthenticated) return "N/A";
     if (!calories) return "Not Set";
     return `${Math.round(calories)} cal`;
