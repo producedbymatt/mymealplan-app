@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import StatsCards from "./StatsCards";
 import { useSession } from "@supabase/auth-helpers-react";
 

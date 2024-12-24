@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import PreviewMessage from "@/components/PreviewMessage";
+import { SessionContextProvider } from '@supabase/auth-helpers-react';
 
 const Index = () => {
   const [userMetrics, setUserMetrics] = useState({
@@ -13,7 +14,6 @@ const Index = () => {
     gender: undefined as "male" | "female" | undefined,
   });
   
-  const [recommendedCalories, setRecommendedCalories] = useState(0);
   const [session, setSession] = useState<any>(null);
   const [hasMetrics, setHasMetrics] = useState(false);
 
@@ -64,7 +64,6 @@ const Index = () => {
           targetDays: data.target_days || 0,
           gender: data.gender as "male" | "female" | undefined,
         });
-        setRecommendedCalories(data.recommended_calories || 0);
         setHasMetrics(true);
       } else {
         console.log('No metrics found for user');
@@ -85,7 +84,6 @@ const Index = () => {
     console.log('Saving user metrics:', {
       user_id: session.user.id,
       ...userMetrics,
-      recommended_calories: recommendedCalories,
     });
 
     try {
@@ -97,7 +95,6 @@ const Index = () => {
           current_weight: userMetrics.currentWeight || 0,
           target_weight: userMetrics.targetWeight || 0,
           target_days: userMetrics.targetDays || 0,
-          recommended_calories: recommendedCalories || 0,
           gender: userMetrics.gender,
           updated_at: new Date().toISOString(),
         });
@@ -118,33 +115,33 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-background">
-      {!session && <PreviewMessage />}
-      <DashboardLayout
-        hasMetrics={hasMetrics}
-        userMetrics={userMetrics}
-        recommendedCalories={recommendedCalories}
-        onMetricsUpdate={(height, weight) => {
-          setUserMetrics(prev => ({
-            ...prev,
-            height,
-            currentWeight: weight
-          }));
-        }}
-        onGoalSet={(weight, days) => {
-          setUserMetrics(prev => ({
-            ...prev,
-            targetWeight: weight,
-            targetDays: days
-          }));
-        }}
-        onCaloriesCalculated={(calories: number) => {
-          console.log("Setting recommended calories:", calories);
-          setRecommendedCalories(calories);
-        }}
-        onSaveMetrics={saveUserMetrics}
-      />
-    </div>
+    <SessionContextProvider supabaseClient={supabase}>
+      <div className="min-h-screen w-full bg-background">
+        {!session && <PreviewMessage />}
+        <DashboardLayout
+          hasMetrics={hasMetrics}
+          userMetrics={userMetrics}
+          onMetricsUpdate={(height, weight) => {
+            setUserMetrics(prev => ({
+              ...prev,
+              height,
+              currentWeight: weight
+            }));
+          }}
+          onGoalSet={(weight, days) => {
+            setUserMetrics(prev => ({
+              ...prev,
+              targetWeight: weight,
+              targetDays: days
+            }));
+          }}
+          onCaloriesCalculated={(calories: number) => {
+            console.log("Setting recommended calories:", calories);
+          }}
+          onSaveMetrics={saveUserMetrics}
+        />
+      </div>
+    </SessionContextProvider>
   );
 };
 

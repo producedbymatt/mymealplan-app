@@ -12,7 +12,6 @@ interface DashboardLayoutProps {
     targetDays: number;
     gender?: "male" | "female";
   };
-  recommendedCalories: number;
   onMetricsUpdate: (height: number, weight: number) => void;
   onGoalSet: (weight: number, days: number) => void;
   onCaloriesCalculated: (calories: number) => void;
@@ -22,7 +21,6 @@ interface DashboardLayoutProps {
 const DashboardLayout = ({
   hasMetrics,
   userMetrics,
-  recommendedCalories,
   onMetricsUpdate,
   onGoalSet,
   onCaloriesCalculated,
@@ -43,7 +41,6 @@ const DashboardLayout = ({
         <div className="mt-8">
           <DashboardContent
             userMetrics={userMetrics}
-            recommendedCalories={recommendedCalories}
             hasMetrics={hasMetrics}
             onMetricsUpdate={onMetricsUpdate}
             onGoalSet={onGoalSet}
