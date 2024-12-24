@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { RefreshCw } from "lucide-react";
+import { RefreshCw, TrendingDown, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
@@ -35,6 +35,7 @@ const MetricCards = ({
   const [isRefreshingTarget, setIsRefreshingTarget] = useState(false);
   const [isRefreshingProgress, setIsRefreshingProgress] = useState(false);
   const [isRefreshingCalories, setIsRefreshingCalories] = useState(false);
+  const [initialWeight, setInitialWeight] = useState<number | null>(null);
 
   const fetchCalories = async () => {
     if (!isAuthenticated) return;
@@ -66,8 +67,39 @@ const MetricCards = ({
     }
   };
 
+  const fetchInitialWeight = async () => {
+    if (!isAuthenticated) return;
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      // Get the first weight log entry (oldest)
+      const { data, error } = await supabase
+        .from('weight_logs')
+        .select('weight')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: true })
+        .limit(1)
+        .single();
+
+      if (error) {
+        console.error('Error fetching initial weight:', error);
+        return;
+      }
+
+      if (data) {
+        console.log('Fetched initial weight:', data.weight);
+        setInitialWeight(data.weight);
+      }
+    } catch (err) {
+      console.error('Exception while fetching initial weight:', err);
+    }
+  };
+
   useEffect(() => {
     fetchCalories();
+    fetchInitialWeight();
 
     const channel = supabase
       .channel('schema-db-changes')
@@ -105,6 +137,10 @@ const MetricCards = ({
           await fetchCalories();
           toast.success('Calories refreshed');
           break;
+        case 'progress':
+          await fetchInitialWeight();
+          toast.success('Progress refreshed');
+          break;
         default:
           toast.success(`${metric} refreshed`);
           break;
@@ -117,14 +153,13 @@ const MetricCards = ({
     }
   };
 
-  const calculateWeightLoss = () => {
-    if (!startingWeight) return 0;
-    const weightLoss = startingWeight - mostRecentWeight;
-    return Math.abs(weightLoss);
+  const calculateWeightChange = () => {
+    if (!initialWeight || !mostRecentWeight) return 0;
+    return mostRecentWeight - initialWeight;
   };
 
-  const weightLoss = calculateWeightLoss();
-  const isWeightLoss = startingWeight ? startingWeight > mostRecentWeight : false;
+  const weightChange = calculateWeightChange();
+  const isWeightLoss = weightChange < 0;
 
   const formatValue = (value: any, suffix: string = "") => {
     if (!isAuthenticated) return "N/A";
@@ -204,16 +239,25 @@ const MetricCards = ({
           </Button>
         </CardHeader>
         <CardContent className="relative z-10 p-0 mt-2">
-          <div className="text-2xl font-bold text-white">
+          <div className="text-2xl font-bold text-white flex items-center gap-2">
             {isAuthenticated 
-              ? startingWeight 
-                ? `${weightLoss.toFixed(1)} lbs` 
+              ? initialWeight 
+                ? (
+                  <>
+                    {Math.abs(weightChange).toFixed(1)} lbs
+                    {isWeightLoss ? (
+                      <TrendingDown className="h-5 w-5 text-green-400" />
+                    ) : (
+                      <TrendingUp className="h-5 w-5 text-blue-400" />
+                    )}
+                  </>
+                )
                 : "No data"
               : "N/A"}
           </div>
           <p className="text-xs text-white/80 mt-1">
             {isAuthenticated
-              ? startingWeight 
+              ? initialWeight 
                 ? `${isWeightLoss ? 'Lost' : 'Gained'} since starting` 
                 : "Start logging to track progress"
               : "Sign in to track progress"}
