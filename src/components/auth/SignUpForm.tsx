@@ -84,13 +84,19 @@ export const SignUpForm = ({ onSuccess, onToggleForm }: SignUpFormProps) => {
         required
       />
       
-      <FormInput
-        type="date"
-        placeholder="Date of Birth"
-        value={dateOfBirth}
-        onChange={(e) => setDateOfBirth(e.target.value)}
-        required
-      />
+      <div className="space-y-1">
+        <label htmlFor="dateOfBirth" className="block text-sm font-medium text-white mb-1">
+          Birthday
+        </label>
+        <FormInput
+          type="date"
+          id="dateOfBirth"
+          placeholder="Birthday"
+          value={dateOfBirth}
+          onChange={(e) => setDateOfBirth(e.target.value)}
+          required
+        />
+      </div>
       
       <div className="space-y-1">
         <FormInput
