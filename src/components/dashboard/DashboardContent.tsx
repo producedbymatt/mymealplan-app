@@ -1,6 +1,7 @@
 import React from "react";
 import StatsCards from "./StatsCards";
 import { useSession } from "@supabase/auth-helpers-react";
+import MotivationalMessage from "./MotivationalMessage";
 
 interface DashboardContentProps {
   userMetrics: {
@@ -30,6 +31,13 @@ const DashboardContent = ({
 
   return (
     <div className="space-y-8">
+      {hasMetrics && (
+        <MotivationalMessage
+          currentWeight={userMetrics.currentWeight}
+          targetWeight={userMetrics.targetWeight}
+          targetDays={userMetrics.targetDays}
+        />
+      )}
       <StatsCards
         metrics={userMetrics}
         hasMetrics={hasMetrics}
