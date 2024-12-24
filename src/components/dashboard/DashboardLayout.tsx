@@ -1,6 +1,7 @@
 import React from "react";
 import MetricsPrompt from "@/components/dashboard/MetricsPrompt";
 import DashboardContent from "@/components/dashboard/DashboardContent";
+import PersonalizedGreeting from "./PersonalizedGreeting";
 
 interface DashboardLayoutProps {
   hasMetrics: boolean;
@@ -28,6 +29,7 @@ const DashboardLayout = ({
   return (
     <div className="w-full bg-background py-8">
       <div className="container mx-auto px-4">
+        <PersonalizedGreeting />
         <h1 className="text-4xl font-bold text-center mb-4 text-foreground">
           Your Goals, Your Meals, Your Plan.
         </h1>
