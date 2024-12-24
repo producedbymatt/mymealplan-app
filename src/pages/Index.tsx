@@ -7,6 +7,8 @@ import { SessionContextProvider } from '@supabase/auth-helpers-react';
 import BMICalculator from "@/components/BMICalculator";
 import WeightGoal from "@/components/WeightGoal";
 import MealPlan from "@/components/MealPlan";
+import CalorieCalculator from "@/components/CalorieCalculator";
+import Footer from "@/components/Footer";
 
 const Index = () => {
   const [userMetrics, setUserMetrics] = useState({
@@ -123,7 +125,7 @@ const Index = () => {
 
   return (
     <SessionContextProvider supabaseClient={supabase}>
-      <div className="min-h-screen w-full bg-background">
+      <div className="min-h-screen flex flex-col bg-background">
         {!session && <PreviewMessage />}
         <DashboardLayout
           hasMetrics={hasMetrics}
@@ -152,7 +154,7 @@ const Index = () => {
           onSaveMetrics={saveUserMetrics}
         />
 
-        <div className="container mx-auto px-4 space-y-8 mb-8">
+        <div className="container mx-auto px-4 space-y-8 flex-grow">
           <BMICalculator
             onBMICalculated={(calculatedBMI) => setBmi(calculatedBMI)}
             onMetricsUpdate={(height, weight) => {
@@ -174,10 +176,27 @@ const Index = () => {
             }}
           />
 
+          {hasMetrics && (
+            <CalorieCalculator
+              height={userMetrics.height}
+              currentWeight={userMetrics.currentWeight}
+              targetWeight={userMetrics.targetWeight}
+              targetDays={userMetrics.targetDays}
+              onCaloriesCalculated={(calories) => {
+                setUserMetrics(prev => ({
+                  ...prev,
+                  recommended_calories: calories
+                }));
+              }}
+              onSaveMetrics={saveUserMetrics}
+            />
+          )}
+
           <MealPlan
             dailyCalories={userMetrics.recommended_calories}
           />
         </div>
+        <Footer />
       </div>
     </SessionContextProvider>
   );
