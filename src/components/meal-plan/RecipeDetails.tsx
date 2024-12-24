@@ -54,7 +54,7 @@ const RecipeDetails = ({ meal }: RecipeDetailsProps) => {
         <Button
           variant="ghost"
           onClick={handleAddToLog}
-          className="hover:bg-white/20 flex items-center gap-2"
+          className="hover:bg-white/20 flex items-center gap-2 border border-white"
         >
           <Plus className="h-4 w-4" />
           <span>Log Meal</span>
