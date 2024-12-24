@@ -9,7 +9,7 @@ const ChatBubble = () => {
   return (
     <div className="fixed bottom-4 right-4 z-50">
       {isOpen ? (
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg h-[600px] w-[400px] transition-all duration-300 ease-in-out">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg h-[600px] w-[calc(100vw-2rem)] max-w-[400px] sm:w-[400px] transition-all duration-300 ease-in-out mx-4 sm:mx-0">
           <div className="flex items-center justify-between p-4 border-b dark:border-gray-700">
             <h3 className="font-semibold text-lg">AI Health Coach ✨</h3>
             <Button
