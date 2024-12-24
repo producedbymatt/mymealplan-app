@@ -6,6 +6,7 @@ interface FormInputProps {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   required?: boolean;
+  id?: string;
 }
 
 export const FormInput = ({
@@ -14,6 +15,7 @@ export const FormInput = ({
   value,
   onChange,
   required = false,
+  id,
 }: FormInputProps) => (
   <div>
     <Input
@@ -22,6 +24,7 @@ export const FormInput = ({
       value={value}
       onChange={onChange}
       required={required}
+      id={id}
     />
   </div>
 );
