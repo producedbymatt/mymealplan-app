@@ -2,7 +2,7 @@ import { Input } from "@/components/ui/input";
 
 interface FormInputProps {
   type: string;
-  placeholder: string;
+  placeholder?: string; // Made optional by adding ?
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   required?: boolean;
