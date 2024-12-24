@@ -35,6 +35,43 @@ const CalorieCalculator = ({
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [savedCalories, setSavedCalories] = useState<number | null>(null);
 
+  useEffect(() => {
+    const fetchSavedCalories = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        console.log('Fetching saved calories for user:', user.id);
+        const { data, error } = await supabase
+          .from('user_metrics')
+          .select('recommended_calories, activity_level')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .single();
+
+        if (error) {
+          console.error('Error fetching saved calories:', error);
+          return;
+        }
+
+        if (data?.recommended_calories) {
+          console.log('Found saved calories:', data.recommended_calories);
+          setSavedCalories(data.recommended_calories);
+          if (data.activity_level) {
+            console.log('Setting saved activity level:', data.activity_level);
+            setSelectedActivityKey(data.activity_level as ActivityLevelKey);
+            setActivityLevel(ACTIVITY_LEVELS[data.activity_level as ActivityLevelKey].value);
+          }
+        }
+      } catch (err) {
+        console.error('Exception while fetching saved calories:', err);
+      }
+    };
+
+    fetchSavedCalories();
+  }, []);
+
   const saveActivityLevel = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
