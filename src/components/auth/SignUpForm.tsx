@@ -68,21 +68,31 @@ export const SignUpForm = ({ onSuccess, onToggleForm }: SignUpFormProps) => {
         Create an account to unlock all features including weight tracking, BMI calculation, and personalized meal plans.
       </p>
       
-      <FormInput
-        type="text"
-        placeholder="Full Name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        required
-      />
+      <div className="space-y-1">
+        <label htmlFor="fullName" className="block text-sm font-medium text-white mb-1">
+          Full Name
+        </label>
+        <FormInput
+          type="text"
+          id="fullName"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+        />
+      </div>
       
-      <FormInput
-        type="tel"
-        placeholder="Phone Number"
-        value={phone}
-        onChange={(e) => setPhone(e.target.value)}
-        required
-      />
+      <div className="space-y-1">
+        <label htmlFor="phoneNumber" className="block text-sm font-medium text-white mb-1">
+          Phone Number
+        </label>
+        <FormInput
+          type="tel"
+          id="phoneNumber"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          required
+        />
+      </div>
       
       <div className="space-y-1">
         <label htmlFor="dateOfBirth" className="block text-sm font-medium text-white mb-1">
@@ -91,7 +101,6 @@ export const SignUpForm = ({ onSuccess, onToggleForm }: SignUpFormProps) => {
         <FormInput
           type="date"
           id="dateOfBirth"
-          placeholder="Birthday"
           value={dateOfBirth}
           onChange={(e) => setDateOfBirth(e.target.value)}
           required
@@ -99,8 +108,12 @@ export const SignUpForm = ({ onSuccess, onToggleForm }: SignUpFormProps) => {
       </div>
       
       <div className="space-y-1">
+        <label htmlFor="password" className="block text-sm font-medium text-white mb-1">
+          Password
+        </label>
         <FormInput
           type="password"
+          id="password"
           placeholder="Password (min. 6 characters)"
           value={password}
           onChange={(e) => {
