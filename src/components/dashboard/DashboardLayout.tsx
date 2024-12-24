@@ -1,5 +1,4 @@
 import React from "react";
-import Footer from "@/components/Footer";
 import MetricsPrompt from "@/components/dashboard/MetricsPrompt";
 import DashboardContent from "@/components/dashboard/DashboardContent";
 
@@ -27,8 +26,8 @@ const DashboardLayout = ({
   onSaveMetrics
 }: DashboardLayoutProps) => {
   return (
-    <div className="min-h-screen w-full bg-background py-8 flex flex-col">
-      <div className="container mx-auto px-4 flex-grow">
+    <div className="w-full bg-background py-8">
+      <div className="container mx-auto px-4">
         <h1 className="text-4xl font-bold text-center mb-4 text-foreground">
           Your Goals, Your Meals, Your Plan.
         </h1>
@@ -49,7 +48,6 @@ const DashboardLayout = ({
           />
         </div>
       </div>
-      <Footer />
     </div>
   );
 };
