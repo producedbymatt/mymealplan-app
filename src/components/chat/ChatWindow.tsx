@@ -13,12 +13,20 @@ import { useMealLogs } from '@/hooks/useMealLogs';
 import { supabase } from '@/lib/supabase';
 import { Message } from './types';
 
+const WELCOME_MESSAGE = {
+  role: 'assistant' as const,
+  content: "Welcome to Your Health Coach! 🌟\n\n" +
+           "Hi there! I'm here to help you achieve your health and fitness goals, one step at a time. Whether you're looking to lose weight, gain muscle, eat healthier, or just feel your best, I've got your back. 💪\n\n" +
+           "Ask me anything about nutrition, exercise, calorie counts, recipes, or strategies to stay on track. Let's create a plan that works for you and keeps you motivated along the way!\n\n" +
+           "Remember, every small step counts—let's start this journey together! 🚀"
+};
+
 const ChatWindow = () => {
   const [input, setInput] = useState('');
   const [showMealForm, setShowMealForm] = useState(false);
   const [mealToLog, setMealToLog] = useState<{ meal_name: string; calories: number } | null>(null);
   const [userId, setUserId] = useState<string | undefined>();
-  const [localMessages, setLocalMessages] = useState<Message[]>([]);
+  const [localMessages, setLocalMessages] = useState<Message[]>([WELCOME_MESSAGE]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { messages, isLoading, sendMessage } = useChatOperations();
   const { addMeal } = useMealLogs(userId);
@@ -31,10 +39,12 @@ const ChatWindow = () => {
     getSession();
   }, []);
 
-  // Update local messages when the server messages change
+  // Update local messages when the server messages change, but only for authenticated users
   useEffect(() => {
-    setLocalMessages(messages);
-  }, [messages]);
+    if (userId && messages.length > 0) {
+      setLocalMessages(messages);
+    }
+  }, [messages, userId]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -47,6 +57,20 @@ const ChatWindow = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
+
+    if (!userId) {
+      // If user is not authenticated, show a message in the chat
+      setLocalMessages(prev => [
+        ...prev,
+        { role: 'user', content: input.trim() },
+        { 
+          role: 'assistant', 
+          content: "To continue our conversation and get personalized health advice, please sign in or create an account. This helps me provide you with tailored recommendations and track your progress! 🔐" 
+        }
+      ]);
+      setInput('');
+      return;
+    }
 
     const userMessage = input.trim();
     setInput('');
