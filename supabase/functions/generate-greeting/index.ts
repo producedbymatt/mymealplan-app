@@ -27,7 +27,6 @@ serve(async (req) => {
     
     const supabase = createClient(supabaseUrl, supabaseKey);
     
-    // Get user's first name from profiles using maybeSingle() instead of single()
     const { data: profile, error: profileError } = await supabase
       .from('profiles')
       .select('first_name')
@@ -40,8 +39,6 @@ serve(async (req) => {
     }
 
     console.log('Profile data:', profile);
-    const firstName = profile?.first_name || 'friend';
-    console.log('Using first name:', firstName);
 
     const openai = new OpenAI({
       apiKey: openaiKey,
@@ -53,18 +50,22 @@ serve(async (req) => {
       messages: [
         {
           role: "system",
-          content: "You are a motivational health coach. Generate a short, personalized greeting (max 2 sentences) that's encouraging and focused on health and fitness goals. Use the user's first name naturally in the greeting. Keep it casual and friendly."
+          content: profile?.first_name 
+            ? "You are a motivational health coach. Generate a short, personalized greeting (max 2 sentences) that's encouraging and focused on health and fitness goals. Use the user's first name naturally in the greeting. Keep it casual and friendly."
+            : "You are a motivational health coach. Generate a short, encouraging greeting (max 2 sentences) focused on health and fitness goals. Keep it casual and friendly, but do not use any names or generic terms like 'friend'."
         },
         {
           role: "user",
-          content: `Generate a greeting for ${firstName}`
+          content: profile?.first_name 
+            ? `Generate a greeting for ${profile.first_name}`
+            : "Generate a motivational health greeting"
         }
       ],
       temperature: 0.7,
       max_tokens: 100,
     });
 
-    const greeting = completion.choices[0].message?.content || `Welcome back, ${firstName}!`;
+    const greeting = completion.choices[0].message?.content || "Let's make today count on your health journey!";
     console.log('Generated greeting:', greeting);
 
     return new Response(
