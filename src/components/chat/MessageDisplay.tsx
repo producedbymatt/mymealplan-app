@@ -55,18 +55,6 @@ const MessageDisplay = ({ messages, isLoading, messagesEndRef, onLogMeal }: Mess
     );
   };
 
-  if (messages.length === 0 && isLoading) {
-    return (
-      <div className="flex flex-col items-center justify-center h-full space-y-4">
-        <div className="animate-pulse">
-          <div className="h-4 w-48 bg-gray-300 dark:bg-gray-700 rounded mb-2"></div>
-          <div className="h-4 w-32 bg-gray-300 dark:bg-gray-700 rounded"></div>
-        </div>
-        <TypingIndicator />
-      </div>
-    );
-  }
-
   return (
     <div className="flex-1 overflow-y-auto p-4 space-y-4">
       {messages.map((message, index) => (
