@@ -6,6 +6,9 @@ import {
 } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { RefreshCw } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 interface MetricCardsProps {
   mostRecentWeight: number;
@@ -28,41 +31,44 @@ const MetricCards = ({
   isAuthenticated = true,
 }: MetricCardsProps) => {
   const [recommendedCalories, setRecommendedCalories] = useState<number | null>(null);
+  const [isRefreshingWeight, setIsRefreshingWeight] = useState(false);
+  const [isRefreshingTarget, setIsRefreshingTarget] = useState(false);
+  const [isRefreshingProgress, setIsRefreshingProgress] = useState(false);
+  const [isRefreshingCalories, setIsRefreshingCalories] = useState(false);
+
+  const fetchCalories = async () => {
+    if (!isAuthenticated) return;
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      console.log('Fetching calories for user:', user.id);
+      const { data, error } = await supabase
+        .from('user_metrics')
+        .select('recommended_calories')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+
+      if (error) {
+        console.error('Error fetching calories:', error);
+        return;
+      }
+
+      if (data) {
+        console.log('Fetched recommended calories:', data.recommended_calories);
+        setRecommendedCalories(data.recommended_calories);
+      }
+    } catch (err) {
+      console.error('Exception while fetching calories:', err);
+    }
+  };
 
   useEffect(() => {
-    const fetchCalories = async () => {
-      if (!isAuthenticated) return;
-
-      try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return;
-
-        console.log('Fetching calories for user:', user.id);
-        const { data, error } = await supabase
-          .from('user_metrics')
-          .select('recommended_calories')
-          .eq('user_id', user.id)
-          .order('created_at', { ascending: false })
-          .limit(1)
-          .single();
-
-        if (error) {
-          console.error('Error fetching calories:', error);
-          return;
-        }
-
-        if (data) {
-          console.log('Fetched recommended calories:', data.recommended_calories);
-          setRecommendedCalories(data.recommended_calories);
-        }
-      } catch (err) {
-        console.error('Exception while fetching calories:', err);
-      }
-    };
-
     fetchCalories();
 
-    // Set up real-time subscription
     const channel = supabase
       .channel('schema-db-changes')
       .on(
@@ -74,7 +80,6 @@ const MetricCards = ({
         },
         async (payload) => {
           console.log('Received real-time update for user_metrics:', payload);
-          // Refetch calories when user_metrics changes
           await fetchCalories();
         }
       )
@@ -84,6 +89,33 @@ const MetricCards = ({
       supabase.removeChannel(channel);
     };
   }, [isAuthenticated]);
+
+  const handleRefresh = async (metric: 'weight' | 'target' | 'progress' | 'calories') => {
+    const setLoading = {
+      'weight': setIsRefreshingWeight,
+      'target': setIsRefreshingTarget,
+      'progress': setIsRefreshingProgress,
+      'calories': setIsRefreshingCalories
+    }[metric];
+
+    setLoading(true);
+    try {
+      switch (metric) {
+        case 'calories':
+          await fetchCalories();
+          toast.success('Calories refreshed');
+          break;
+        default:
+          toast.success(`${metric} refreshed`);
+          break;
+      }
+    } catch (error) {
+      console.error(`Error refreshing ${metric}:`, error);
+      toast.error(`Failed to refresh ${metric}`);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const calculateWeightLoss = () => {
     if (!startingWeight) return 0;
@@ -109,8 +141,17 @@ const MetricCards = ({
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       <Card className="p-4 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-950/90 via-green-950/90 to-blue-950/90 animate-gradient-x" />
-        <CardHeader className="relative z-10 p-0">
+        <CardHeader className="relative z-10 p-0 flex flex-row items-center justify-between">
           <CardTitle className="text-white">Current Weight</CardTitle>
+          <Button 
+            variant="ghost" 
+            size="icon"
+            className="h-8 w-8 text-white hover:text-white/80"
+            onClick={() => handleRefresh('weight')}
+            disabled={isRefreshingWeight}
+          >
+            <RefreshCw className={`h-4 w-4 ${isRefreshingWeight ? 'animate-spin' : ''}`} />
+          </Button>
         </CardHeader>
         <CardContent className="relative z-10 p-0 mt-2">
           <div className="text-2xl font-bold text-white">{formatValue(mostRecentWeight, " lbs")}</div>
@@ -122,8 +163,17 @@ const MetricCards = ({
 
       <Card className="p-4 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-950/90 via-green-950/90 to-blue-950/90 animate-gradient-x" />
-        <CardHeader className="relative z-10 p-0">
+        <CardHeader className="relative z-10 p-0 flex flex-row items-center justify-between">
           <CardTitle className="text-white">Target Weight</CardTitle>
+          <Button 
+            variant="ghost" 
+            size="icon"
+            className="h-8 w-8 text-white hover:text-white/80"
+            onClick={() => handleRefresh('target')}
+            disabled={isRefreshingTarget}
+          >
+            <RefreshCw className={`h-4 w-4 ${isRefreshingTarget ? 'animate-spin' : ''}`} />
+          </Button>
         </CardHeader>
         <CardContent className="relative z-10 p-0 mt-2">
           <div className="text-2xl font-bold text-white">
@@ -141,8 +191,17 @@ const MetricCards = ({
 
       <Card className="p-4 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-950/90 via-green-950/90 to-blue-950/90 animate-gradient-x" />
-        <CardHeader className="relative z-10 p-0">
+        <CardHeader className="relative z-10 p-0 flex flex-row items-center justify-between">
           <CardTitle className="text-white">Weight Progress</CardTitle>
+          <Button 
+            variant="ghost" 
+            size="icon"
+            className="h-8 w-8 text-white hover:text-white/80"
+            onClick={() => handleRefresh('progress')}
+            disabled={isRefreshingProgress}
+          >
+            <RefreshCw className={`h-4 w-4 ${isRefreshingProgress ? 'animate-spin' : ''}`} />
+          </Button>
         </CardHeader>
         <CardContent className="relative z-10 p-0 mt-2">
           <div className="text-2xl font-bold text-white">
@@ -164,8 +223,17 @@ const MetricCards = ({
 
       <Card className="p-4 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-950/90 via-green-950/90 to-blue-950/90 animate-gradient-x" />
-        <CardHeader className="relative z-10 p-0">
+        <CardHeader className="relative z-10 p-0 flex flex-row items-center justify-between">
           <CardTitle className="text-white">Daily Calories</CardTitle>
+          <Button 
+            variant="ghost" 
+            size="icon"
+            className="h-8 w-8 text-white hover:text-white/80"
+            onClick={() => handleRefresh('calories')}
+            disabled={isRefreshingCalories}
+          >
+            <RefreshCw className={`h-4 w-4 ${isRefreshingCalories ? 'animate-spin' : ''}`} />
+          </Button>
         </CardHeader>
         <CardContent className="relative z-10 p-0 mt-2">
           <div className="text-2xl font-bold text-white">{formatCalories(recommendedCalories)}</div>
