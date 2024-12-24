@@ -50,17 +50,12 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
   // State to track expanded sections
   const [expandedSections, setExpandedSections] = useState<string[]>([today]);
 
-  // Effect to ensure today's section stays expanded
+  // Effect to set initial expanded state to today
   useEffect(() => {
     if (!expandedSections.includes(today)) {
-      setExpandedSections(prev => [...prev, today]);
+      setExpandedSections([today]);
     }
-  }, [expandedSections]);
-
-  // Handle accordion state changes
-  const handleAccordionChange = (value: string[]) => {
-    setExpandedSections(value.includes(today) ? value : [...value, today]);
-  };
+  }, []); // Only run on mount
 
   return (
     <div className="bg-background rounded-lg shadow">
@@ -79,7 +74,7 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
       <Accordion 
         type="multiple" 
         value={expandedSections}
-        onValueChange={handleAccordionChange}
+        onValueChange={setExpandedSections}
       >
         {sortedDates.map((date, dateIndex) => (
           <AccordionItem key={date} value={date}>
@@ -89,6 +84,7 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
                 <div className="flex justify-between items-center w-full">
                   <h3 className="text-lg font-semibold">
                     {format(new Date(date), "EEEE, MMMM do")}
+                    {date === today && " (Today)"}
                   </h3>
                   <div className="flex items-center gap-4">
                     <span className="text-lg font-semibold">
