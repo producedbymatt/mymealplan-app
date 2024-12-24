@@ -12,6 +12,7 @@ import {
 import { useMealLogs } from '@/hooks/useMealLogs';
 import { supabase } from '@/lib/supabase';
 import { Message } from './types';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const ChatWindow = () => {
   const [input, setInput] = useState('');
@@ -22,6 +23,7 @@ const ChatWindow = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { messages, isLoading, sendMessage } = useChatOperations();
   const { addMeal } = useMealLogs(userId);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const getSession = async () => {
@@ -31,7 +33,6 @@ const ChatWindow = () => {
     getSession();
   }, []);
 
-  // Update local messages when the server messages change
   useEffect(() => {
     setLocalMessages(messages);
   }, [messages]);
@@ -51,10 +52,8 @@ const ChatWindow = () => {
     const userMessage = input.trim();
     setInput('');
     
-    // Immediately add the user message to local state
     setLocalMessages(prev => [...prev, { role: 'user', content: userMessage }]);
     
-    // Then send the message to get AI response
     await sendMessage(userMessage);
   };
 
@@ -74,7 +73,7 @@ const ChatWindow = () => {
   };
 
   return (
-    <div className="flex flex-col h-[calc(600px-64px)]">
+    <div className={`flex flex-col ${isMobile ? 'h-[calc(100%-64px)]' : 'h-[calc(600px-64px)]'}`}>
       <MessageDisplay 
         messages={localMessages}
         isLoading={isLoading}
