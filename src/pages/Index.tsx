@@ -68,6 +68,7 @@ const Index = () => {
           targetWeight: data.target_weight || 0,
           targetDays: data.target_days || 0,
           gender: data.gender as "male" | "female" | undefined,
+          recommended_calories: data.recommended_calories
         });
         setHasMetrics(true);
       } else {
