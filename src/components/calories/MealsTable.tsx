@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { format, isToday } from "date-fns";
 import { Pencil, Trash2, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -26,6 +27,12 @@ interface MealsTableProps {
 }
 
 const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editValues, setEditValues] = useState<{ meal_name: string; calories: string }>({
+    meal_name: "",
+    calories: ""
+  });
+
   // Group meals by date
   const groupedMeals = mealLogs.reduce((groups: { [key: string]: MealLog[] }, meal) => {
     const date = format(new Date(meal.created_at), "yyyy-MM-dd");
@@ -44,18 +51,32 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
     return meals.reduce((total, meal) => total + meal.calories, 0);
   };
 
+  const handleEdit = (meal: MealLog) => {
+    if (editingId === meal.id) {
+      const newCalories = parseInt(editValues.calories);
+      if (!isNaN(newCalories)) {
+        onEdit({
+          ...meal,
+          meal_name: editValues.meal_name,
+          calories: newCalories
+        });
+        setEditingId(null);
+        setEditValues({ meal_name: "", calories: "" });
+      }
+    } else {
+      setEditingId(meal.id);
+      setEditValues({
+        meal_name: meal.meal_name,
+        calories: meal.calories.toString()
+      });
+    }
+  };
+
   // Find today's date in yyyy-MM-dd format
   const today = format(new Date(), "yyyy-MM-dd");
   
   // State to track expanded sections
   const [expandedSections, setExpandedSections] = useState<string[]>([today]);
-
-  // Effect to set initial expanded state to today
-  useEffect(() => {
-    if (!expandedSections.includes(today)) {
-      setExpandedSections([today]);
-    }
-  }, []); // Only run on mount
 
   return (
     <div className="bg-background rounded-lg shadow">
@@ -105,8 +126,30 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
                         key={log.id} 
                         className="bg-background hover:bg-[#0EA5E9]/50 hover:text-white transition-colors"
                       >
-                        <TableCell className="w-1/4">{log.meal_name}</TableCell>
-                        <TableCell className="w-1/6">{log.calories}</TableCell>
+                        <TableCell className="w-1/4">
+                          {editingId === log.id ? (
+                            <Input
+                              type="text"
+                              value={editValues.meal_name}
+                              onChange={(e) => setEditValues({ ...editValues, meal_name: e.target.value })}
+                              className="w-full"
+                            />
+                          ) : (
+                            log.meal_name
+                          )}
+                        </TableCell>
+                        <TableCell className="w-1/6">
+                          {editingId === log.id ? (
+                            <Input
+                              type="number"
+                              value={editValues.calories}
+                              onChange={(e) => setEditValues({ ...editValues, calories: e.target.value })}
+                              className="w-24"
+                            />
+                          ) : (
+                            log.calories
+                          )}
+                        </TableCell>
                         <TableCell className="w-1/6">
                           {format(new Date(log.created_at), "h:mm a")}
                         </TableCell>
@@ -119,8 +162,8 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
                               variant="ghost"
                               size="icon"
                               onClick={(e) => {
-                                e.stopPropagation(); // Prevent event bubbling
-                                onEdit(log);
+                                e.stopPropagation();
+                                handleEdit(log);
                               }}
                               className="hover:bg-[#0EA5E9] hover:text-white active:bg-[#0EA5E9] active:text-white touch-manipulation"
                             >
@@ -130,7 +173,7 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
                               variant="ghost"
                               size="icon"
                               onClick={(e) => {
-                                e.stopPropagation(); // Prevent event bubbling
+                                e.stopPropagation();
                                 if (window.confirm("Are you sure you want to delete this meal?")) {
                                   onDelete(log.id);
                                 }
