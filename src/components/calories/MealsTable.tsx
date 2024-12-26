@@ -1,25 +1,16 @@
-import React, { useState } from "react";
-import { format, isToday } from "date-fns";
-import { Pencil, Trash2, ChevronDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useState } from "react";
+import { format } from "date-fns";
 import {
   Table,
-  TableBody,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Separator } from "@/components/ui/separator";
 import {
   Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
 } from "@/components/ui/accordion";
 import { MealLog } from "@/hooks/useMealLogs";
-import { toast } from "sonner";
+import DailyMealGroup from "./table/DailyMealGroup";
 
 interface MealsTableProps {
   mealLogs: MealLog[];
@@ -47,51 +38,25 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
   // Sort dates in descending order
   const sortedDates = Object.keys(groupedMeals).sort((a, b) => b.localeCompare(a));
 
-  // Calculate daily total calories
-  const getDailyTotal = (meals: MealLog[]) => {
-    return meals.reduce((total, meal) => total + meal.calories, 0);
-  };
-
-  const handleEdit = (meal: MealLog) => {
-    if (editingId === meal.id) {
-      const newCalories = parseInt(editValues.calories);
-      if (!editValues.meal_name.trim()) {
-        toast.error("Meal name cannot be empty");
-        return;
-      }
-      if (isNaN(newCalories) || newCalories <= 0) {
-        toast.error("Please enter a valid number of calories");
-        return;
-      }
-      
-      console.log('Saving edited meal:', {
-        ...meal,
-        meal_name: editValues.meal_name,
-        calories: newCalories
-      });
-      
-      onEdit({
-        ...meal,
-        meal_name: editValues.meal_name,
-        calories: newCalories
-      });
-      setEditingId(null);
-      setEditValues({ meal_name: "", calories: "" });
-      toast.success("Meal updated successfully");
-    } else {
-      setEditingId(meal.id);
-      setEditValues({
-        meal_name: meal.meal_name,
-        calories: meal.calories.toString()
-      });
-    }
-  };
-
   // Find today's date in yyyy-MM-dd format
   const today = format(new Date(), "yyyy-MM-dd");
   
   // State to track expanded sections
   const [expandedSections, setExpandedSections] = useState<string[]>([today]);
+
+  const handleEditStart = (meal: MealLog) => {
+    setEditingId(meal.id);
+    setEditValues({
+      meal_name: meal.meal_name,
+      calories: meal.calories.toString()
+    });
+  };
+
+  const handleEdit = (meal: MealLog) => {
+    onEdit(meal);
+    setEditingId(null);
+    setEditValues({ meal_name: "", calories: "" });
+  };
 
   return (
     <div className="bg-background rounded-lg shadow">
@@ -113,99 +78,18 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
         onValueChange={setExpandedSections}
       >
         {sortedDates.map((date, dateIndex) => (
-          <AccordionItem key={date} value={date}>
-            {dateIndex > 0 && <Separator className="my-2" />}
-            <div className="w-full bg-gradient-to-r from-blue-950/90 to-green-950/90 text-white rounded-lg">
-              <AccordionTrigger className="w-full px-4 py-4 [&[data-state=open]>div>svg]:rotate-180 [&>svg]:hidden">
-                <div className="flex justify-between items-center w-full">
-                  <h3 className="text-lg font-semibold">
-                    {format(new Date(date), "EEEE, MMMM do")}
-                    {date === today && " (Today)"}
-                  </h3>
-                  <div className="flex items-center gap-4">
-                    <span className="text-lg font-semibold">
-                      Total: {getDailyTotal(groupedMeals[date])} calories
-                    </span>
-                    <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
-                  </div>
-                </div>
-              </AccordionTrigger>
-            </div>
-            
-            <AccordionContent className="px-4 pt-2">
-              <div className="rounded-lg overflow-hidden mt-2">
-                <Table>
-                  <TableBody>
-                    {groupedMeals[date].map((log) => (
-                      <TableRow 
-                        key={log.id} 
-                        className="bg-background hover:bg-[#0EA5E9]/50 hover:text-white transition-colors"
-                      >
-                        <TableCell className="w-1/4">
-                          {editingId === log.id ? (
-                            <Input
-                              type="text"
-                              value={editValues.meal_name}
-                              onChange={(e) => setEditValues({ ...editValues, meal_name: e.target.value })}
-                              className="w-full"
-                            />
-                          ) : (
-                            log.meal_name
-                          )}
-                        </TableCell>
-                        <TableCell className="w-1/6">
-                          {editingId === log.id ? (
-                            <Input
-                              type="number"
-                              value={editValues.calories}
-                              onChange={(e) => setEditValues({ ...editValues, calories: e.target.value })}
-                              className="w-24"
-                            />
-                          ) : (
-                            log.calories
-                          )}
-                        </TableCell>
-                        <TableCell className="w-1/6">
-                          {format(new Date(log.created_at), "h:mm a")}
-                        </TableCell>
-                        <TableCell className="w-1/4">
-                          {format(new Date(log.created_at), "MMM d, yyyy")}
-                        </TableCell>
-                        <TableCell className="w-1/6 text-right">
-                          <div className="flex justify-end gap-2">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleEdit(log);
-                              }}
-                              className="hover:bg-[#0EA5E9] hover:text-white active:bg-[#0EA5E9] active:text-white touch-manipulation"
-                            >
-                              <Pencil className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                if (window.confirm("Are you sure you want to delete this meal?")) {
-                                  onDelete(log.id);
-                                }
-                              }}
-                              className="hover:bg-[#0EA5E9] hover:text-white active:bg-[#0EA5E9] active:text-white touch-manipulation"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            </AccordionContent>
-          </AccordionItem>
+          <DailyMealGroup
+            key={date}
+            date={date}
+            meals={groupedMeals[date]}
+            isToday={date === today}
+            dateIndex={dateIndex}
+            editingId={editingId}
+            editValues={editValues}
+            onEdit={handleEdit}
+            onDelete={onDelete}
+            onEditStart={handleEditStart}
+          />
         ))}
       </Accordion>
     </div>
