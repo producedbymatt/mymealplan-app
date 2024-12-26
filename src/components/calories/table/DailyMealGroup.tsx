@@ -27,11 +27,8 @@ const DailyMealGroup = ({
   meals,
   isToday,
   dateIndex,
-  editingId,
-  editValues,
   onEdit,
   onDelete,
-  onEditStart,
 }: DailyMealGroupProps) => {
   const getDailyTotal = (meals: MealLog[]) => {
     return meals.reduce((total, meal) => total + meal.calories, 0);
@@ -65,11 +62,8 @@ const DailyMealGroup = ({
                 <MealTableRow
                   key={log.id}
                   log={log}
-                  isEditing={editingId === log.id}
-                  editValues={editValues}
                   onEdit={onEdit}
                   onDelete={onDelete}
-                  onEditStart={onEditStart}
                 />
               ))}
             </TableBody>
