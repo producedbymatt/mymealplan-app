@@ -9,7 +9,6 @@ import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
 
 const CalorieLogger = () => {
-  const [editingMeal, setEditingMeal] = useState<any>(null);
   const [userId, setUserId] = useState<string | undefined>(undefined);
   const [recommendedCalories, setRecommendedCalories] = useState<number>(0);
   const { mealLogs, addMeal, updateMeal, deleteMeal } = useMealLogs(userId);
@@ -20,7 +19,6 @@ const CalorieLogger = () => {
       setUserId(session?.user?.id);
 
       if (session?.user?.id) {
-        // Fetch user metrics to get recommended calories
         const { data, error } = await supabase
           .from('user_metrics')
           .select('recommended_calories')
@@ -46,33 +44,12 @@ const CalorieLogger = () => {
 
   const handleSubmit = async (meal: { meal_name: string; calories: number }) => {
     try {
-      if (editingMeal) {
-        console.log('Updating meal:', { ...editingMeal, ...meal });
-        await updateMeal({
-          ...editingMeal,
-          meal_name: meal.meal_name,
-          calories: meal.calories
-        });
-        setEditingMeal(null);
-        toast.success("Meal updated successfully");
-      } else {
-        await addMeal(meal);
-        toast.success("Meal added successfully");
-      }
+      await addMeal(meal);
+      toast.success("Meal added successfully");
     } catch (error) {
       console.error('Error saving meal:', error);
       toast.error("Failed to save meal");
     }
-  };
-
-  const handleEdit = (meal: any) => {
-    console.log('Editing meal:', meal);
-    setEditingMeal(meal);
-  };
-
-  const handleCancel = () => {
-    console.log('Canceling edit');
-    setEditingMeal(null);
   };
 
   const todayCalories = mealLogs
@@ -96,9 +73,7 @@ const CalorieLogger = () => {
           <div>
             <MealForm 
               onSubmit={handleSubmit}
-              initialMeal={editingMeal}
-              onCancel={handleCancel}
-              submitButtonText={editingMeal ? "Update Meal" : "Add Meal"}
+              submitButtonText="Add Meal"
             />
           </div>
           <div>
@@ -111,7 +86,7 @@ const CalorieLogger = () => {
         <div className="mt-8">
           <MealsTable
             mealLogs={mealLogs}
-            onEdit={handleEdit}
+            onEdit={updateMeal}
             onDelete={deleteMeal}
           />
         </div>

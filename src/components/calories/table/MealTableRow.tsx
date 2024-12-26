@@ -5,24 +5,25 @@ import { format } from "date-fns";
 import { MealLog } from "@/hooks/useMealLogs";
 import EditableTableCell from "./EditableTableCell";
 import { toast } from "sonner";
+import { useState } from "react";
 
 interface MealTableRowProps {
   log: MealLog;
-  isEditing: boolean;
-  editValues: { meal_name: string; calories: string };
   onEdit: (meal: MealLog) => void;
   onDelete: (id: string) => void;
-  onEditStart: (meal: MealLog) => void;
 }
 
 const MealTableRow = ({
   log,
-  isEditing,
-  editValues,
   onEdit,
   onDelete,
-  onEditStart,
 }: MealTableRowProps) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editValues, setEditValues] = useState({
+    meal_name: log.meal_name,
+    calories: log.calories.toString()
+  });
+
   const handleEditClick = () => {
     if (isEditing) {
       // Save changes
@@ -47,10 +48,15 @@ const MealTableRow = ({
         meal_name: editValues.meal_name,
         calories: newCalories
       });
+      setIsEditing(false);
       toast.success("Meal updated successfully");
     } else {
       // Start editing
-      onEditStart(log);
+      setIsEditing(true);
+      setEditValues({
+        meal_name: log.meal_name,
+        calories: log.calories.toString()
+      });
     }
   };
 
@@ -58,16 +64,16 @@ const MealTableRow = ({
     <TableRow className="bg-background hover:bg-[#0EA5E9]/50 hover:text-white transition-colors">
       <TableCell className="w-1/4">
         <EditableTableCell
-          value={isEditing ? editValues.meal_name : log.meal_name}
+          value={editValues.meal_name}
           isEditing={isEditing}
-          onChange={(value) => onEditStart({ ...log, meal_name: value })}
+          onChange={(value) => setEditValues({ ...editValues, meal_name: value })}
         />
       </TableCell>
       <TableCell className="w-1/6">
         <EditableTableCell
-          value={isEditing ? editValues.calories : log.calories.toString()}
+          value={editValues.calories}
           isEditing={isEditing}
-          onChange={(value) => onEditStart({ ...log, calories: parseInt(value) || 0 })}
+          onChange={(value) => setEditValues({ ...editValues, calories: value })}
           type="number"
         />
       </TableCell>
