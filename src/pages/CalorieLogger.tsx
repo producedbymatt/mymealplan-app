@@ -47,20 +47,32 @@ const CalorieLogger = () => {
   const handleSubmit = async (meal: { meal_name: string; calories: number }) => {
     try {
       if (editingMeal) {
+        console.log('Updating meal:', { ...editingMeal, ...meal });
         await updateMeal({
           ...editingMeal,
           meal_name: meal.meal_name,
           calories: meal.calories
         });
+        setEditingMeal(null);
         toast.success("Meal updated successfully");
       } else {
         await addMeal(meal);
         toast.success("Meal added successfully");
       }
-      setEditingMeal(null);
     } catch (error) {
+      console.error('Error saving meal:', error);
       toast.error("Failed to save meal");
     }
+  };
+
+  const handleEdit = (meal: any) => {
+    console.log('Editing meal:', meal);
+    setEditingMeal(meal);
+  };
+
+  const handleCancel = () => {
+    console.log('Canceling edit');
+    setEditingMeal(null);
   };
 
   const todayCalories = mealLogs
@@ -85,7 +97,8 @@ const CalorieLogger = () => {
             <MealForm 
               onSubmit={handleSubmit}
               initialMeal={editingMeal}
-              onCancel={() => setEditingMeal(null)}
+              onCancel={handleCancel}
+              submitButtonText={editingMeal ? "Update Meal" : "Add Meal"}
             />
           </div>
           <div>
@@ -98,7 +111,7 @@ const CalorieLogger = () => {
         <div className="mt-8">
           <MealsTable
             mealLogs={mealLogs}
-            onEdit={setEditingMeal}
+            onEdit={handleEdit}
             onDelete={deleteMeal}
           />
         </div>

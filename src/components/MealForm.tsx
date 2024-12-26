@@ -25,6 +25,14 @@ export const MealForm = ({ onSubmit, initialMeal, onCancel, submitButtonText }: 
   });
   const [previousMeals, setPreviousMeals] = useState<MealLog[]>([]);
 
+  // Reset form when initialMeal changes
+  useEffect(() => {
+    setMeal({
+      meal_name: initialMeal?.meal_name || "",
+      calories: initialMeal?.calories?.toString() || "",
+    });
+  }, [initialMeal]);
+
   useEffect(() => {
     const fetchPreviousMeals = async () => {
       const { data: session } = await supabase.auth.getSession();
@@ -70,6 +78,14 @@ export const MealForm = ({ onSubmit, initialMeal, onCancel, submitButtonText }: 
       meal_name: meal.meal_name,
       calories: parseInt(meal.calories),
     });
+
+    // Only reset if not editing
+    if (!initialMeal) {
+      setMeal({
+        meal_name: "",
+        calories: "",
+      });
+    }
   };
 
   const handlePreviousMealSelect = (mealId: string) => {
@@ -85,7 +101,7 @@ export const MealForm = ({ onSubmit, initialMeal, onCancel, submitButtonText }: 
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      {previousMeals.length > 0 && (
+      {!initialMeal && previousMeals.length > 0 && (
         <div>
           <Select onValueChange={handlePreviousMealSelect}>
             <SelectTrigger>
