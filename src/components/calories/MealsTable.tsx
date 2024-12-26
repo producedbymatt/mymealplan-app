@@ -19,6 +19,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { MealLog } from "@/hooks/useMealLogs";
+import { toast } from "sonner";
 
 interface MealsTableProps {
   mealLogs: MealLog[];
@@ -54,15 +55,29 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
   const handleEdit = (meal: MealLog) => {
     if (editingId === meal.id) {
       const newCalories = parseInt(editValues.calories);
-      if (!isNaN(newCalories)) {
-        onEdit({
-          ...meal,
-          meal_name: editValues.meal_name,
-          calories: newCalories
-        });
-        setEditingId(null);
-        setEditValues({ meal_name: "", calories: "" });
+      if (!editValues.meal_name.trim()) {
+        toast.error("Meal name cannot be empty");
+        return;
       }
+      if (isNaN(newCalories) || newCalories <= 0) {
+        toast.error("Please enter a valid number of calories");
+        return;
+      }
+      
+      console.log('Saving edited meal:', {
+        ...meal,
+        meal_name: editValues.meal_name,
+        calories: newCalories
+      });
+      
+      onEdit({
+        ...meal,
+        meal_name: editValues.meal_name,
+        calories: newCalories
+      });
+      setEditingId(null);
+      setEditValues({ meal_name: "", calories: "" });
+      toast.success("Meal updated successfully");
     } else {
       setEditingId(meal.id);
       setEditValues({
