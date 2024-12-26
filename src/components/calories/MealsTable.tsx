@@ -118,20 +118,24 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
                             <Button
                               variant="ghost"
                               size="icon"
-                              onClick={() => onEdit(log)}
-                              className="hover:bg-[#0EA5E9] hover:text-white"
+                              onClick={(e) => {
+                                e.stopPropagation(); // Prevent event bubbling
+                                onEdit(log);
+                              }}
+                              className="hover:bg-[#0EA5E9] hover:text-white active:bg-[#0EA5E9] active:text-white touch-manipulation"
                             >
                               <Pencil className="h-4 w-4" />
                             </Button>
                             <Button
                               variant="ghost"
                               size="icon"
-                              onClick={() => {
+                              onClick={(e) => {
+                                e.stopPropagation(); // Prevent event bubbling
                                 if (window.confirm("Are you sure you want to delete this meal?")) {
                                   onDelete(log.id);
                                 }
                               }}
-                              className="hover:bg-[#0EA5E9] hover:text-white"
+                              className="hover:bg-[#0EA5E9] hover:text-white active:bg-[#0EA5E9] active:text-white touch-manipulation"
                             >
                               <Trash2 className="h-4 w-4" />
                             </Button>
