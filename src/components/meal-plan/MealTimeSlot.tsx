@@ -29,20 +29,20 @@ const MealTimeSlot = ({
 
   useEffect(() => {
     const loadAllOptions = async () => {
-      setIsLoading(true);
-      try {
-        const meals = await getMealOptionsForTime(time);
-        setAllOptions(meals);
-      } catch (error) {
-        console.error('Error loading meal options:', error);
-      } finally {
-        setIsLoading(false);
+      if (showAll) {
+        setIsLoading(true);
+        try {
+          const meals = await getMealOptionsForTime(time);
+          setAllOptions(meals);
+        } catch (error) {
+          console.error('Error loading meal options:', error);
+        } finally {
+          setIsLoading(false);
+        }
       }
     };
 
-    if (showAll) {
-      loadAllOptions();
-    }
+    loadAllOptions();
   }, [time, showAll]);
 
   const displayedOptions = showAll ? allOptions : options;

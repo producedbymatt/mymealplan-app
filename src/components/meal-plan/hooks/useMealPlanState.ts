@@ -54,27 +54,36 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
     setFavoriteMeals(prev => prev.filter(meal => meal.name !== mealName));
   };
 
-  const generateMealOptions = async (timeSlot: string, caloriesPerMeal: number, excludeNames: Set<string>, count: number = 2) => {
-    const allOptions = await getMealOptionsForTime(timeSlot);
-    const availableOptions = allOptions.filter(meal => !excludeNames.has(meal.name));
-    
-    if (availableOptions.length === 0) {
-      console.log('No unique recipes available, resetting used recipes list');
-      setUsedRecipes(new Set());
-      return [scaleMeal(allOptions[Math.floor(Math.random() * allOptions.length)], caloriesPerMeal)];
-    }
+  const generateMealOptions = async (timeSlot: string, caloriesPerMeal: number, excludeNames: Set<string>, count: number = 2): Promise<Meal[]> => {
+    try {
+      const allOptions = await getMealOptionsForTime(timeSlot);
+      console.log(`Retrieved ${allOptions.length} options for ${timeSlot}`);
+      
+      const availableOptions = allOptions.filter(meal => !excludeNames.has(meal.name));
+      
+      if (availableOptions.length === 0) {
+        console.log('No unique recipes available, resetting used recipes list');
+        setUsedRecipes(new Set());
+        return allOptions.length > 0 
+          ? [scaleMeal(allOptions[Math.floor(Math.random() * allOptions.length)], caloriesPerMeal)]
+          : [];
+      }
 
-    const selectedMeals: Meal[] = [];
-    const tempAvailable = [...availableOptions];
-    
-    for (let i = 0; i < count && tempAvailable.length > 0; i++) {
-      const randomIndex = Math.floor(Math.random() * tempAvailable.length);
-      const selectedMeal = tempAvailable[randomIndex];
-      selectedMeals.push(scaleMeal(selectedMeal, caloriesPerMeal));
-      tempAvailable.splice(randomIndex, 1);
-    }
+      const selectedMeals: Meal[] = [];
+      const tempAvailable = [...availableOptions];
+      
+      for (let i = 0; i < count && tempAvailable.length > 0; i++) {
+        const randomIndex = Math.floor(Math.random() * tempAvailable.length);
+        const selectedMeal = tempAvailable[randomIndex];
+        selectedMeals.push(scaleMeal(selectedMeal, caloriesPerMeal));
+        tempAvailable.splice(randomIndex, 1);
+      }
 
-    return selectedMeals;
+      return selectedMeals;
+    } catch (error) {
+      console.error('Error generating meal options:', error);
+      return [];
+    }
   };
 
   useEffect(() => {
@@ -83,8 +92,6 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
       setIsLoading(true);
       const caloriesPerMeal = Math.round(dailyCalories / 3);
       const timeSlots = ["Breakfast", "Lunch", "Dinner"];
-      
-      setUsedRecipes(new Set());
       
       try {
         const newMealPlan = await Promise.all(timeSlots.map(async time => {
