@@ -141,12 +141,14 @@ export const MealForm = ({ onSubmit, initialMeal, onCancel, submitButtonText }: 
                 <SelectItem 
                   key={prevMeal.id} 
                   value={prevMeal.id}
-                  className="hover:bg-[#0EA5E9]/50 hover:text-white data-[highlighted]:bg-[#0EA5E9]/50 data-[highlighted]:text-white flex justify-between items-center group"
+                  className="hover:bg-[#0EA5E9]/50 hover:text-white data-[highlighted]:bg-[#0EA5E9]/50 data-[highlighted]:text-white flex justify-between items-center pr-2"
                 >
-                  <div className="flex items-center gap-2">
-                    {prevMeal.meal_name} ({prevMeal.calories} cal)
+                  <div className="flex items-center gap-2 flex-1 min-w-0">
+                    <span className="truncate">
+                      {prevMeal.meal_name} ({prevMeal.calories} cal)
+                    </span>
                     {index === 0 && (
-                      <Badge variant="secondary" className="ml-2">
+                      <Badge variant="secondary" className="ml-2 shrink-0">
                         Recent
                       </Badge>
                     )}
@@ -155,7 +157,7 @@ export const MealForm = ({ onSubmit, initialMeal, onCancel, submitButtonText }: 
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="h-6 w-6 shrink-0 ml-2"
                     onClick={(e) => handleDeleteMeal(prevMeal.id, e)}
                   >
                     <Trash2 className="h-4 w-4 text-red-500" />
