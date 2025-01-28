@@ -10,6 +10,7 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [userId, setUserId] = useState<string | undefined>();
   const [favoriteMeals, setFavoriteMeals] = useState<Meal[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const getSession = async () => {
@@ -53,8 +54,8 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
     setFavoriteMeals(prev => prev.filter(meal => meal.name !== mealName));
   };
 
-  const generateMealOptions = (timeSlot: string, caloriesPerMeal: number, excludeNames: Set<string>, count: number = 2) => {
-    const allOptions = getMealOptionsForTime(timeSlot);
+  const generateMealOptions = async (timeSlot: string, caloriesPerMeal: number, excludeNames: Set<string>, count: number = 2) => {
+    const allOptions = await getMealOptionsForTime(timeSlot);
     const availableOptions = allOptions.filter(meal => !excludeNames.has(meal.name));
     
     if (availableOptions.length === 0) {
@@ -63,7 +64,6 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
       return [scaleMeal(allOptions[Math.floor(Math.random() * allOptions.length)], caloriesPerMeal)];
     }
 
-    // Get multiple random meals
     const selectedMeals: Meal[] = [];
     const tempAvailable = [...availableOptions];
     
@@ -77,23 +77,33 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
     return selectedMeals;
   };
 
-  // Update meal plan when calories change
   useEffect(() => {
-    console.log('Updating meal plan with new calories:', dailyCalories);
-    const caloriesPerMeal = Math.round(dailyCalories / 3);
-    const timeSlots = ["Breakfast", "Lunch", "Dinner"];
-    
-    setUsedRecipes(new Set());
-    
-    const newMealPlan = timeSlots.map(time => {
-      const options = generateMealOptions(time, caloriesPerMeal, new Set(), 2);
-      options.forEach(meal => {
-        setUsedRecipes(prev => new Set([...prev, meal.name]));
-      });
-      return { time, options };
-    });
+    const initializeMealPlan = async () => {
+      console.log('Updating meal plan with new calories:', dailyCalories);
+      setIsLoading(true);
+      const caloriesPerMeal = Math.round(dailyCalories / 3);
+      const timeSlots = ["Breakfast", "Lunch", "Dinner"];
+      
+      setUsedRecipes(new Set());
+      
+      try {
+        const newMealPlan = await Promise.all(timeSlots.map(async time => {
+          const options = await generateMealOptions(time, caloriesPerMeal, new Set(), 2);
+          options.forEach(meal => {
+            setUsedRecipes(prev => new Set([...prev, meal.name]));
+          });
+          return { time, options };
+        }));
 
-    setMealPlan(newMealPlan);
+        setMealPlan(newMealPlan);
+      } catch (error) {
+        console.error('Error initializing meal plan:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    initializeMealPlan();
   }, [dailyCalories]);
 
   return {
@@ -107,6 +117,7 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
     generateMealOptions,
     favoriteMeals,
     addFavoriteMeal,
-    removeFavoriteMeal
+    removeFavoriteMeal,
+    isLoading
   };
 };

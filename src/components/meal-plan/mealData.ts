@@ -1,14 +1,23 @@
-import { breakfastRecipes } from "./recipes/breakfast";
-import { lunchRecipes } from "./recipes/lunch";
-import { dinnerRecipes } from "./recipes/dinner";
 import { Meal } from "./types";
+import { supabase } from "@/lib/supabase";
 
-export const getMealOptionsForTime = (time: string): Meal[] => {
-  if (time.includes("Breakfast")) {
-    return breakfastRecipes;
-  } else if (time.includes("Lunch")) {
-    return lunchRecipes;
-  } else {
-    return dinnerRecipes;
+export const getMealOptionsForTime = async (time: string): Promise<Meal[]> => {
+  const mealType = time.toLowerCase().includes('breakfast') ? 'breakfast' 
+    : time.toLowerCase().includes('lunch') ? 'lunch' 
+    : 'dinner';
+
+  console.log('Fetching meal options for time:', time, 'meal type:', mealType);
+  
+  const { data, error } = await supabase
+    .from('recipes')
+    .select('*')
+    .eq('meal_type', mealType);
+
+  if (error) {
+    console.error('Error fetching recipes:', error);
+    throw error;
   }
+
+  console.log(`Found ${data?.length} recipes for meal type:`, mealType);
+  return data as Meal[];
 };
