@@ -54,30 +54,6 @@ export type Database = {
         }
         Relationships: []
       }
-      favorite_meals: {
-        Row: {
-          created_at: string
-          id: string
-          meal_data: Json
-          meal_name: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          meal_data: Json
-          meal_name: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          meal_data?: Json
-          meal_name?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
       meal_logs: {
         Row: {
           calories: number
@@ -159,6 +135,7 @@ export type Database = {
           id: string
           ingredients: Json
           instructions: Json
+          is_favorite: boolean | null
           meal_type: string
           name: string
           prep_time: string
@@ -176,6 +153,7 @@ export type Database = {
           id?: string
           ingredients: Json
           instructions: Json
+          is_favorite?: boolean | null
           meal_type: string
           name: string
           prep_time: string
@@ -193,6 +171,7 @@ export type Database = {
           id?: string
           ingredients?: Json
           instructions?: Json
+          is_favorite?: boolean | null
           meal_type?: string
           name?: string
           prep_time?: string
@@ -200,6 +179,32 @@ export type Database = {
           tags?: string[] | null
         }
         Relationships: []
+      }
+      user_favorite_recipes: {
+        Row: {
+          created_at: string | null
+          recipe_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          recipe_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          recipe_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_favorite_recipes_recipe_id_fkey"
+            columns: ["recipe_id"]
+            isOneToOne: false
+            referencedRelation: "recipes"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_metrics: {
         Row: {

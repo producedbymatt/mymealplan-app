@@ -16,8 +16,22 @@ export const useAllFavoriteMeals = (userId?: string) => {
       try {
         console.log('Loading all favorite meals for user:', userId);
         const { data, error } = await supabase
-          .from('favorite_meals')
-          .select('meal_data')
+          .from('user_favorite_recipes')
+          .select(`
+            recipe_id,
+            recipes (
+              name,
+              calories,
+              protein,
+              carbs,
+              fat,
+              prep_time,
+              cook_time,
+              ingredients,
+              instructions,
+              meal_type
+            )
+          `)
           .eq('user_id', userId);
 
         if (error) {
@@ -25,7 +39,20 @@ export const useAllFavoriteMeals = (userId?: string) => {
           return;
         }
 
-        const meals = data?.map(item => item.meal_data as Meal) || [];
+        const meals = data?.map(item => ({
+          name: item.recipes.name,
+          calories: item.recipes.calories,
+          protein: item.recipes.protein,
+          carbs: item.recipes.carbs,
+          fat: item.recipes.fat,
+          recipe: {
+            ingredients: item.recipes.ingredients,
+            instructions: item.recipes.instructions,
+            prepTime: item.recipes.prep_time,
+            cookTime: item.recipes.cook_time
+          }
+        })) || [];
+
         console.log('Loaded favorite meals:', meals);
         setFavoriteMeals(meals);
       } catch (err) {

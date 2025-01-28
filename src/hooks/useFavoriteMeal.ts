@@ -22,11 +22,29 @@ export const useFavoriteMeal = (meal: Meal) => {
           meal_name: meal.name
         });
 
+        // First get the recipe ID
+        const { data: recipeData, error: recipeError } = await supabase
+          .from('recipes')
+          .select('id')
+          .eq('name', meal.name)
+          .single();
+
+        if (recipeError) {
+          console.error('Error finding recipe:', recipeError);
+          return;
+        }
+
+        if (!recipeData) {
+          console.log('Recipe not found:', meal.name);
+          return;
+        }
+
+        // Then check if it's in user_favorite_recipes
         const { data, error } = await supabase
-          .from('favorite_meals')
+          .from('user_favorite_recipes')
           .select('*')
           .eq('user_id', session.user.id)
-          .eq('meal_name', meal.name);
+          .eq('recipe_id', recipeData.id);
 
         if (error) {
           console.error('Error loading favorite status:', error);
@@ -37,7 +55,6 @@ export const useFavoriteMeal = (meal: Meal) => {
           return;
         }
 
-        // Check if we have any matching favorites
         setIsFavorite(data && data.length > 0);
         console.log('Favorite status loaded:', { isFavorite: data && data.length > 0 });
       } catch (err) {
@@ -66,19 +83,42 @@ export const useFavoriteMeal = (meal: Meal) => {
       const newFavoriteStatus = !isFavorite;
       setIsLoading(true);
 
+      // First get the recipe ID
+      const { data: recipeData, error: recipeError } = await supabase
+        .from('recipes')
+        .select('id')
+        .eq('name', meal.name)
+        .single();
+
+      if (recipeError) {
+        console.error('Error finding recipe:', recipeError);
+        toast({
+          title: "Error",
+          description: "Failed to find recipe. Please try again.",
+        });
+        return isFavorite;
+      }
+
+      if (!recipeData) {
+        console.error('Recipe not found:', meal.name);
+        toast({
+          title: "Error",
+          description: "Recipe not found. Please try again.",
+        });
+        return isFavorite;
+      }
+
       if (newFavoriteStatus) {
         console.log('Adding favorite:', {
           user_id: session.user.id,
-          meal_name: meal.name,
-          meal_data: meal
+          recipe_id: recipeData.id
         });
 
         const { error } = await supabase
-          .from('favorite_meals')
+          .from('user_favorite_recipes')
           .insert({
             user_id: session.user.id,
-            meal_name: meal.name,
-            meal_data: meal
+            recipe_id: recipeData.id
           });
 
         if (error) {
@@ -92,14 +132,14 @@ export const useFavoriteMeal = (meal: Meal) => {
       } else {
         console.log('Removing favorite:', {
           user_id: session.user.id,
-          meal_name: meal.name
+          recipe_id: recipeData.id
         });
 
         const { error } = await supabase
-          .from('favorite_meals')
+          .from('user_favorite_recipes')
           .delete()
           .eq('user_id', session.user.id)
-          .eq('meal_name', meal.name);
+          .eq('recipe_id', recipeData.id);
 
         if (error) {
           console.error('Error removing favorite:', error);
