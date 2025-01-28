@@ -56,7 +56,10 @@ export const useAllFavoriteMeals = (userId?: string) => {
           return;
         }
 
-        const meals = (data as RecipeResponse[])?.map(item => ({
+        // First cast to unknown, then to RecipeResponse[] to handle the type mismatch safely
+        const typedData = data as unknown as RecipeResponse[];
+        
+        const meals = typedData?.map(item => ({
           name: item.recipes.name,
           calories: item.recipes.calories,
           protein: item.recipes.protein,
