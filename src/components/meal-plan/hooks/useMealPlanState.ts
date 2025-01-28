@@ -38,7 +38,7 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
         return;
       }
 
-      const meals = data?.map(item => ({
+      const meals: Meal[] = data?.map(item => ({
         name: item.recipes.name,
         calories: item.recipes.calories,
         protein: item.recipes.protein,
@@ -59,14 +59,77 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
     }
   };
 
-  const addFavoriteMeal = (meal: Meal) => {
-    console.log('Adding meal to favorites:', meal);
-    setFavoriteMeals(prev => [...prev, meal]);
+  const addFavoriteMeal = async (meal: Meal) => {
+    if (!userId) return;
+    
+    try {
+      console.log('Adding meal to favorites:', meal);
+      
+      // First get the recipe ID from the recipes table
+      const { data: recipeData, error: recipeError } = await supabase
+        .from('recipes')
+        .select('id')
+        .eq('name', meal.name)
+        .single();
+
+      if (recipeError) {
+        console.error('Error finding recipe:', recipeError);
+        return;
+      }
+
+      // Then add to user_favorite_recipes
+      const { error } = await supabase
+        .from('user_favorite_recipes')
+        .insert({
+          user_id: userId,
+          recipe_id: recipeData.id
+        });
+
+      if (error) {
+        console.error('Error adding favorite:', error);
+        return;
+      }
+
+      setFavoriteMeals(prev => [...prev, meal]);
+    } catch (err) {
+      console.error('Error in addFavoriteMeal:', err);
+    }
   };
 
-  const removeFavoriteMeal = (mealName: string) => {
-    console.log('Removing meal from favorites:', mealName);
-    setFavoriteMeals(prev => prev.filter(meal => meal.name !== mealName));
+  const removeFavoriteMeal = async (mealName: string) => {
+    if (!userId) return;
+    
+    try {
+      console.log('Removing meal from favorites:', mealName);
+      
+      // First get the recipe ID
+      const { data: recipeData, error: recipeError } = await supabase
+        .from('recipes')
+        .select('id')
+        .eq('name', mealName)
+        .single();
+
+      if (recipeError) {
+        console.error('Error finding recipe:', recipeError);
+        return;
+      }
+
+      // Then remove from user_favorite_recipes
+      const { error } = await supabase
+        .from('user_favorite_recipes')
+        .delete()
+        .eq('user_id', userId)
+        .eq('recipe_id', recipeData.id);
+
+      if (error) {
+        console.error('Error removing favorite:', error);
+        return;
+      }
+
+      setFavoriteMeals(prev => prev.filter(meal => meal.name !== mealName));
+    } catch (err) {
+      console.error('Error in removeFavoriteMeal:', err);
+    }
   };
 
   const generateMealOptions = async (
