@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { RefreshCw, ChevronDown, ChevronUp } from "lucide-react";
 import MealOption from "./MealOption";
@@ -24,7 +24,27 @@ const MealTimeSlot = ({
   onFavoriteChange 
 }: MealTimeSlotProps) => {
   const [showAll, setShowAll] = useState(false);
-  const allOptions = getMealOptionsForTime(time);
+  const [allOptions, setAllOptions] = useState<Meal[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const loadAllOptions = async () => {
+      setIsLoading(true);
+      try {
+        const meals = await getMealOptionsForTime(time);
+        setAllOptions(meals);
+      } catch (error) {
+        console.error('Error loading meal options:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (showAll) {
+      loadAllOptions();
+    }
+  }, [time, showAll]);
+
   const displayedOptions = showAll ? allOptions : options;
 
   console.log(`MealTimeSlot ${time}: Displaying ${displayedOptions.length} options, showAll: ${showAll}`);
@@ -39,7 +59,7 @@ const MealTimeSlot = ({
           onClick={onRefresh}
           className="flex items-center gap-2 hover:text-white hover:bg-blue-900 hover:border hover:border-white"
         >
-          <RefreshCw className="h-4 w-4" />
+          <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
           Refresh Options
         </Button>
       </div>
@@ -58,6 +78,7 @@ const MealTimeSlot = ({
           variant="ghost"
           className="w-full flex items-center gap-2 text-muted-foreground hover:text-white hover:bg-blue-900 hover:border hover:border-white"
           onClick={() => setShowAll(!showAll)}
+          disabled={isLoading}
         >
           {showAll ? (
             <>
@@ -67,7 +88,7 @@ const MealTimeSlot = ({
           ) : (
             <>
               <ChevronDown className="h-4 w-4" />
-              Show All {allOptions.length} Options
+              Show All Options
             </>
           )}
         </Button>

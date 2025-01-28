@@ -27,35 +27,44 @@ const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: Me
     generateMealOptions,
     favoriteMeals,
     addFavoriteMeal,
-    removeFavoriteMeal
+    removeFavoriteMeal,
+    isLoading
   } = useMealPlanState(dailyCalories);
 
   const { toast } = useToast();
 
-  const refreshMealOptions = (timeSlotIndex: number) => {
+  const refreshMealOptions = async (timeSlotIndex: number) => {
     console.log(`Refreshing meal options for time slot ${timeSlotIndex}`);
     const caloriesPerMeal = Math.round(dailyCalories / 3);
     
-    setMealPlan((currentPlan) => {
-      const newPlan = [...currentPlan];
-      const newOptions = generateMealOptions(
-        newPlan[timeSlotIndex].time, 
+    try {
+      const newOptions = await generateMealOptions(
+        mealPlan[timeSlotIndex].time, 
         caloriesPerMeal,
         usedRecipes,
-        2 // Now requesting 2 meal options
+        2
       );
       
       newOptions.forEach(meal => {
         setUsedRecipes(prev => new Set([...prev, meal.name]));
       });
       
-      newPlan[timeSlotIndex] = {
-        ...newPlan[timeSlotIndex],
-        options: newOptions,
-      };
-      
-      return newPlan;
-    });
+      setMealPlan(currentPlan => {
+        const newPlan = [...currentPlan];
+        newPlan[timeSlotIndex] = {
+          ...newPlan[timeSlotIndex],
+          options: newOptions,
+        };
+        return newPlan;
+      });
+    } catch (error) {
+      console.error('Error refreshing meal options:', error);
+      toast({
+        title: "Error",
+        description: "Failed to refresh meal options. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const toggleFavoritesFilter = () => {
@@ -74,6 +83,16 @@ const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: Me
     const caloriesPerMeal = Math.round(dailyCalories / 3);
     return favoriteMeals.map(meal => scaleMeal(meal, caloriesPerMeal));
   };
+
+  if (isLoading) {
+    return (
+      <Card className="p-6 w-full max-w-2xl mx-auto bg-background">
+        <div className="flex items-center justify-center h-40">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+        </div>
+      </Card>
+    );
+  }
 
   return (
     <Card className="p-6 w-full max-w-2xl mx-auto bg-background">
