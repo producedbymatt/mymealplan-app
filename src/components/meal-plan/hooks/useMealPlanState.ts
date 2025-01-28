@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabase";
 
 // Define interface for the recipe data from Supabase
 interface RecipeData {
+  recipe_id: string;
   recipes: {
     name: string;
     calories: number;
@@ -53,7 +54,7 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
         return;
       }
 
-      const meals: Meal[] = (data as RecipeData[])?.map(item => ({
+      const meals: Meal[] = (data as RecipeData[]).map(item => ({
         name: item.recipes.name,
         calories: item.recipes.calories,
         protein: item.recipes.protein,
@@ -65,7 +66,7 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
           prepTime: item.recipes.prep_time,
           cookTime: item.recipes.cook_time
         }
-      })) || [];
+      }));
 
       console.log('Loaded favorite meals:', meals);
       setFavoriteMeals(meals);
