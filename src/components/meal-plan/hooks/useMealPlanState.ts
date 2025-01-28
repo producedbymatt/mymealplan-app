@@ -3,6 +3,21 @@ import { MealTimeSlot, Meal } from "../types";
 import { getMealOptionsForTime } from "../mealData";
 import { supabase } from "@/lib/supabase";
 
+// Define interface for the recipe data from Supabase
+interface RecipeData {
+  recipes: {
+    name: string;
+    calories: number;
+    protein: number;
+    carbs: number;
+    fat: number;
+    ingredients: string[];
+    instructions: string[];
+    prep_time: string;
+    cook_time: string;
+  }
+}
+
 export const useMealPlanState = (dailyCalories: number = 1200) => {
   const [mealPlan, setMealPlan] = useState<MealTimeSlot[]>([]);
   const [usedRecipes, setUsedRecipes] = useState<Set<string>>(new Set());
@@ -38,7 +53,7 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
         return;
       }
 
-      const meals: Meal[] = data?.map(item => ({
+      const meals: Meal[] = (data as RecipeData[])?.map(item => ({
         name: item.recipes.name,
         calories: item.recipes.calories,
         protein: item.recipes.protein,
