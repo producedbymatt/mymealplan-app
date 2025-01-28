@@ -2,6 +2,23 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { Meal } from "@/components/meal-plan/types";
 
+// Define types for the database response
+type RecipeResponse = {
+  recipe_id: string;
+  recipes: {
+    name: string;
+    calories: number;
+    protein: number;
+    carbs: number;
+    fat: number;
+    prep_time: string;
+    cook_time: string;
+    ingredients: string[];
+    instructions: string[];
+    meal_type: string;
+  };
+};
+
 export const useAllFavoriteMeals = (userId?: string) => {
   const [favoriteMeals, setFavoriteMeals] = useState<Meal[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -39,7 +56,7 @@ export const useAllFavoriteMeals = (userId?: string) => {
           return;
         }
 
-        const meals = data?.map(item => ({
+        const meals = (data as RecipeResponse[])?.map(item => ({
           name: item.recipes.name,
           calories: item.recipes.calories,
           protein: item.recipes.protein,
