@@ -21,7 +21,11 @@ export const getMealOptionsForTime = async (time: string): Promise<Meal[]> => {
     }
 
     console.log(`Found ${data?.length} recipes for meal type ${mealType}:`, 
-      data?.map(recipe => ({ name: recipe.name, type: recipe.meal_type })));
+      data?.map(recipe => ({ 
+        name: recipe.name, 
+        type: recipe.meal_type,
+        calories: recipe.calories
+      })));
     
     // Transform the data to match the Meal type
     const meals = data.map(recipe => ({
