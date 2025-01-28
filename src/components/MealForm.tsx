@@ -61,8 +61,16 @@ export const MealForm = ({ onSubmit, initialMeal, onCancel, submitButtonText }: 
         return acc;
       }, []);
 
-      console.log('Fetched unique previous meals:', uniqueMeals);
-      setPreviousMeals(uniqueMeals);
+      // Sort meals: most recent first, then alphabetically
+      const mostRecent = uniqueMeals[0]; // Keep the most recent meal
+      const otherMeals = uniqueMeals.slice(1).sort((a, b) => 
+        a.meal_name.localeCompare(b.meal_name)
+      );
+
+      const sortedMeals = mostRecent ? [mostRecent, ...otherMeals] : otherMeals;
+
+      console.log('Fetched and sorted unique previous meals:', sortedMeals);
+      setPreviousMeals(sortedMeals);
     };
 
     fetchPreviousMeals();
