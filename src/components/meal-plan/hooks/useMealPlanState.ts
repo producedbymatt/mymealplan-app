@@ -59,7 +59,18 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
       const allOptions = await getMealOptionsForTime(timeSlot);
       console.log(`Retrieved ${allOptions.length} options for ${timeSlot}`);
       
-      const availableOptions = allOptions.filter(meal => !excludeNames.has(meal.name));
+      // Include scaled favorites that match the meal type
+      const scaledFavorites = favoriteMeals
+        .filter(meal => {
+          const mealType = timeSlot.toLowerCase().includes('breakfast') ? 'breakfast' 
+            : timeSlot.toLowerCase().includes('lunch') ? 'lunch' 
+            : 'dinner';
+          return !excludeNames.has(meal.name);
+        })
+        .map(meal => scaleMeal(meal, caloriesPerMeal));
+      
+      // Combine favorites with database options
+      const availableOptions = [...scaledFavorites, ...allOptions.filter(meal => !excludeNames.has(meal.name))];
       
       if (availableOptions.length === 0) {
         console.log('No unique recipes available, resetting used recipes list');
