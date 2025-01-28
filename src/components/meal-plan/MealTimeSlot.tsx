@@ -5,6 +5,7 @@ import MealOption from "./MealOption";
 import { Separator } from "@/components/ui/separator";
 import { Meal } from "./types";
 import { getMealOptionsForTime } from "./mealData";
+import { scaleMeal } from "./utils/mealScaling";
 
 interface MealTimeSlotProps {
   time: string;
@@ -33,7 +34,17 @@ const MealTimeSlot = ({
         setIsLoading(true);
         try {
           const meals = await getMealOptionsForTime(time);
-          setAllOptions(meals);
+          // Include the current options (which include favorites) in the expanded list
+          const uniqueMeals = [...options];
+          
+          // Add new meals that aren't already in the list
+          meals.forEach(meal => {
+            if (!uniqueMeals.some(existing => existing.name === meal.name)) {
+              uniqueMeals.push(meal);
+            }
+          });
+          
+          setAllOptions(uniqueMeals);
         } catch (error) {
           console.error('Error loading meal options:', error);
         } finally {
@@ -43,7 +54,7 @@ const MealTimeSlot = ({
     };
 
     loadAllOptions();
-  }, [time, showAll]);
+  }, [time, showAll, options]);
 
   const displayedOptions = showAll ? allOptions : options;
 
