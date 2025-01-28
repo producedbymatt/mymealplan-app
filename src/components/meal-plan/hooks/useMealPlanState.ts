@@ -16,7 +16,7 @@ interface RecipeData {
     instructions: string[];
     prep_time: string;
     cook_time: string;
-  }
+  };
 }
 
 export const useMealPlanState = (dailyCalories: number = 1200) => {
@@ -54,7 +54,7 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
         return;
       }
 
-      const meals: Meal[] = (data as RecipeData[]).map(item => ({
+      const meals: Meal[] = (data as unknown as RecipeData[]).map(item => ({
         name: item.recipes.name,
         calories: item.recipes.calories,
         protein: item.recipes.protein,
