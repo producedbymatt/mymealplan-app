@@ -6,7 +6,7 @@ export const getMealOptionsForTime = async (time: string): Promise<Meal[]> => {
     : time.toLowerCase().includes('lunch') ? 'lunch' 
     : 'dinner';
 
-  console.log('Fetching meal options for time:', time, 'meal type:', mealType);
+  console.log('Getting meal options for time:', time, 'mapped to meal type:', mealType);
   
   try {
     const { data, error } = await supabase
@@ -19,7 +19,7 @@ export const getMealOptionsForTime = async (time: string): Promise<Meal[]> => {
       throw error;
     }
 
-    console.log(`Found ${data?.length} recipes for meal type:`, mealType);
+    console.log(`Found ${data?.length} recipes for meal type ${mealType}:`, data);
     
     // Transform the data to match the Meal type
     const meals = data.map(recipe => ({
