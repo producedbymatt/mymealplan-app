@@ -12,7 +12,7 @@ export const getMealOptionsForTime = async (time: string): Promise<Meal[]> => {
     const { data, error } = await supabase
       .from('recipes')
       .select('*')
-      .eq('meal_type', mealType);
+      .eq('meal_type', mealType);  // This ensures we only get meals for the specific meal type
 
     if (error) {
       console.error('Error fetching recipes:', error);
