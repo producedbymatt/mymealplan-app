@@ -4,6 +4,21 @@ import { MealTimeSlot, Meal } from "../types";
 import { getMealOptionsForTime } from "../mealData";
 import { scaleMeal } from "../utils/mealScaling";
 
+interface RecipeData {
+  recipes: {
+    name: string;
+    calories: number;
+    protein: number;
+    carbs: number;
+    fat: number;
+    prep_time: string;
+    cook_time: string;
+    ingredients: string[];
+    instructions: string[];
+    meal_type: string;
+  }
+}
+
 export const useMealPlanState = (dailyCalories: number = 1200) => {
   const [mealPlan, setMealPlan] = useState<MealTimeSlot[]>([]);
   const [usedRecipes, setUsedRecipes] = useState<Set<string>>(new Set());
@@ -50,7 +65,7 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
         return;
       }
 
-      const meals = data?.map(item => ({
+      const meals = (data as RecipeData[])?.map(item => ({
         name: item.recipes.name,
         calories: item.recipes.calories,
         protein: item.recipes.protein,
