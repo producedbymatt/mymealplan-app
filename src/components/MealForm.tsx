@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { MealLog } from "@/hooks/useMealLogs";
+import { Badge } from "@/components/ui/badge";
+import { Trash2 } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -10,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { supabase } from "@/lib/supabase";
+import { toast } from "sonner";
 
 interface MealFormProps {
   onSubmit: (meal: { meal_name: string; calories: number }) => void;
@@ -107,6 +110,24 @@ export const MealForm = ({ onSubmit, initialMeal, onCancel, submitButtonText }: 
     }
   };
 
+  const handleDeleteMeal = async (mealId: string, event: React.MouseEvent) => {
+    event.stopPropagation(); // Prevent triggering select item click
+    
+    const { error } = await supabase
+      .from('meal_logs')
+      .delete()
+      .eq('id', mealId);
+
+    if (error) {
+      console.error('Error deleting meal:', error);
+      toast.error("Failed to delete meal");
+      return;
+    }
+
+    setPreviousMeals(prevMeals => prevMeals.filter(meal => meal.id !== mealId));
+    toast.success("Meal deleted successfully");
+  };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       {!initialMeal && previousMeals.length > 0 && (
@@ -116,13 +137,29 @@ export const MealForm = ({ onSubmit, initialMeal, onCancel, submitButtonText }: 
               <SelectValue placeholder="Select a previous meal" />
             </SelectTrigger>
             <SelectContent>
-              {previousMeals.map((prevMeal) => (
+              {previousMeals.map((prevMeal, index) => (
                 <SelectItem 
                   key={prevMeal.id} 
                   value={prevMeal.id}
-                  className="hover:bg-[#0EA5E9]/50 hover:text-white data-[highlighted]:bg-[#0EA5E9]/50 data-[highlighted]:text-white"
+                  className="hover:bg-[#0EA5E9]/50 hover:text-white data-[highlighted]:bg-[#0EA5E9]/50 data-[highlighted]:text-white flex justify-between items-center group"
                 >
-                  {prevMeal.meal_name} ({prevMeal.calories} cal)
+                  <div className="flex items-center gap-2">
+                    {prevMeal.meal_name} ({prevMeal.calories} cal)
+                    {index === 0 && (
+                      <Badge variant="secondary" className="ml-2">
+                        Recent
+                      </Badge>
+                    )}
+                  </div>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                    onClick={(e) => handleDeleteMeal(prevMeal.id, e)}
+                  >
+                    <Trash2 className="h-4 w-4 text-red-500" />
+                  </Button>
                 </SelectItem>
               ))}
             </SelectContent>
