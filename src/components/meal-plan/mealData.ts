@@ -2,37 +2,23 @@ import { Meal } from "./types";
 import { supabase } from "@/lib/supabase";
 
 export const getMealOptionsForTime = async (time: string): Promise<Meal[]> => {
-  // Strict mapping of time slots to meal types
-  const mealType = time.toLowerCase() === 'breakfast' ? 'breakfast' 
-    : time.toLowerCase() === 'lunch' ? 'lunch' 
-    : time.toLowerCase() === 'dinner' ? 'dinner'
-    : null;
-
-  if (!mealType) {
-    console.error('Invalid meal time:', time);
-    return [];
-  }
-
+  const mealType = time.toLowerCase();
+  
   console.log('Getting meal options for time:', time, 'mapped to meal type:', mealType);
   
   try {
     const { data, error } = await supabase
       .from('recipes')
       .select('*')
-      .eq('meal_type', mealType)  // This ensures we only get meals for the specific meal type
-      .order('name');  // Adding ordering to ensure consistent results
+      .eq('meal_type', mealType)
+      .order('name');
 
     if (error) {
       console.error('Error fetching recipes:', error);
       throw error;
     }
 
-    console.log(`Found ${data?.length} recipes for meal type ${mealType}:`, 
-      data?.map(recipe => ({ 
-        name: recipe.name, 
-        type: recipe.meal_type,
-        calories: recipe.calories
-      })));
+    console.log(`Found ${data?.length} recipes for meal type ${mealType}`);
     
     // Transform the data to match the Meal type
     const meals = data.map(recipe => ({

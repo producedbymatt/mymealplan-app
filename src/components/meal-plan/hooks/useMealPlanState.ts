@@ -1,23 +1,7 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabase";
 import { MealTimeSlot, Meal } from "../types";
 import { getMealOptionsForTime } from "../mealData";
-import { scaleMeal } from "../utils/mealScaling";
-
-interface RecipeData {
-  recipes: {
-    name: string;
-    calories: number;
-    protein: number;
-    carbs: number;
-    fat: number;
-    prep_time: string;
-    cook_time: string;
-    ingredients: string[];
-    instructions: string[];
-    meal_type: string;
-  }
-}
+import { supabase } from "@/lib/supabase";
 
 export const useMealPlanState = (dailyCalories: number = 1200) => {
   const [mealPlan, setMealPlan] = useState<MealTimeSlot[]>([]);
@@ -45,18 +29,7 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
         .from('user_favorite_recipes')
         .select(`
           recipe_id,
-          recipes (
-            name,
-            calories,
-            protein,
-            carbs,
-            fat,
-            prep_time,
-            cook_time,
-            ingredients,
-            instructions,
-            meal_type
-          )
+          recipes (*)
         `)
         .eq('user_id', uid);
 
@@ -65,7 +38,7 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
         return;
       }
 
-      const meals = (data as RecipeData[])?.map(item => ({
+      const meals = data?.map(item => ({
         name: item.recipes.name,
         calories: item.recipes.calories,
         protein: item.recipes.protein,
@@ -96,29 +69,23 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
     setFavoriteMeals(prev => prev.filter(meal => meal.name !== mealName));
   };
 
-  const generateMealOptions = async (timeSlot: string, caloriesPerMeal: number, excludeNames: Set<string>, count: number = 2): Promise<Meal[]> => {
+  const generateMealOptions = async (
+    timeSlot: string, 
+    caloriesPerMeal: number, 
+    excludeNames: Set<string>, 
+    count: number = 2
+  ): Promise<Meal[]> => {
     try {
       const allOptions = await getMealOptionsForTime(timeSlot);
       console.log(`Retrieved ${allOptions.length} options for ${timeSlot}`);
       
-      // Include scaled favorites that match the meal type
-      const scaledFavorites = favoriteMeals
-        .filter(meal => {
-          const mealType = timeSlot.toLowerCase().includes('breakfast') ? 'breakfast' 
-            : timeSlot.toLowerCase().includes('lunch') ? 'lunch' 
-            : 'dinner';
-          return !excludeNames.has(meal.name);
-        })
-        .map(meal => scaleMeal(meal, caloriesPerMeal));
-      
-      // Combine favorites with database options
-      const availableOptions = [...scaledFavorites, ...allOptions.filter(meal => !excludeNames.has(meal.name))];
+      const availableOptions = allOptions.filter(meal => !excludeNames.has(meal.name));
       
       if (availableOptions.length === 0) {
         console.log('No unique recipes available, resetting used recipes list');
         setUsedRecipes(new Set());
         return allOptions.length > 0 
-          ? [scaleMeal(allOptions[Math.floor(Math.random() * allOptions.length)], caloriesPerMeal)]
+          ? [allOptions[Math.floor(Math.random() * allOptions.length)]]
           : [];
       }
 
@@ -128,7 +95,7 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
       for (let i = 0; i < count && tempAvailable.length > 0; i++) {
         const randomIndex = Math.floor(Math.random() * tempAvailable.length);
         const selectedMeal = tempAvailable[randomIndex];
-        selectedMeals.push(scaleMeal(selectedMeal, caloriesPerMeal));
+        selectedMeals.push(selectedMeal);
         tempAvailable.splice(randomIndex, 1);
       }
 
@@ -141,7 +108,7 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
 
   useEffect(() => {
     const initializeMealPlan = async () => {
-      console.log('Updating meal plan with new calories:', dailyCalories);
+      console.log('Initializing meal plan with calories:', dailyCalories);
       setIsLoading(true);
       const caloriesPerMeal = Math.round(dailyCalories / 3);
       const timeSlots = ["Breakfast", "Lunch", "Dinner"];
