@@ -5,7 +5,6 @@ import MealOption from "./MealOption";
 import { Separator } from "@/components/ui/separator";
 import { Meal } from "./types";
 import { getMealOptionsForTime } from "./mealData";
-import { scaleMeal } from "./utils/mealScaling";
 
 interface MealTimeSlotProps {
   time: string;
