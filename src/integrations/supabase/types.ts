@@ -163,6 +163,7 @@ export type Database = {
           name: string
           prep_time: string
           protein: number
+          tags: string[] | null
         }
         Insert: {
           calories: number
@@ -179,6 +180,7 @@ export type Database = {
           name: string
           prep_time: string
           protein: number
+          tags?: string[] | null
         }
         Update: {
           calories?: number
@@ -195,6 +197,7 @@ export type Database = {
           name?: string
           prep_time?: string
           protein?: number
+          tags?: string[] | null
         }
         Relationships: []
       }
