@@ -12,6 +12,7 @@ export interface Meal {
   carbs: number;
   fat: number;
   recipe: Recipe;
+  isFavorite?: boolean;
 }
 
 export interface MealTimeSlot {

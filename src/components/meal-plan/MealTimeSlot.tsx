@@ -56,7 +56,9 @@ const MealTimeSlot = ({
   }, [time, showAll, options]);
 
   const displayedOptions = showAll ? allOptions : options;
-  const hasVisibleOptions = displayedOptions.some(meal => !showFavoritesOnly || meal.isFavorite);
+  const hasVisibleOptions = displayedOptions.some(meal => !showFavoritesOnly || meal.isFavorite === true);
+
+  console.log(`MealTimeSlot ${time}: Displaying ${displayedOptions.length} options, showAll: ${showAll}, showFavoritesOnly: ${showFavoritesOnly}, hasVisibleOptions: ${hasVisibleOptions}`);
 
   if (showFavoritesOnly && !hasVisibleOptions) {
     return null;
@@ -77,14 +79,16 @@ const MealTimeSlot = ({
         </Button>
       </div>
       <div className="grid gap-4">
-        {displayedOptions.map((meal, index) => (
-          <MealOption 
-            key={`${meal.name}-${index}`}
-            meal={meal} 
-            showFavoritesOnly={showFavoritesOnly}
-            onFavoriteChange={onFavoriteChange}
-          />
-        ))}
+        {displayedOptions
+          .filter(meal => !showFavoritesOnly || meal.isFavorite === true)
+          .map((meal, index) => (
+            <MealOption 
+              key={`${meal.name}-${index}`}
+              meal={meal} 
+              showFavoritesOnly={showFavoritesOnly}
+              onFavoriteChange={onFavoriteChange}
+            />
+          ))}
       </div>
       <div className="mt-4">
         <Button
