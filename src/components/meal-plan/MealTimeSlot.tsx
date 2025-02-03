@@ -56,8 +56,11 @@ const MealTimeSlot = ({
   }, [time, showAll, options]);
 
   const displayedOptions = showAll ? allOptions : options;
+  const hasVisibleOptions = displayedOptions.some(meal => !showFavoritesOnly || meal.isFavorite);
 
-  console.log(`MealTimeSlot ${time}: Displaying ${displayedOptions.length} options, showAll: ${showAll}`);
+  if (showFavoritesOnly && !hasVisibleOptions) {
+    return null;
+  }
 
   return (
     <div className="mb-6">

@@ -3,7 +3,6 @@ import { useToast } from "@/components/ui/use-toast";
 import { Filter, FilterX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import MealTimeSlot from "./meal-plan/MealTimeSlot";
-import FavoritesList from "./meal-plan/FavoritesList";
 import { useAllFavoriteMeals } from "@/hooks/useAllFavoriteMeals";
 import { useMealPlanState } from "./meal-plan/hooks/useMealPlanState";
 import { scaleMeal } from "./meal-plan/utils/mealScaling";
@@ -79,11 +78,6 @@ const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: Me
     }
   };
 
-  const getAllFavorites = () => {
-    const caloriesPerMeal = Math.round(dailyCalories / 3);
-    return favoriteMeals.map(meal => scaleMeal(meal, caloriesPerMeal));
-  };
-
   if (isLoading) {
     return (
       <Card className="p-6 w-full max-w-2xl mx-auto bg-background">
@@ -123,25 +117,17 @@ const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: Me
         </Button>
       </div>
 
-      {showFavoritesOnly ? (
-        <FavoritesList
-          time="Favorite Meals"
-          meals={getAllFavorites()}
-          isLast={true}
+      {mealPlan.map((slot, index) => (
+        <MealTimeSlot
+          key={slot.time}
+          time={slot.time}
+          options={slot.options}
+          onRefresh={() => refreshMealOptions(index)}
+          isLast={index === mealPlan.length - 1}
+          showFavoritesOnly={showFavoritesOnly}
+          onFavoriteChange={handleFavoriteChange}
         />
-      ) : (
-        mealPlan.map((slot, index) => (
-          <MealTimeSlot
-            key={slot.time}
-            time={slot.time}
-            options={slot.options}
-            onRefresh={() => refreshMealOptions(index)}
-            isLast={index === mealPlan.length - 1}
-            showFavoritesOnly={showFavoritesOnly}
-            onFavoriteChange={handleFavoriteChange}
-          />
-        ))
-      )}
+      ))}
     </Card>
   );
 };
