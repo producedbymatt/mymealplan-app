@@ -113,19 +113,47 @@ export const MealForm = ({ onSubmit, initialMeal, onCancel, submitButtonText }: 
   const handleDeleteMeal = async (mealId: string, event: React.MouseEvent) => {
     event.stopPropagation(); // Prevent triggering select item click
     
-    const { error } = await supabase
-      .from('meal_logs')
-      .delete()
-      .eq('id', mealId);
+    try {
+      // Delete all meals with the same name and calories as the selected meal
+      const mealToDelete = previousMeals.find(m => m.id === mealId);
+      if (!mealToDelete) {
+        console.error('Meal not found:', mealId);
+        return;
+      }
 
-    if (error) {
-      console.error('Error deleting meal:', error);
-      toast.error("Failed to delete meal");
-      return;
+      console.log('Deleting all instances of meal:', mealToDelete);
+      
+      const { data: session } = await supabase.auth.getSession();
+      if (!session.session?.user.id) {
+        console.error('No user session found');
+        return;
+      }
+
+      const { error } = await supabase
+        .from('meal_logs')
+        .delete()
+        .eq('user_id', session.session.user.id)
+        .eq('meal_name', mealToDelete.meal_name)
+        .eq('calories', mealToDelete.calories);
+
+      if (error) {
+        console.error('Error deleting meals:', error);
+        toast.error("Failed to delete meal");
+        return;
+      }
+
+      // Update local state to remove all instances of the deleted meal
+      setPreviousMeals(prevMeals => 
+        prevMeals.filter(meal => 
+          !(meal.meal_name === mealToDelete.meal_name && meal.calories === mealToDelete.calories)
+        )
+      );
+      
+      toast.success("Meal deleted successfully");
+    } catch (err) {
+      console.error('Error in handleDeleteMeal:', err);
+      toast.error("An error occurred while deleting the meal");
     }
-
-    setPreviousMeals(prevMeals => prevMeals.filter(meal => meal.id !== mealId));
-    toast.success("Meal deleted successfully");
   };
 
   return (
