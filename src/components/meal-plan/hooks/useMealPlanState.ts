@@ -24,7 +24,7 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
   const [usedRecipes, setUsedRecipes] = useState<Set<string>>(new Set());
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [userId, setUserId] = useState<string | undefined>();
-  const [favoriteMeals, setFavoriteMeals] = useState<Meal[]>([]);
+  const [favoriteMeals, setFavoriteMeals] = useState<Set<string>>(new Set());
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -32,7 +32,7 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
       const { data: { session } } = await supabase.auth.getSession();
       setUserId(session?.user?.id);
       if (session?.user?.id) {
-        loadFavoriteMeals(session.user.id);
+        await loadFavoriteMeals(session.user.id);
       }
     };
     getSession();
@@ -44,8 +44,7 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
       const { data, error } = await supabase
         .from('user_favorite_recipes')
         .select(`
-          recipe_id,
-          recipes (*)
+          recipes (name)
         `)
         .eq('user_id', uid);
 
@@ -54,22 +53,9 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
         return;
       }
 
-      const meals: Meal[] = (data as unknown as RecipeData[]).map(item => ({
-        name: item.recipes.name,
-        calories: item.recipes.calories,
-        protein: item.recipes.protein,
-        carbs: item.recipes.carbs,
-        fat: item.recipes.fat,
-        recipe: {
-          ingredients: item.recipes.ingredients,
-          instructions: item.recipes.instructions,
-          prepTime: item.recipes.prep_time,
-          cookTime: item.recipes.cook_time
-        }
-      }));
-
-      console.log('Loaded favorite meals:', meals);
-      setFavoriteMeals(meals);
+      const favoriteNames = new Set(data.map(item => item.recipes.name));
+      console.log('Loaded favorite meals:', favoriteNames);
+      setFavoriteMeals(favoriteNames);
     } catch (err) {
       console.error('Error loading favorite meals:', err);
     }
@@ -106,7 +92,19 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
         return;
       }
 
-      setFavoriteMeals(prev => [...prev, meal]);
+      setFavoriteMeals(prev => new Set([...prev, meal.name]));
+      
+      // Update the meal plan to reflect the new favorite status
+      setMealPlan(currentPlan => 
+        currentPlan.map(slot => ({
+          ...slot,
+          options: slot.options.map(option => 
+            option.name === meal.name 
+              ? { ...option, isFavorite: true }
+              : option
+          )
+        }))
+      );
     } catch (err) {
       console.error('Error in addFavoriteMeal:', err);
     }
@@ -142,7 +140,23 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
         return;
       }
 
-      setFavoriteMeals(prev => prev.filter(meal => meal.name !== mealName));
+      setFavoriteMeals(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(mealName);
+        return newSet;
+      });
+
+      // Update the meal plan to reflect the removed favorite status
+      setMealPlan(currentPlan => 
+        currentPlan.map(slot => ({
+          ...slot,
+          options: slot.options.map(option => 
+            option.name === mealName 
+              ? { ...option, isFavorite: false }
+              : option
+          )
+        }))
+      );
     } catch (err) {
       console.error('Error in removeFavoriteMeal:', err);
     }
@@ -164,7 +178,7 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
         console.log('No unique recipes available, resetting used recipes list');
         setUsedRecipes(new Set());
         return allOptions.length > 0 
-          ? [allOptions[Math.floor(Math.random() * allOptions.length)]]
+          ? [{ ...allOptions[0], isFavorite: favoriteMeals.has(allOptions[0].name) }]
           : [];
       }
 
@@ -173,7 +187,10 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
       
       for (let i = 0; i < count && tempAvailable.length > 0; i++) {
         const randomIndex = Math.floor(Math.random() * tempAvailable.length);
-        const selectedMeal = tempAvailable[randomIndex];
+        const selectedMeal = {
+          ...tempAvailable[randomIndex],
+          isFavorite: favoriteMeals.has(tempAvailable[randomIndex].name)
+        };
         selectedMeals.push(selectedMeal);
         tempAvailable.splice(randomIndex, 1);
       }
