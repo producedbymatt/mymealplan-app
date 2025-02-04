@@ -33,8 +33,11 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
           return;
         }
 
-        const favoriteMealsMap = new Map(
-          favoriteMealData?.map(recipe => [recipe.name, {
+        // Create a map of favorite meals by meal type
+        const favoriteMealsByType = new Map<string, Meal[]>();
+        favoriteMealData?.forEach(recipe => {
+          const mealType = recipe.meal_type.toLowerCase();
+          const meal: Meal = {
             name: recipe.name,
             calories: recipe.calories,
             protein: recipe.protein,
@@ -46,24 +49,31 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
               prepTime: recipe.prep_time,
               cookTime: recipe.cook_time
             }
-          } as Meal]) || []
-        );
+          };
+
+          const existingMeals = favoriteMealsByType.get(mealType) || [];
+          favoriteMealsByType.set(mealType, [...existingMeals, meal]);
+        });
+
+        console.log('Favorite meals by type:', Object.fromEntries(favoriteMealsByType));
 
         const newMealPlan = await Promise.all(timeSlots.map(async time => {
           // Get regular meal options
           const options = await generateMealOptions(time, caloriesPerMeal, new Set(), 2);
           
-          // Filter favorites for this time slot and convert to Meal objects
-          const favoritesForTimeSlot = Array.from(favoriteMeals)
-            .map(name => favoriteMealsMap.get(name))
-            .filter((meal): meal is Meal => 
-              meal !== undefined && !options.some(option => option.name === meal.name)
-            );
+          // Get favorites for this time slot
+          const mealType = time.toLowerCase();
+          const favoritesForTimeSlot = favoriteMealsByType.get(mealType) || [];
+          
+          // Filter out duplicates between regular options and favorites
+          const uniqueFavorites = favoritesForTimeSlot.filter(
+            favorite => !options.some(option => option.name === favorite.name)
+          );
 
-          console.log(`Time slot ${time}: Regular options:`, options.length, 'Favorites:', favoritesForTimeSlot.length);
+          console.log(`Time slot ${time}: Regular options: ${options.length}, Favorites: ${uniqueFavorites.length}`);
 
           // Combine regular options with favorites
-          const combinedOptions = [...options, ...favoritesForTimeSlot];
+          const combinedOptions = [...options, ...uniqueFavorites];
           
           // Update used recipes
           combinedOptions.forEach(meal => {
