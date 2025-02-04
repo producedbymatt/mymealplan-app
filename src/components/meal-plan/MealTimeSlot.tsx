@@ -27,6 +27,13 @@ const MealTimeSlot = ({
   const [allOptions, setAllOptions] = useState<Meal[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Set showAll to true when showFavoritesOnly is enabled
+  useEffect(() => {
+    if (showFavoritesOnly) {
+      setShowAll(true);
+    }
+  }, [showFavoritesOnly]);
+
   useEffect(() => {
     const loadAllOptions = async () => {
       if (showAll) {
@@ -84,26 +91,28 @@ const MealTimeSlot = ({
           />
         ))}
       </div>
-      <div className="mt-4">
-        <Button
-          variant="ghost"
-          className="w-full flex items-center gap-2 text-muted-foreground hover:text-white hover:bg-blue-900 hover:border hover:border-white"
-          onClick={() => setShowAll(!showAll)}
-          disabled={isLoading}
-        >
-          {showAll ? (
-            <>
-              <ChevronUp className="h-4 w-4" />
-              Show Less
-            </>
-          ) : (
-            <>
-              <ChevronDown className="h-4 w-4" />
-              Show All Options
-            </>
-          )}
-        </Button>
-      </div>
+      {!showFavoritesOnly && (
+        <div className="mt-4">
+          <Button
+            variant="ghost"
+            className="w-full flex items-center gap-2 text-muted-foreground hover:text-white hover:bg-blue-900 hover:border hover:border-white"
+            onClick={() => setShowAll(!showAll)}
+            disabled={isLoading}
+          >
+            {showAll ? (
+              <>
+                <ChevronUp className="h-4 w-4" />
+                Show Less
+              </>
+            ) : (
+              <>
+                <ChevronDown className="h-4 w-4" />
+                Show All Options
+              </>
+            )}
+          </Button>
+        </div>
+      )}
       {!isLast && <Separator className="mt-6" />}
     </div>
   );
