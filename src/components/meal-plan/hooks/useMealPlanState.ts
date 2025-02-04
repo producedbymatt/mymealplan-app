@@ -3,9 +3,7 @@ import { MealTimeSlot, Meal } from "../types";
 import { getMealOptionsForTime } from "../mealData";
 import { supabase } from "@/lib/supabase";
 
-// Define interface for the recipe data from Supabase
 interface RecipeData {
-  recipe_id: string;
   recipes: {
     name: string;
     calories: number;
@@ -53,7 +51,12 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
         return;
       }
 
-      const favoriteNames = new Set(data.map(item => item.recipes.name));
+      if (!data) {
+        console.log('No favorite meals found');
+        return;
+      }
+
+      const favoriteNames = new Set(data.map(item => item.recipes?.name || '').filter(Boolean));
       console.log('Loaded favorite meals:', favoriteNames);
       setFavoriteMeals(favoriteNames);
     } catch (err) {
@@ -72,9 +75,9 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
         .from('recipes')
         .select('id')
         .eq('name', meal.name)
-        .single();
+        .maybeSingle();
 
-      if (recipeError) {
+      if (recipeError || !recipeData) {
         console.error('Error finding recipe:', recipeError);
         return;
       }
@@ -121,9 +124,9 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
         .from('recipes')
         .select('id')
         .eq('name', mealName)
-        .single();
+        .maybeSingle();
 
-      if (recipeError) {
+      if (recipeError || !recipeData) {
         console.error('Error finding recipe:', recipeError);
         return;
       }
