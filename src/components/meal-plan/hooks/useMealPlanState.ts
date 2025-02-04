@@ -56,7 +56,13 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
         return;
       }
 
-      const favoriteNames = new Set(data.map(item => item.recipes?.name || '').filter(Boolean));
+      // Safely access and transform the data
+      const favoriteNames = new Set(
+        data
+          .map(item => (item.recipes as { name: string })?.name)
+          .filter(Boolean)
+      );
+      
       console.log('Loaded favorite meals:', favoriteNames);
       setFavoriteMeals(favoriteNames);
     } catch (err) {
