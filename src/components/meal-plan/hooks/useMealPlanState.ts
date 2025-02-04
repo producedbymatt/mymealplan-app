@@ -6,14 +6,6 @@ import { supabase } from "@/lib/supabase";
 interface RecipeData {
   recipes: {
     name: string;
-    calories: number;
-    protein: number;
-    carbs: number;
-    fat: number;
-    ingredients: string[];
-    instructions: string[];
-    prep_time: string;
-    cook_time: string;
   };
 }
 
@@ -56,11 +48,12 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
         return;
       }
 
-      // Safely access and transform the data
+      // Type assertion and safe transformation
+      const typedData = data as RecipeData[];
       const favoriteNames = new Set(
-        data
-          .map(item => (item.recipes as { name: string })?.name)
-          .filter(Boolean)
+        typedData
+          .map(item => item.recipes?.name)
+          .filter((name): name is string => Boolean(name))
       );
       
       console.log('Loaded favorite meals:', favoriteNames);
