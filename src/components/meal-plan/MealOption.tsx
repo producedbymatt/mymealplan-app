@@ -28,6 +28,7 @@ const MealOption = ({ meal, showFavoritesOnly, onFavoriteChange }: MealOptionPro
     }
   };
 
+  // If showFavoritesOnly is true and this meal is not a favorite, don't render it
   if (showFavoritesOnly && !isFavorite) {
     return null;
   }
