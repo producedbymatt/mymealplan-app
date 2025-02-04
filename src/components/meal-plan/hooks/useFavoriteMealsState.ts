@@ -1,13 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { Meal } from "../types";
-
-// Define the exact shape of what Supabase returns
-interface SupabaseFavoriteRecipe {
-  recipes: {
-    name: string;
-  };
-}
+import { SupabaseFavoriteRecipe } from "../types/supabase-types";
 
 export const useFavoriteMealsState = (userId?: string) => {
   const [favoriteMeals, setFavoriteMeals] = useState<Set<string>>(new Set());
@@ -18,7 +12,19 @@ export const useFavoriteMealsState = (userId?: string) => {
       const { data, error } = await supabase
         .from('user_favorite_recipes')
         .select(`
-          recipes (name)
+          recipe_id,
+          recipes (
+            name,
+            calories,
+            protein,
+            carbs,
+            fat,
+            prep_time,
+            cook_time,
+            ingredients,
+            instructions,
+            meal_type
+          )
         `)
         .eq('user_id', uid);
 
