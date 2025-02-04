@@ -6,6 +6,20 @@ import { supabase } from "@/lib/supabase";
 interface RecipeData {
   recipes: {
     name: string;
+    calories: number;
+    protein: number;
+    carbs: number;
+    fat: number;
+    ingredients: string[];
+    instructions: string[];
+    prep_time: string;
+    cook_time: string;
+  };
+}
+
+interface UserFavoriteRecipe {
+  recipes: {
+    name: string;
   };
 }
 
@@ -49,7 +63,7 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
       }
 
       // Type assertion and safe transformation
-      const typedData = data as RecipeData[];
+      const typedData = data as UserFavoriteRecipe[];
       const favoriteNames = new Set(
         typedData
           .map(item => item.recipes?.name)
