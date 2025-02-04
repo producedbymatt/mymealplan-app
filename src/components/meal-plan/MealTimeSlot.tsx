@@ -27,25 +27,20 @@ const MealTimeSlot = ({
   const [allOptions, setAllOptions] = useState<Meal[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Set showAll to true when showFavoritesOnly is enabled
   useEffect(() => {
     if (showFavoritesOnly) {
       setShowAll(true);
-    } else {
-      setShowAll(false); // Reset to false when favorites are disabled
     }
   }, [showFavoritesOnly]);
 
   useEffect(() => {
     const loadAllOptions = async () => {
-      if (showAll) {
+      if (showAll && !showFavoritesOnly) {
         setIsLoading(true);
         try {
           const meals = await getMealOptionsForTime(time);
-          // Include the current options (which include favorites) in the expanded list
           const uniqueMeals = [...options];
           
-          // Add new meals that aren't already in the list
           meals.forEach(meal => {
             if (!uniqueMeals.some(existing => existing.name === meal.name)) {
               uniqueMeals.push(meal);
@@ -62,14 +57,15 @@ const MealTimeSlot = ({
     };
 
     loadAllOptions();
-  }, [time, showAll, options]);
+  }, [time, showAll, options, showFavoritesOnly]);
 
-  // Use allOptions when showing all, otherwise use the initial options
+  // When showing favorites, display ALL favorite meals
+  // When not showing favorites, either show all options or just 2 based on showAll state
   const displayedOptions = showFavoritesOnly 
-    ? options // Show ALL favorite meals when favorites filter is on
+    ? options 
     : showAll 
       ? allOptions 
-      : options.slice(0, 2); // Show only 2 meals by default when not in favorites mode
+      : options.slice(0, 2);
 
   console.log(`MealTimeSlot ${time}: Displaying ${displayedOptions.length} options, showAll: ${showAll}, showFavoritesOnly: ${showFavoritesOnly}`);
 
