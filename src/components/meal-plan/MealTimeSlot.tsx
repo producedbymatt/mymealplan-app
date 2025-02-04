@@ -55,9 +55,9 @@ const MealTimeSlot = ({
     loadAllOptions();
   }, [time, showAll, options]);
 
+  // Use allOptions when showing all, otherwise use the initial options
   const displayedOptions = showAll ? allOptions : options;
 
-  // Always show the meal time slot, even if there are no visible options
   console.log(`MealTimeSlot ${time}: Displaying ${displayedOptions.length} options, showAll: ${showAll}, showFavoritesOnly: ${showFavoritesOnly}`);
 
   return (
