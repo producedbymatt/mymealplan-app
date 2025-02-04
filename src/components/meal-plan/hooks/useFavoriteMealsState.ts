@@ -26,7 +26,8 @@ export const useFavoriteMealsState = (userId?: string) => {
             meal_type
           )
         `)
-        .eq('user_id', uid);
+        .eq('user_id', uid)
+        .returns<SupabaseFavoriteRecipe[]>();
 
       if (error) {
         console.error('Error loading favorite meals:', error);
@@ -38,10 +39,10 @@ export const useFavoriteMealsState = (userId?: string) => {
         return;
       }
 
-      // Type assertion with the correct interface
-      const typedData = data as SupabaseFavoriteRecipe[];
+      console.log('Raw data from Supabase:', data);
+      
       const favoriteNames = new Set(
-        typedData
+        data
           .map(item => item.recipes?.name)
           .filter((name): name is string => Boolean(name))
       );
