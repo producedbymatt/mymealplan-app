@@ -66,7 +66,7 @@ const MealTimeSlot = ({
 
   // Use allOptions when showing all, otherwise use the initial options
   const displayedOptions = showFavoritesOnly 
-    ? options // Show all favorite meals when favorites filter is on
+    ? options // Show ALL favorite meals when favorites filter is on
     : showAll 
       ? allOptions 
       : options.slice(0, 2); // Show only 2 meals by default when not in favorites mode
