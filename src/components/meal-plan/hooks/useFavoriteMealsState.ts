@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { Meal } from "../types";
 
-interface UserFavoriteRecipe {
+// Define the exact shape of what Supabase returns
+interface SupabaseFavoriteRecipe {
   recipes: {
     name: string;
   };
@@ -31,8 +32,8 @@ export const useFavoriteMealsState = (userId?: string) => {
         return;
       }
 
-      // Type assertion and safe transformation
-      const typedData = data as UserFavoriteRecipe[];
+      // Type assertion with the correct interface
+      const typedData = data as SupabaseFavoriteRecipe[];
       const favoriteNames = new Set(
         typedData
           .map(item => item.recipes?.name)
