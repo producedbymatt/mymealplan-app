@@ -31,6 +31,8 @@ const MealTimeSlot = ({
   useEffect(() => {
     if (showFavoritesOnly) {
       setShowAll(true);
+    } else {
+      setShowAll(false); // Reset to false when favorites are disabled
     }
   }, [showFavoritesOnly]);
 
@@ -63,7 +65,11 @@ const MealTimeSlot = ({
   }, [time, showAll, options]);
 
   // Use allOptions when showing all, otherwise use the initial options
-  const displayedOptions = showAll ? allOptions : options;
+  const displayedOptions = showFavoritesOnly 
+    ? options // Show all favorite meals when favorites filter is on
+    : showAll 
+      ? allOptions 
+      : options.slice(0, 2); // Show only 2 meals by default when not in favorites mode
 
   console.log(`MealTimeSlot ${time}: Displaying ${displayedOptions.length} options, showAll: ${showAll}, showFavoritesOnly: ${showFavoritesOnly}`);
 
