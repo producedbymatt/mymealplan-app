@@ -45,13 +45,14 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
           // Map breakfast-related meal types to 'breakfast'
           if (mealType === 'breakfast' || mealType === 'morning') {
             mealType = 'breakfast';
+            console.log(`Mapped ${recipe.name} to breakfast type`);
           } else if (mealType === 'lunch' || mealType === 'afternoon') {
             mealType = 'lunch';
           } else if (mealType === 'dinner' || mealType === 'evening') {
             mealType = 'dinner';
           }
 
-          console.log(`Normalized meal type for ${recipe.name}: ${mealType}`);
+          console.log(`Final meal type for ${recipe.name}: ${mealType}`);
 
           const meal: Meal = {
             name: recipe.name,
@@ -69,6 +70,7 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
 
           const existingMeals = favoriteMealsByType.get(mealType) || [];
           favoriteMealsByType.set(mealType, [...existingMeals, meal]);
+          console.log(`Added ${meal.name} to ${mealType} favorites. Total ${mealType} favorites: ${favoriteMealsByType.get(mealType)?.length}`);
         });
 
         console.log('Favorite meals by type:', Object.fromEntries(favoriteMealsByType));
