@@ -2,6 +2,22 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { Meal } from "../types";
 
+interface RecipeResponse {
+  recipe_id: string;
+  recipes: {
+    name: string;
+    calories: number;
+    protein: number;
+    carbs: number;
+    fat: number;
+    prep_time: string;
+    cook_time: string;
+    ingredients: string[];
+    instructions: string[];
+    meal_type: string;
+  };
+}
+
 export const useFavoriteMealsState = (userId?: string) => {
   const [favoriteMeals, setFavoriteMeals] = useState<Set<string>>(new Set());
 
@@ -25,7 +41,8 @@ export const useFavoriteMealsState = (userId?: string) => {
             meal_type
           )
         `)
-        .eq('user_id', uid);
+        .eq('user_id', uid)
+        .returns<RecipeResponse[]>();
 
       if (error) {
         console.error('Error loading favorite meals:', error);
