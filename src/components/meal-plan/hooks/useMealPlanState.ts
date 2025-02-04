@@ -33,18 +33,24 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
           return;
         }
 
+        console.log('Raw favorite meal data:', favoriteMealData);
+
         // Create a map of favorite meals by meal type
         const favoriteMealsByType = new Map<string, Meal[]>();
         favoriteMealData?.forEach(recipe => {
           // Normalize meal type to match our timeSlots format
           let mealType = recipe.meal_type.toLowerCase();
+          console.log(`Processing recipe: ${recipe.name} with original meal type: ${recipe.meal_type}`);
+          
           if (mealType === 'breakfast' || mealType === 'morning') {
             mealType = 'breakfast';
           } else if (mealType === 'lunch' || mealType === 'afternoon') {
             mealType = 'lunch';
-          } else if (mealType === 'dinner' || mealType === 'evening') {
+          } else if (mealType === 'dinner' || mealType === 'evening' || mealType === 'supper') {
             mealType = 'dinner';
           }
+
+          console.log(`Normalized meal type for ${recipe.name}: ${mealType}`);
 
           const meal: Meal = {
             name: recipe.name,
