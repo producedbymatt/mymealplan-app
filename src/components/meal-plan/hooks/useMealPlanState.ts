@@ -42,11 +42,12 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
           let mealType = recipe.meal_type.toLowerCase();
           console.log(`Processing recipe: ${recipe.name} with original meal type: ${recipe.meal_type}`);
           
+          // Reset the meal type normalization to the original logic
           if (mealType === 'breakfast' || mealType === 'morning') {
             mealType = 'breakfast';
           } else if (mealType === 'lunch' || mealType === 'afternoon') {
             mealType = 'lunch';
-          } else if (mealType === 'dinner' || mealType === 'evening' || mealType === 'supper') {
+          } else if (mealType === 'dinner' || mealType === 'evening') {
             mealType = 'dinner';
           }
 
