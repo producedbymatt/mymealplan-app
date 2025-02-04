@@ -36,7 +36,16 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
         // Create a map of favorite meals by meal type
         const favoriteMealsByType = new Map<string, Meal[]>();
         favoriteMealData?.forEach(recipe => {
-          const mealType = recipe.meal_type.toLowerCase();
+          // Normalize meal type to match our timeSlots format
+          let mealType = recipe.meal_type.toLowerCase();
+          if (mealType === 'breakfast' || mealType === 'morning') {
+            mealType = 'breakfast';
+          } else if (mealType === 'lunch' || mealType === 'afternoon') {
+            mealType = 'lunch';
+          } else if (mealType === 'dinner' || mealType === 'evening') {
+            mealType = 'dinner';
+          }
+
           const meal: Meal = {
             name: recipe.name,
             calories: recipe.calories,
@@ -63,7 +72,9 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
           
           // Get favorites for this time slot
           const mealType = time.toLowerCase();
+          console.log(`Looking for favorites with meal type: ${mealType}`);
           const favoritesForTimeSlot = favoriteMealsByType.get(mealType) || [];
+          console.log(`Found ${favoritesForTimeSlot.length} favorites for ${time}`);
           
           // Filter out duplicates between regular options and favorites
           const uniqueFavorites = favoritesForTimeSlot.filter(
