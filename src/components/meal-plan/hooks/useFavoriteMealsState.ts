@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { Meal } from "../types";
-import { SupabaseFavoriteRecipe } from "../types/supabase-types";
 
 export const useFavoriteMealsState = (userId?: string) => {
   const [favoriteMeals, setFavoriteMeals] = useState<Set<string>>(new Set());
@@ -26,8 +25,7 @@ export const useFavoriteMealsState = (userId?: string) => {
             meal_type
           )
         `)
-        .eq('user_id', uid)
-        .returns<SupabaseFavoriteRecipe[]>();
+        .eq('user_id', uid);
 
       if (error) {
         console.error('Error loading favorite meals:', error);
@@ -41,10 +39,11 @@ export const useFavoriteMealsState = (userId?: string) => {
 
       console.log('Raw data from Supabase:', data);
       
+      // Extract recipe names from the joined data
       const favoriteNames = new Set(
         data
-          .map(item => item.recipes?.name)
-          .filter((name): name is string => Boolean(name))
+          .filter(item => item.recipes && item.recipes.name)
+          .map(item => item.recipes.name)
       );
       
       console.log('Loaded favorite meals:', favoriteNames);
