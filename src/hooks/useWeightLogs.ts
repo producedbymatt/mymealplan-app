@@ -52,7 +52,7 @@ export const useWeightLogs = (showMore: boolean = false) => {
 
   const addWeight = async (weight: number) => {
     try {
-      const user = supabase.auth.getUser();
+      const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         throw new Error("User not authenticated");
       }
@@ -60,10 +60,12 @@ export const useWeightLogs = (showMore: boolean = false) => {
       console.log('Adding weight log:', { weight });
       const { error } = await supabase
         .from('weight_logs')
-        .insert([{ 
-          weight,
-          user_id: (await user).data.user?.id 
-        }]);
+        .insert([
+          {
+            weight,
+            user_id: user.id
+          }
+        ]);
 
       if (error) throw error;
 
