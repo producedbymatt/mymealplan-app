@@ -35,7 +35,6 @@ const MealTableRow = ({ log, onEdit, onDelete }: MealTableRowProps) => {
         toast.error("Please enter a valid number of calories");
         return;
       }
-
       onEdit({
         ...log,
         meal_name: editValues.meal_name,
@@ -43,6 +42,7 @@ const MealTableRow = ({ log, onEdit, onDelete }: MealTableRowProps) => {
         protein: parseInt(editValues.protein) || 0,
         carbs: parseInt(editValues.carbs) || 0,
         sugars: parseInt(editValues.sugars) || 0,
+        fat: parseInt(editValues.fat) || 0,
       });
       setIsEditing(false);
     } else {
@@ -53,6 +53,8 @@ const MealTableRow = ({ log, onEdit, onDelete }: MealTableRowProps) => {
         protein: (log.protein ?? 0).toString(),
         carbs: (log.carbs ?? 0).toString(),
         sugars: (log.sugars ?? 0).toString(),
+        fat: (log.fat ?? 0).toString(),
+      });
       });
     }
   };
