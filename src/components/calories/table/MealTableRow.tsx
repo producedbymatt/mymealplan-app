@@ -55,7 +55,6 @@ const MealTableRow = ({ log, onEdit, onDelete }: MealTableRowProps) => {
         sugars: (log.sugars ?? 0).toString(),
         fat: (log.fat ?? 0).toString(),
       });
-      });
     }
   };
 
