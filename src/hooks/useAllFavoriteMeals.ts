@@ -64,10 +64,10 @@ export const useAllFavoriteMeals = (userId?: string) => {
         const meals = typedData?.map(item => ({
           name: item.recipes.name,
           calories: item.recipes.calories,
-          fat: item.recipes.fat,
-          sugars: item.recipes.sugars ?? 0,
+          protein: item.recipes.protein,
           carbs: item.recipes.carbs,
           fat: item.recipes.fat,
+          sugars: item.recipes.sugars ?? 0,
           recipe: {
             ingredients: item.recipes.ingredients,
             instructions: item.recipes.instructions,
