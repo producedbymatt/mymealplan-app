@@ -82,11 +82,11 @@ const ChatWindow = () => {
     // Then send the message to get AI response
     await sendMessage(userMessage);
   };
-
-  const handleMealLog = (mealName: string, calories: number) => {
-    console.log('Opening meal form with:', { mealName, calories });
-    setMealToLog({ meal_name: mealName, calories });
+  const handleMealLog = (meal: { meal_name: string; calories: number; protein: number; carbs: number; sugars: number }) => {
+    setMealToLog(meal);
     setShowMealForm(true);
+  };
+
   };
 
   const handleSaveMeal = async (mealData: { meal_name: string; calories: number; protein: number; carbs: number; sugars: number }) => {
