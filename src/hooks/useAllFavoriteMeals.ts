@@ -64,7 +64,8 @@ export const useAllFavoriteMeals = (userId?: string) => {
         const meals = typedData?.map(item => ({
           name: item.recipes.name,
           calories: item.recipes.calories,
-          protein: item.recipes.protein,
+          fat: item.recipes.fat,
+          sugars: item.recipes.sugars ?? 0,
           carbs: item.recipes.carbs,
           fat: item.recipes.fat,
           recipe: {
