@@ -146,11 +146,24 @@ const WeightTracker = ({ onWeightEntriesChange }: WeightTrackerProps) => {
           </Button>
         </form>
 
-        <WeightChart entries={entries} />
+        <div className="flex flex-wrap justify-center gap-2 mb-4">
+          {filterOptions.map((opt) => (
+            <Button
+              key={opt.value}
+              variant={timeFilter === opt.value ? "default" : "outline"}
+              size="sm"
+              onClick={() => setTimeFilter(opt.value)}
+            >
+              {opt.label}
+            </Button>
+          ))}
+        </div>
 
-        {entries.length > 0 && (
+        <WeightChart entries={filteredEntries} />
+
+        {filteredEntries.length > 0 && (
           <WeightTable 
-            entries={entries}
+            entries={filteredEntries}
             showMore={showMore}
             onToggleShowMore={() => setShowMore(!showMore)}
             onEdit={handleEdit}
