@@ -1,0 +1,1 @@
+ALTER TABLE public.user_metrics ADD COLUMN IF NOT EXISTS protein_goal integer;
