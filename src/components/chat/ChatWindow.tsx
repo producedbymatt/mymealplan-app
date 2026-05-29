@@ -128,6 +128,7 @@ const ChatWindow = () => {
                 protein: mealToLog.protein,
                 carbs: mealToLog.carbs,
                 sugars: mealToLog.sugars,
+                fat: (mealToLog as any).fat ?? 0,
 
                 user_id: '',
                 created_at: new Date().toISOString(),
