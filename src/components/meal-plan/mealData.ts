@@ -27,6 +27,7 @@ export const getMealOptionsForTime = async (time: string): Promise<Meal[]> => {
       protein: recipe.protein,
       carbs: recipe.carbs,
       fat: recipe.fat,
+      sugars: (recipe as any).sugars ?? 0,
       recipe: {
         ingredients: recipe.ingredients as string[],
         instructions: recipe.instructions as string[],

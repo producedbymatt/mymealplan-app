@@ -30,6 +30,7 @@ export const scaleMeal = (originalMeal: Meal, targetCalories: number): Meal => {
     protein: Math.round(originalMeal.protein * scaleFactor),
     carbs: Math.round(originalMeal.carbs * scaleFactor),
     fat: Math.round(originalMeal.fat * scaleFactor),
+    sugars: Math.round((originalMeal.sugars ?? 0) * scaleFactor),
     recipe: {
       ...originalMeal.recipe,
       ingredients: scaledIngredients

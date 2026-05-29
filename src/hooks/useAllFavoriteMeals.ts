@@ -11,6 +11,7 @@ type RecipeResponse = {
     protein: number;
     carbs: number;
     fat: number;
+    sugars?: number;
     prep_time: string;
     cook_time: string;
     ingredients: string[];
@@ -41,7 +42,8 @@ export const useAllFavoriteMeals = (userId?: string) => {
               calories,
               protein,
               carbs,
-              fat,
+            fat,
+            sugars,
               prep_time,
               cook_time,
               ingredients,
@@ -65,6 +67,7 @@ export const useAllFavoriteMeals = (userId?: string) => {
           protein: item.recipes.protein,
           carbs: item.recipes.carbs,
           fat: item.recipes.fat,
+          sugars: item.recipes.sugars ?? 0,
           recipe: {
             ingredients: item.recipes.ingredients,
             instructions: item.recipes.instructions,

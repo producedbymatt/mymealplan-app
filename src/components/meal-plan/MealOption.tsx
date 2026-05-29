@@ -64,6 +64,7 @@ const MealOption = ({ meal, showFavoritesOnly, onFavoriteChange, initialIsFavori
               <span>Protein: {meal.protein}g</span>
               <span>Carbs: {meal.carbs}g</span>
               <span>Fat: {meal.fat}g</span>
+              <span>Sugar: {meal.sugars ?? 0}g</span>
             </div>
           </div>
         </AccordionTrigger>
