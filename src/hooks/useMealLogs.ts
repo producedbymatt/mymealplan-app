@@ -49,6 +49,9 @@ export const useMealLogs = (userId: string | undefined) => {
     mutationFn: async (meal: MealInput) => {
       if (!userId) throw new Error('User not authenticated');
       if (!meal.meal_name || meal.calories === undefined || meal.calories === null) {
+        throw new Error('Please provide a meal name and calories');
+      }
+
       const { data, error } = await supabase
         .from('meal_logs')
         .insert([{
@@ -64,8 +67,6 @@ export const useMealLogs = (userId: string | undefined) => {
         .single();
 
       if (error) throw new Error(error.message || 'Failed to add meal');
-      return data;
-    },
       return data;
     },
     onSuccess: () => {
