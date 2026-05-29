@@ -33,6 +33,8 @@ const MealTimeSlot = ({
   useEffect(() => {
     if (showFavoritesOnly) {
       setShowAll(true);
+    } else {
+      setShowAll(false);
     }
   }, [showFavoritesOnly]);
 
