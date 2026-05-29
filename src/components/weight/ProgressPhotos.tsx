@@ -186,16 +186,17 @@ const ProgressPhotos = () => {
       
       if (!session) {
         toast.error("Please log in to delete photos");
-        return;
-      }
+      // Extract file path from URL (strip query string from signed URLs) and delete from storage
+      const pathMatch = photoUrl.match(/user-uploads\/([^?]+)/);
+      if (!pathMatch) throw new Error("Invalid photo URL format");
 
-      // Delete from database
-      const { error: dbError } = await supabase
-        .from('progress_photos')
-        .delete()
-        .eq('id', photoId);
+      const filePath = pathMatch[1];
+      const { error: storageError } = await supabase.storage
+        .from('user-uploads')
+        .remove([filePath]);
 
-      if (dbError) throw dbError;
+      if (storageError) throw storageError;
+
 
       // Extract file path from URL and delete from storage
       const pathMatch = photoUrl.match(/user-uploads\/(.+)$/);  // Updated regex pattern
