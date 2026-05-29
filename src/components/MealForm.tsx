@@ -113,6 +113,8 @@ export const MealForm = ({ onSubmit, initialMeal, onCancel, submitButtonText }: 
         protein: (selected.protein ?? 0).toString(),
         carbs: (selected.carbs ?? 0).toString(),
         sugars: (selected.sugars ?? 0).toString(),
+        fat: (selected.fat ?? 0).toString(),
+      });
       });
     }
   };
