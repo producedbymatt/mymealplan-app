@@ -33,8 +33,9 @@ const DailyMealGroup = ({
       protein: acc.protein + (m.protein || 0),
       carbs: acc.carbs + (m.carbs || 0),
       sugars: acc.sugars + (m.sugars || 0),
+      fat: acc.fat + (m.fat || 0),
     }),
-    { calories: 0, protein: 0, carbs: 0, sugars: 0 }
+    { calories: 0, protein: 0, carbs: 0, sugars: 0, fat: 0 }
   );
 
   return (
