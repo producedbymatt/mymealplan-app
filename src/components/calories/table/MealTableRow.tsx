@@ -16,13 +16,15 @@ interface MealTableRowProps {
 const MealTableRow = ({ log, onEdit, onDelete }: MealTableRowProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editValues, setEditValues] = useState({
+  const [isEditing, setIsEditing] = useState(false);
+  const [editValues, setEditValues] = useState({
     meal_name: log.meal_name,
     calories: log.calories.toString(),
     protein: (log.protein ?? 0).toString(),
     carbs: (log.carbs ?? 0).toString(),
     sugars: (log.sugars ?? 0).toString(),
+    fat: (log.fat ?? 0).toString(),
   });
-
   const handleEditClick = () => {
     if (isEditing) {
       const newCalories = parseInt(editValues.calories);
