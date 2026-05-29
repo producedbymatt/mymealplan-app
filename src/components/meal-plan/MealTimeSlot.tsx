@@ -13,6 +13,7 @@ interface MealTimeSlotProps {
   isLast?: boolean;
   showFavoritesOnly?: boolean;
   onFavoriteChange?: (meal: Meal, isFavorite: boolean) => void;
+  favoriteMeals?: Set<string>;
 }
 
 const MealTimeSlot = ({ 
@@ -21,8 +22,10 @@ const MealTimeSlot = ({
   onRefresh, 
   isLast, 
   showFavoritesOnly,
-  onFavoriteChange 
+  onFavoriteChange,
+  favoriteMeals,
 }: MealTimeSlotProps) => {
+
   const [showAll, setShowAll] = useState(false);
   const [allOptions, setAllOptions] = useState<Meal[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -90,6 +93,7 @@ const MealTimeSlot = ({
             meal={meal} 
             showFavoritesOnly={showFavoritesOnly}
             onFavoriteChange={onFavoriteChange}
+            initialIsFavorite={favoriteMeals ? favoriteMeals.has(meal.name) : undefined}
           />
         ))}
       </div>

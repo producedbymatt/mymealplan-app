@@ -126,6 +126,7 @@ const MealPlan = ({ dailyCalories = 1200, minProtein = 0, maxProtein = 999 }: Me
           isLast={index === mealPlan.length - 1}
           showFavoritesOnly={showFavoritesOnly}
           onFavoriteChange={handleFavoriteChange}
+          favoriteMeals={favoriteMeals}
         />
       ))}
     </Card>
