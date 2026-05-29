@@ -25,7 +25,7 @@ const BMISlider = ({ bmi, height, onBMIChange }: BMISliderProps) => {
   const [sliderValue, setSliderValue] = React.useState([constrainedBMI]);
   const [isInteracting, setIsInteracting] = React.useState(false);
   const sliderRef = React.useRef<HTMLDivElement>(null);
-  const resetTimeoutRef = React.useRef<NodeJS.Timeout>();
+  const resetTimeoutRef = React.useRef<ReturnType<typeof setTimeout>>();
   const [tooltipPosition, setTooltipPosition] = React.useState({ x: 0, y: 0 });
 
   const updateTooltipPosition = (value: number = sliderValue[0]) => {
