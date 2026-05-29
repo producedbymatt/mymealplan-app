@@ -52,7 +52,6 @@ const ProgressPhotos = () => {
         return;
       }
 
-      console.log('Loading progress photos...');
       const { data: photos, error } = await supabase
         .from('progress_photos')
         .select('*')
@@ -60,13 +59,25 @@ const ProgressPhotos = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      console.log('Loaded photos:', photos);
-      setPhotos(photos || []);
+
+      // Bucket is private — resolve signed URLs for display
+      const withSigned = await Promise.all(
+        (photos || []).map(async (p: Photo) => {
+          const match = p.photo_url.match(/user-uploads\/(.+)$/);
+          const path = match ? match[1] : p.photo_url;
+          const { data: signed } = await supabase.storage
+            .from('user-uploads')
+            .createSignedUrl(path, 60 * 60);
+          return { ...p, photo_url: signed?.signedUrl || p.photo_url };
+        })
+      );
+      setPhotos(withSigned);
     } catch (error) {
       console.error('Error loading photos:', error);
       toast.error("Failed to load progress photos");
     }
   };
+
 
   const convertHeicToJpg = async (file: File): Promise<File> => {
     try {
