@@ -82,14 +82,14 @@ const ChatWindow = () => {
     // Then send the message to get AI response
     await sendMessage(userMessage);
   };
-  const handleMealLog = (meal: { meal_name: string; calories: number; protein: number; carbs: number; sugars: number }) => {
+  const handleMealLog = (meal: { meal_name: string; calories: number; protein: number; carbs: number; sugars: number; fat: number }) => {
     setMealToLog(meal);
     setShowMealForm(true);
   };
 
 
 
-  const handleSaveMeal = async (mealData: { meal_name: string; calories: number; protein: number; carbs: number; sugars: number }) => {
+  const handleSaveMeal = async (mealData: { meal_name: string; calories: number; protein: number; carbs: number; sugars: number; fat: number }) => {
     console.log('Saving meal:', mealData);
     if (addMeal) {
       await addMeal(mealData);
@@ -128,6 +128,7 @@ const ChatWindow = () => {
                 protein: mealToLog.protein,
                 carbs: mealToLog.carbs,
                 sugars: mealToLog.sugars,
+                fat: (mealToLog as any).fat ?? 0,
 
                 user_id: '',
                 created_at: new Date().toISOString(),

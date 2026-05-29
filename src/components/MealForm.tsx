@@ -28,6 +28,7 @@ const emptyMeal = {
   protein: "",
   carbs: "",
   sugars: "",
+  fat: "",
 };
 
 export const MealForm = ({ onSubmit, initialMeal, onCancel, submitButtonText }: MealFormProps) => {
@@ -37,6 +38,7 @@ export const MealForm = ({ onSubmit, initialMeal, onCancel, submitButtonText }: 
     protein: initialMeal?.protein?.toString() || "",
     carbs: initialMeal?.carbs?.toString() || "",
     sugars: initialMeal?.sugars?.toString() || "",
+    fat: initialMeal?.fat?.toString() || "",
   });
   const [previousMeals, setPreviousMeals] = useState<MealLog[]>([]);
 
@@ -47,6 +49,7 @@ export const MealForm = ({ onSubmit, initialMeal, onCancel, submitButtonText }: 
       protein: initialMeal?.protein?.toString() || "",
       carbs: initialMeal?.carbs?.toString() || "",
       sugars: initialMeal?.sugars?.toString() || "",
+      fat: initialMeal?.fat?.toString() || "",
     });
   }, [initialMeal]);
 
@@ -95,6 +98,7 @@ export const MealForm = ({ onSubmit, initialMeal, onCancel, submitButtonText }: 
       protein: parseInt(meal.protein) || 0,
       carbs: parseInt(meal.carbs) || 0,
       sugars: parseInt(meal.sugars) || 0,
+      fat: parseInt(meal.fat) || 0,
     });
 
     if (!initialMeal) setMeal(emptyMeal);
@@ -109,6 +113,7 @@ export const MealForm = ({ onSubmit, initialMeal, onCancel, submitButtonText }: 
         protein: (selected.protein ?? 0).toString(),
         carbs: (selected.carbs ?? 0).toString(),
         sugars: (selected.sugars ?? 0).toString(),
+        fat: (selected.fat ?? 0).toString(),
       });
     }
   };
@@ -202,7 +207,7 @@ export const MealForm = ({ onSubmit, initialMeal, onCancel, submitButtonText }: 
           onChange={(e) => setMeal({ ...meal, calories: e.target.value })}
         />
       </div>
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1">
           <Label htmlFor="protein">Protein (g)</Label>
           <Input
@@ -234,6 +239,17 @@ export const MealForm = ({ onSubmit, initialMeal, onCancel, submitButtonText }: 
             placeholder="0"
             value={meal.sugars}
             onChange={(e) => setMeal({ ...meal, sugars: e.target.value })}
+          />
+        </div>
+        <div className="space-y-1">
+          <Label htmlFor="fat">Fat (g)</Label>
+          <Input
+            id="fat"
+            type="number"
+            min="0"
+            placeholder="0"
+            value={meal.fat}
+            onChange={(e) => setMeal({ ...meal, fat: e.target.value })}
           />
         </div>
       </div>

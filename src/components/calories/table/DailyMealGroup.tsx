@@ -33,8 +33,9 @@ const DailyMealGroup = ({
       protein: acc.protein + (m.protein || 0),
       carbs: acc.carbs + (m.carbs || 0),
       sugars: acc.sugars + (m.sugars || 0),
+      fat: acc.fat + (m.fat || 0),
     }),
-    { calories: 0, protein: 0, carbs: 0, sugars: 0 }
+    { calories: 0, protein: 0, carbs: 0, sugars: 0, fat: 0 }
   );
 
   return (
@@ -52,6 +53,7 @@ const DailyMealGroup = ({
               <span className="opacity-90">P {totals.protein}g</span>
               <span className="opacity-90">C {totals.carbs}g</span>
               <span className="opacity-90">S {totals.sugars}g</span>
+              <span className="opacity-90">F {totals.fat}g</span>
               <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
             </div>
           </div>

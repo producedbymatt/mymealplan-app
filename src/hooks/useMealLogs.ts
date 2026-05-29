@@ -11,6 +11,7 @@ export interface MealLog {
   protein: number;
   carbs: number;
   sugars: number;
+  fat: number;
   created_at: string;
 }
 
@@ -20,8 +21,8 @@ export interface MealInput {
   protein: number;
   carbs: number;
   sugars: number;
+  fat: number;
 }
-
 export const useMealLogs = (userId: string | undefined) => {
   const queryClient = useQueryClient();
 
@@ -60,6 +61,7 @@ export const useMealLogs = (userId: string | undefined) => {
           protein: meal.protein ?? 0,
           carbs: meal.carbs ?? 0,
           sugars: meal.sugars ?? 0,
+          fat: meal.fat ?? 0,
         }])
         .select()
         .single();
@@ -86,6 +88,7 @@ export const useMealLogs = (userId: string | undefined) => {
           protein: meal.protein,
           carbs: meal.carbs,
           sugars: meal.sugars,
+          fat: meal.fat,
         })
         .eq('id', meal.id)
         .select()

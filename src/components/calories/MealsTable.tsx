@@ -35,12 +35,13 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
       <Table className="table-fixed w-full">
         <TableHeader>
           <TableRow className="hover:bg-transparent">
-            <TableHead className="w-[22%]">Meal Name</TableHead>
-            <TableHead className="w-[10%]">Calories</TableHead>
-            <TableHead className="w-[10%]">Protein (g)</TableHead>
-            <TableHead className="w-[10%]">Carbs (g)</TableHead>
-            <TableHead className="w-[10%]">Sugars (g)</TableHead>
-            <TableHead className="w-[10%]">Time</TableHead>
+            <TableHead className="w-[18%]">Meal Name</TableHead>
+            <TableHead className="w-[9%]">Calories</TableHead>
+            <TableHead className="w-[9%]">Protein (g)</TableHead>
+            <TableHead className="w-[9%]">Carbs (g)</TableHead>
+            <TableHead className="w-[9%]">Sugars (g)</TableHead>
+            <TableHead className="w-[9%]">Fat (g)</TableHead>
+            <TableHead className="w-[9%]">Time</TableHead>
             <TableHead className="w-[14%]">Date</TableHead>
             <TableHead className="w-[14%] text-right">Actions</TableHead>
           </TableRow>
