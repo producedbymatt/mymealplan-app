@@ -15,10 +15,12 @@ interface MealOptionProps {
   meal: Meal;
   showFavoritesOnly?: boolean;
   onFavoriteChange?: (meal: Meal, isFavorite: boolean) => void;
+  initialIsFavorite?: boolean;
 }
 
-const MealOption = ({ meal, showFavoritesOnly, onFavoriteChange }: MealOptionProps) => {
-  const { isFavorite, isLoading, toggleFavorite: toggleFavoriteState } = useFavoriteMeal(meal);
+const MealOption = ({ meal, showFavoritesOnly, onFavoriteChange, initialIsFavorite }: MealOptionProps) => {
+  const { isFavorite, isLoading, toggleFavorite: toggleFavoriteState } = useFavoriteMeal(meal, initialIsFavorite);
+
 
   const toggleFavorite = async (e: React.MouseEvent) => {
     e.stopPropagation();
