@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -8,16 +8,44 @@ import WeightTable from "./weight/WeightTable";
 import ProgressPhotos from "./weight/ProgressPhotos";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
+import { subMonths, subYears, isAfter } from "date-fns";
+
+type TimeFilter = "all" | "1y" | "6m" | "3m";
 
 interface WeightTrackerProps {
   onWeightEntriesChange?: (entries: WeightEntry[]) => void;
   showGoalInputs?: boolean;
 }
 
+const filterOptions: { label: string; value: TimeFilter }[] = [
+  { label: "All Time", value: "all" },
+  { label: "1 Year", value: "1y" },
+  { label: "6 Months", value: "6m" },
+  { label: "3 Months", value: "3m" },
+];
+
 const WeightTracker = ({ onWeightEntriesChange }: WeightTrackerProps) => {
   const [newWeight, setNewWeight] = useState("");
   const [showMore, setShowMore] = useState(false);
+  const [timeFilter, setTimeFilter] = useState<TimeFilter>("all");
   const { entries, loadWeightLogs, addWeight, editWeight, deleteWeight } = useWeightLogs(showMore);
+
+  const filteredEntries = useMemo(() => {
+    if (timeFilter === "all") return entries;
+
+    const now = new Date();
+    const cutoff =
+      timeFilter === "1y"
+        ? subYears(now, 1)
+        : timeFilter === "6m"
+        ? subMonths(now, 6)
+        : subMonths(now, 3);
+
+    return entries.filter((entry) => {
+      const entryDate = entry.created_at ? new Date(entry.created_at) : new Date(entry.date);
+      return isAfter(entryDate, cutoff) || entryDate.getTime() === cutoff.getTime();
+    });
+  }, [entries, timeFilter]);
 
   useEffect(() => {
     loadWeightLogs();
@@ -118,11 +146,24 @@ const WeightTracker = ({ onWeightEntriesChange }: WeightTrackerProps) => {
           </Button>
         </form>
 
-        <WeightChart entries={entries} />
+        <div className="flex flex-wrap justify-center gap-2 mb-4">
+          {filterOptions.map((opt) => (
+            <Button
+              key={opt.value}
+              variant={timeFilter === opt.value ? "default" : "outline"}
+              size="sm"
+              onClick={() => setTimeFilter(opt.value)}
+            >
+              {opt.label}
+            </Button>
+          ))}
+        </div>
 
-        {entries.length > 0 && (
+        <WeightChart entries={filteredEntries} />
+
+        {filteredEntries.length > 0 && (
           <WeightTable 
-            entries={entries}
+            entries={filteredEntries}
             showMore={showMore}
             onToggleShowMore={() => setShowMore(!showMore)}
             onEdit={handleEdit}
