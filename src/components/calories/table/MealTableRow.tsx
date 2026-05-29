@@ -13,20 +13,18 @@ interface MealTableRowProps {
   onDelete: (id: string) => void;
 }
 
-const MealTableRow = ({
-  log,
-  onEdit,
-  onDelete,
-}: MealTableRowProps) => {
+const MealTableRow = ({ log, onEdit, onDelete }: MealTableRowProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editValues, setEditValues] = useState({
     meal_name: log.meal_name,
-    calories: log.calories.toString()
+    calories: log.calories.toString(),
+    protein: (log.protein ?? 0).toString(),
+    carbs: (log.carbs ?? 0).toString(),
+    sugars: (log.sugars ?? 0).toString(),
   });
 
   const handleEditClick = () => {
     if (isEditing) {
-      // Save changes
       const newCalories = parseInt(editValues.calories);
       if (!editValues.meal_name.trim()) {
         toast.error("Meal name cannot be empty");
@@ -36,40 +34,38 @@ const MealTableRow = ({
         toast.error("Please enter a valid number of calories");
         return;
       }
-      
-      console.log('Saving edited meal:', {
-        ...log,
-        meal_name: editValues.meal_name,
-        calories: newCalories
-      });
-      
+
       onEdit({
         ...log,
         meal_name: editValues.meal_name,
-        calories: newCalories
+        calories: newCalories,
+        protein: parseInt(editValues.protein) || 0,
+        carbs: parseInt(editValues.carbs) || 0,
+        sugars: parseInt(editValues.sugars) || 0,
       });
       setIsEditing(false);
-      toast.success("Meal updated successfully");
     } else {
-      // Start editing
       setIsEditing(true);
       setEditValues({
         meal_name: log.meal_name,
-        calories: log.calories.toString()
+        calories: log.calories.toString(),
+        protein: (log.protein ?? 0).toString(),
+        carbs: (log.carbs ?? 0).toString(),
+        sugars: (log.sugars ?? 0).toString(),
       });
     }
   };
 
   return (
     <TableRow className="bg-background hover:bg-[#0EA5E9]/50 hover:text-white transition-colors">
-      <TableCell className="w-1/4">
+      <TableCell>
         <EditableTableCell
           value={editValues.meal_name}
           isEditing={isEditing}
           onChange={(value) => setEditValues({ ...editValues, meal_name: value })}
         />
       </TableCell>
-      <TableCell className="w-1/6">
+      <TableCell>
         <EditableTableCell
           value={editValues.calories}
           isEditing={isEditing}
@@ -77,13 +73,33 @@ const MealTableRow = ({
           type="number"
         />
       </TableCell>
-      <TableCell className="w-1/6">
-        {format(new Date(log.created_at), "h:mm a")}
+      <TableCell>
+        <EditableTableCell
+          value={editValues.protein}
+          isEditing={isEditing}
+          onChange={(value) => setEditValues({ ...editValues, protein: value })}
+          type="number"
+        />
       </TableCell>
-      <TableCell className="w-1/4">
-        {format(new Date(log.created_at), "MMM d, yyyy")}
+      <TableCell>
+        <EditableTableCell
+          value={editValues.carbs}
+          isEditing={isEditing}
+          onChange={(value) => setEditValues({ ...editValues, carbs: value })}
+          type="number"
+        />
       </TableCell>
-      <TableCell className="w-1/6 text-right">
+      <TableCell>
+        <EditableTableCell
+          value={editValues.sugars}
+          isEditing={isEditing}
+          onChange={(value) => setEditValues({ ...editValues, sugars: value })}
+          type="number"
+        />
+      </TableCell>
+      <TableCell>{format(new Date(log.created_at), "h:mm a")}</TableCell>
+      <TableCell>{format(new Date(log.created_at), "MMM d, yyyy")}</TableCell>
+      <TableCell className="text-right">
         <div className="flex justify-end gap-2">
           <Button
             variant="ghost"
