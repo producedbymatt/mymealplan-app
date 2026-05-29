@@ -25,19 +25,20 @@ interface MealFormProps {
 const emptyMeal = {
   meal_name: "",
   calories: "",
-const emptyMeal = {
-  meal_name: "",
-  calories: "",
   protein: "",
   carbs: "",
   sugars: "",
   fat: "",
 };
+
+export const MealForm = ({ onSubmit, initialMeal, onCancel, submitButtonText }: MealFormProps) => {
+  const [meal, setMeal] = useState({
     meal_name: initialMeal?.meal_name || "",
     calories: initialMeal?.calories?.toString() || "",
     protein: initialMeal?.protein?.toString() || "",
     carbs: initialMeal?.carbs?.toString() || "",
     sugars: initialMeal?.sugars?.toString() || "",
+    fat: initialMeal?.fat?.toString() || "",
   });
   const [previousMeals, setPreviousMeals] = useState<MealLog[]>([]);
 
