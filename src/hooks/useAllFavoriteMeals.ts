@@ -11,6 +11,7 @@ type RecipeResponse = {
     protein: number;
     carbs: number;
     fat: number;
+    sugars?: number;
     prep_time: string;
     cook_time: string;
     ingredients: string[];
