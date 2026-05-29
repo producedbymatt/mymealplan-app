@@ -49,6 +49,7 @@ export const MealForm = ({ onSubmit, initialMeal, onCancel, submitButtonText }: 
       protein: initialMeal?.protein?.toString() || "",
       carbs: initialMeal?.carbs?.toString() || "",
       sugars: initialMeal?.sugars?.toString() || "",
+      fat: initialMeal?.fat?.toString() || "",
     });
   }, [initialMeal]);
 
