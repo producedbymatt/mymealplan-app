@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { MealLog } from "@/hooks/useMealLogs";
+import { Label } from "@/components/ui/label";
+import { MealLog, MealInput } from "@/hooks/useMealLogs";
 import { Badge } from "@/components/ui/badge";
 import { Trash2 } from "lucide-react";
 import {
@@ -15,24 +16,37 @@ import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 
 interface MealFormProps {
-  onSubmit: (meal: { meal_name: string; calories: number }) => void;
+  onSubmit: (meal: MealInput) => void;
   initialMeal?: MealLog;
   onCancel?: () => void;
   submitButtonText?: string;
 }
 
+const emptyMeal = {
+  meal_name: "",
+  calories: "",
+  protein: "",
+  carbs: "",
+  sugars: "",
+};
+
 export const MealForm = ({ onSubmit, initialMeal, onCancel, submitButtonText }: MealFormProps) => {
   const [meal, setMeal] = useState({
     meal_name: initialMeal?.meal_name || "",
     calories: initialMeal?.calories?.toString() || "",
+    protein: initialMeal?.protein?.toString() || "",
+    carbs: initialMeal?.carbs?.toString() || "",
+    sugars: initialMeal?.sugars?.toString() || "",
   });
   const [previousMeals, setPreviousMeals] = useState<MealLog[]>([]);
 
-  // Reset form when initialMeal changes
   useEffect(() => {
     setMeal({
       meal_name: initialMeal?.meal_name || "",
       calories: initialMeal?.calories?.toString() || "",
+      protein: initialMeal?.protein?.toString() || "",
+      carbs: initialMeal?.carbs?.toString() || "",
+      sugars: initialMeal?.sugars?.toString() || "",
     });
   }, [initialMeal]);
 
@@ -41,7 +55,6 @@ export const MealForm = ({ onSubmit, initialMeal, onCancel, submitButtonText }: 
       const { data: session } = await supabase.auth.getSession();
       if (!session.session?.user.id) return;
 
-      console.log('Fetching previous meals for user:', session.session.user.id);
       const { data, error } = await supabase
         .from('meal_logs')
         .select('*')
@@ -53,27 +66,20 @@ export const MealForm = ({ onSubmit, initialMeal, onCancel, submitButtonText }: 
         return;
       }
 
-      // Get unique meals by name and calories
       const uniqueMeals = data.reduce((acc: MealLog[], current) => {
         const exists = acc.some(
-          meal => meal.meal_name === current.meal_name && meal.calories === current.calories
+          m => m.meal_name === current.meal_name && m.calories === current.calories
         );
-        if (!exists) {
-          acc.push(current);
-        }
+        if (!exists) acc.push(current as MealLog);
         return acc;
       }, []);
 
-      // Sort meals: most recent first, then alphabetically
-      const mostRecent = uniqueMeals[0]; // Keep the most recent meal
-      const otherMeals = uniqueMeals.slice(1).sort((a, b) => 
+      const mostRecent = uniqueMeals[0];
+      const otherMeals = uniqueMeals.slice(1).sort((a, b) =>
         a.meal_name.localeCompare(b.meal_name)
       );
 
-      const sortedMeals = mostRecent ? [mostRecent, ...otherMeals] : otherMeals;
-
-      console.log('Fetched and sorted unique previous meals:', sortedMeals);
-      setPreviousMeals(sortedMeals);
+      setPreviousMeals(mostRecent ? [mostRecent, ...otherMeals] : otherMeals);
     };
 
     fetchPreviousMeals();
@@ -81,53 +87,40 @@ export const MealForm = ({ onSubmit, initialMeal, onCancel, submitButtonText }: 
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!meal.meal_name || !meal.calories) {
-      return;
-    }
+    if (!meal.meal_name || !meal.calories) return;
 
     onSubmit({
       meal_name: meal.meal_name,
-      calories: parseInt(meal.calories),
+      calories: parseInt(meal.calories) || 0,
+      protein: parseInt(meal.protein) || 0,
+      carbs: parseInt(meal.carbs) || 0,
+      sugars: parseInt(meal.sugars) || 0,
     });
 
-    // Only reset if not editing
-    if (!initialMeal) {
-      setMeal({
-        meal_name: "",
-        calories: "",
-      });
-    }
+    if (!initialMeal) setMeal(emptyMeal);
   };
 
   const handlePreviousMealSelect = (mealId: string) => {
-    const selectedMeal = previousMeals.find(m => m.id === mealId);
-    if (selectedMeal) {
-      console.log('Selected previous meal:', selectedMeal);
+    const selected = previousMeals.find(m => m.id === mealId);
+    if (selected) {
       setMeal({
-        meal_name: selectedMeal.meal_name,
-        calories: selectedMeal.calories.toString(),
+        meal_name: selected.meal_name,
+        calories: selected.calories.toString(),
+        protein: (selected.protein ?? 0).toString(),
+        carbs: (selected.carbs ?? 0).toString(),
+        sugars: (selected.sugars ?? 0).toString(),
       });
     }
   };
 
   const handleDeleteMeal = async (mealId: string, event: React.MouseEvent) => {
-    event.stopPropagation(); // Prevent triggering select item click
-    
+    event.stopPropagation();
     try {
-      // Delete all meals with the same name and calories as the selected meal
       const mealToDelete = previousMeals.find(m => m.id === mealId);
-      if (!mealToDelete) {
-        console.error('Meal not found:', mealId);
-        return;
-      }
+      if (!mealToDelete) return;
 
-      console.log('Deleting all instances of meal:', mealToDelete);
-      
       const { data: session } = await supabase.auth.getSession();
-      if (!session.session?.user.id) {
-        console.error('No user session found');
-        return;
-      }
+      if (!session.session?.user.id) return;
 
       const { error } = await supabase
         .from('meal_logs')
@@ -137,21 +130,17 @@ export const MealForm = ({ onSubmit, initialMeal, onCancel, submitButtonText }: 
         .eq('calories', mealToDelete.calories);
 
       if (error) {
-        console.error('Error deleting meals:', error);
         toast.error("Failed to delete meal");
         return;
       }
 
-      // Update local state to remove all instances of the deleted meal
-      setPreviousMeals(prevMeals => 
-        prevMeals.filter(meal => 
-          !(meal.meal_name === mealToDelete.meal_name && meal.calories === mealToDelete.calories)
+      setPreviousMeals(prev =>
+        prev.filter(m =>
+          !(m.meal_name === mealToDelete.meal_name && m.calories === mealToDelete.calories)
         )
       );
-      
       toast.success("Meal deleted successfully");
-    } catch (err) {
-      console.error('Error in handleDeleteMeal:', err);
+    } catch {
       toast.error("An error occurred while deleting the meal");
     }
   };
@@ -166,8 +155,8 @@ export const MealForm = ({ onSubmit, initialMeal, onCancel, submitButtonText }: 
             </SelectTrigger>
             <SelectContent>
               {previousMeals.map((prevMeal, index) => (
-                <SelectItem 
-                  key={prevMeal.id} 
+                <SelectItem
+                  key={prevMeal.id}
                   value={prevMeal.id}
                   className="hover:bg-[#0EA5E9]/50 hover:text-white data-[highlighted]:bg-[#0EA5E9]/50 data-[highlighted]:text-white flex justify-between items-center pr-2"
                 >
@@ -176,9 +165,7 @@ export const MealForm = ({ onSubmit, initialMeal, onCancel, submitButtonText }: 
                       {prevMeal.meal_name} ({prevMeal.calories} cal)
                     </span>
                     {index === 0 && (
-                      <Badge variant="secondary" className="ml-2 shrink-0">
-                        Recent
-                      </Badge>
+                      <Badge variant="secondary" className="ml-2 shrink-0">Recent</Badge>
                     )}
                   </div>
                   <Button
@@ -196,20 +183,59 @@ export const MealForm = ({ onSubmit, initialMeal, onCancel, submitButtonText }: 
           </Select>
         </div>
       )}
-      <div>
+      <div className="space-y-1">
+        <Label htmlFor="meal_name">Meal name</Label>
         <Input
+          id="meal_name"
           placeholder="Meal name"
           value={meal.meal_name}
           onChange={(e) => setMeal({ ...meal, meal_name: e.target.value })}
         />
       </div>
-      <div>
+      <div className="space-y-1">
+        <Label htmlFor="calories">Calories</Label>
         <Input
+          id="calories"
           type="number"
           placeholder="Calories"
           value={meal.calories}
           onChange={(e) => setMeal({ ...meal, calories: e.target.value })}
         />
+      </div>
+      <div className="grid grid-cols-3 gap-3">
+        <div className="space-y-1">
+          <Label htmlFor="protein">Protein (g)</Label>
+          <Input
+            id="protein"
+            type="number"
+            min="0"
+            placeholder="0"
+            value={meal.protein}
+            onChange={(e) => setMeal({ ...meal, protein: e.target.value })}
+          />
+        </div>
+        <div className="space-y-1">
+          <Label htmlFor="carbs">Carbs (g)</Label>
+          <Input
+            id="carbs"
+            type="number"
+            min="0"
+            placeholder="0"
+            value={meal.carbs}
+            onChange={(e) => setMeal({ ...meal, carbs: e.target.value })}
+          />
+        </div>
+        <div className="space-y-1">
+          <Label htmlFor="sugars">Sugars (g)</Label>
+          <Input
+            id="sugars"
+            type="number"
+            min="0"
+            placeholder="0"
+            value={meal.sugars}
+            onChange={(e) => setMeal({ ...meal, sugars: e.target.value })}
+          />
+        </div>
       </div>
       <div className="flex gap-2">
         <Button type="submit" className="w-full bg-gradient-to-r from-blue-950/90 to-green-950/90 hover:from-blue-950 hover:to-green-950">

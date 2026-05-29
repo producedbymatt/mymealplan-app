@@ -42,7 +42,7 @@ const CalorieLogger = () => {
     getSession();
   }, []);
 
-  const handleSubmit = async (meal: { meal_name: string; calories: number }) => {
+  const handleSubmit = async (meal: { meal_name: string; calories: number; protein: number; carbs: number; sugars: number }) => {
     try {
       await addMeal(meal);
       toast.success("Meal added successfully");
@@ -51,6 +51,7 @@ const CalorieLogger = () => {
       toast.error("Failed to save meal");
     }
   };
+
 
   const todayCalories = mealLogs
     .filter((log) => {

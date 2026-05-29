@@ -88,7 +88,7 @@ const ChatWindow = () => {
     setShowMealForm(true);
   };
 
-  const handleSaveMeal = async (mealData: { meal_name: string; calories: number }) => {
+  const handleSaveMeal = async (mealData: { meal_name: string; calories: number; protein: number; carbs: number; sugars: number }) => {
     console.log('Saving meal:', mealData);
     if (addMeal) {
       await addMeal(mealData);
@@ -96,6 +96,7 @@ const ChatWindow = () => {
       setMealToLog(null);
     }
   };
+
 
   return (
     <div className="flex flex-col h-[calc(600px-64px)]">
@@ -123,6 +124,9 @@ const ChatWindow = () => {
                 id: '',
                 meal_name: mealToLog.meal_name,
                 calories: mealToLog.calories,
+                protein: 0,
+                carbs: 0,
+                sugars: 0,
                 user_id: '',
                 created_at: new Date().toISOString(),
               }}
@@ -131,6 +135,7 @@ const ChatWindow = () => {
               submitButtonText="Log Meal"
             />
           )}
+
         </DialogContent>
       </Dialog>
     </div>

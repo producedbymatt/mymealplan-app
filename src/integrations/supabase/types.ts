@@ -62,23 +62,32 @@ export type Database = {
       meal_logs: {
         Row: {
           calories: number
+          carbs: number
           created_at: string
           id: string
           meal_name: string
+          protein: number
+          sugars: number
           user_id: string
         }
         Insert: {
           calories: number
+          carbs?: number
           created_at?: string
           id?: string
           meal_name: string
+          protein?: number
+          sugars?: number
           user_id: string
         }
         Update: {
           calories?: number
+          carbs?: number
           created_at?: string
           id?: string
           meal_name?: string
+          protein?: number
+          sugars?: number
           user_id?: string
         }
         Relationships: []
