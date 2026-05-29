@@ -86,6 +86,7 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
           />
         ))}
       </Accordion>
+      </div>
     </div>
   );
 };
