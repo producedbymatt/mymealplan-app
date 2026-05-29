@@ -1,0 +1,1 @@
+ALTER TABLE public.recipes ADD COLUMN sugars integer NOT NULL DEFAULT 0;
