@@ -43,17 +43,17 @@ const DailyMealGroup = ({
       {dateIndex > 0 && <Separator className="my-2" />}
       <div className="w-full bg-gradient-to-r from-blue-950/90 to-green-950/90 text-white rounded-lg">
         <AccordionTrigger className="w-full px-4 py-4 [&[data-state=open]>div>svg]:rotate-180 [&>svg]:hidden">
-          <div className="flex justify-between items-center w-full gap-4">
-            <h3 className="text-lg font-semibold">
+          <div className="flex justify-between items-center w-full gap-2 md:gap-4">
+            <h3 className="text-sm md:text-lg font-semibold truncate">
               {format(new Date(date), "EEEE, MMMM do")}
               {isToday && " (Today)"}
             </h3>
-            <div className="flex items-center gap-4 text-sm md:text-base">
+            <div className="flex items-center gap-2 md:gap-4 text-xs md:text-base shrink-0">
               <span className="font-semibold">{totals.calories} cal</span>
               <span className="opacity-90">P {totals.protein}g</span>
-              <span className="opacity-90">C {totals.carbs}g</span>
-              <span className="opacity-90">S {totals.sugars}g</span>
-              <span className="opacity-90">F {totals.fat}g</span>
+              <span className="opacity-90 hidden sm:inline">C {totals.carbs}g</span>
+              <span className="opacity-90 hidden sm:inline">S {totals.sugars}g</span>
+              <span className="opacity-90 hidden sm:inline">F {totals.fat}g</span>
               <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
             </div>
           </div>
