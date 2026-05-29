@@ -11,6 +11,7 @@ export interface MealLog {
   protein: number;
   carbs: number;
   sugars: number;
+  fat: number;
   created_at: string;
 }
 
@@ -20,8 +21,8 @@ export interface MealInput {
   protein: number;
   carbs: number;
   sugars: number;
+  fat: number;
 }
-
 export const useMealLogs = (userId: string | undefined) => {
   const queryClient = useQueryClient();
 
