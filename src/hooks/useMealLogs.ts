@@ -81,13 +81,14 @@ export const useMealLogs = (userId: string | undefined) => {
   const updateMealMutation = useMutation({
     mutationFn: async (meal: MealLog) => {
       const { data, error } = await supabase
-        .from('meal_logs')
         .update({
           meal_name: meal.meal_name,
           calories: meal.calories,
           protein: meal.protein,
           carbs: meal.carbs,
           sugars: meal.sugars,
+          fat: meal.fat,
+        })
         })
         .eq('id', meal.id)
         .select()
