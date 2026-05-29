@@ -24,7 +24,8 @@ const WELCOME_MESSAGE = {
 const ChatWindow = () => {
   const [input, setInput] = useState('');
   const [showMealForm, setShowMealForm] = useState(false);
-  const [mealToLog, setMealToLog] = useState<{ meal_name: string; calories: number } | null>(null);
+  const [mealToLog, setMealToLog] = useState<{ meal_name: string; calories: number; protein: number; carbs: number; sugars: number } | null>(null);
+
   const [userId, setUserId] = useState<string | undefined>();
   const [localMessages, setLocalMessages] = useState<Message[]>([WELCOME_MESSAGE]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
