@@ -59,7 +59,7 @@ const MealTableRow = ({ log, onEdit, onDelete }: MealTableRowProps) => {
   };
 
   return (
-    <TableRow className="bg-background hover:bg-[#0EA5E9]/50 hover:text-white transition-colors">
+    <TableRow className="bg-background hover:bg-[#0EA5E9]/50 hover:text-white transition-colors text-xs md:text-sm">
       <TableCell className="w-[18%]">
         <EditableTableCell
           value={editValues.meal_name}
@@ -108,7 +108,7 @@ const MealTableRow = ({ log, onEdit, onDelete }: MealTableRowProps) => {
         />
       </TableCell>
       <TableCell className="w-[9%]">{format(new Date(log.created_at), "h:mm a")}</TableCell>
-      <TableCell className="w-[14%]">{format(new Date(log.created_at), "MMM d, yyyy")}</TableCell>
+      <TableCell className="w-[14%] hidden md:table-cell">{format(new Date(log.created_at), "MMM d, yyyy")}</TableCell>
       <TableCell className="w-[14%] text-right">
 
         <div className="flex justify-end gap-2">
