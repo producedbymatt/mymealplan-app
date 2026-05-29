@@ -93,6 +93,7 @@ const MealTimeSlot = ({
             meal={meal} 
             showFavoritesOnly={showFavoritesOnly}
             onFavoriteChange={onFavoriteChange}
+            initialIsFavorite={favoriteMeals ? favoriteMeals.has(meal.name) : undefined}
           />
         ))}
       </div>
