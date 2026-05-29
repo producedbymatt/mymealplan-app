@@ -8,6 +8,8 @@ import Header from "@/components/Header";
 import { useMealLogs } from "@/hooks/useMealLogs";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
+import { calculateProteinNeeds } from "@/components/calories/utils";
+import { ACTIVITY_LEVELS, ActivityLevelKey } from "@/components/calories/constants";
 
 const CalorieLogger = () => {
   const [userId, setUserId] = useState<string | undefined>(undefined);
@@ -23,7 +25,7 @@ const CalorieLogger = () => {
       if (session?.user?.id) {
         const { data, error } = await supabase
           .from('user_metrics')
-          .select('recommended_calories, protein_goal, current_weight')
+          .select('recommended_calories, activity_level, target_weight, current_weight')
           .eq('user_id', session.user.id)
           .order('created_at', { ascending: false })
           .limit(1)
@@ -36,17 +38,21 @@ const CalorieLogger = () => {
 
         if (data) {
           setRecommendedCalories(data.recommended_calories ?? 0);
-          // Use explicit protein_goal if set, otherwise default to 0.8g per kg of body weight
-          const goal =
-            (data as any).protein_goal ??
-            (data.current_weight ? Math.round(data.current_weight * 0.8) : null);
-          setProteinGoal(goal);
+          const weight = data.target_weight ?? data.current_weight;
+          const activityKey = (data.activity_level ?? 'sedentary') as ActivityLevelKey;
+          const activityValue = ACTIVITY_LEVELS[activityKey]?.value ?? 1.2;
+          if (weight) {
+            const { minProtein } = calculateProteinNeeds(weight, activityValue);
+            setProteinGoal(minProtein);
+          }
         }
       }
     };
 
     getSession();
   }, []);
+
+
 
   const handleSubmit = async (meal: { meal_name: string; calories: number; protein: number; carbs: number; sugars: number }) => {
     try {
