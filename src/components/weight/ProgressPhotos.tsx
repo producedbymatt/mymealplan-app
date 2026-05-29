@@ -183,9 +183,20 @@ const ProgressPhotos = () => {
   const handleDelete = async (photoId: string, photoUrl: string) => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      
+
       if (!session) {
         toast.error("Please log in to delete photos");
+        return;
+      }
+
+      // Delete from database
+      const { error: dbError } = await supabase
+        .from('progress_photos')
+        .delete()
+        .eq('id', photoId);
+
+      if (dbError) throw dbError;
+
       // Extract file path from URL (strip query string from signed URLs) and delete from storage
       const pathMatch = photoUrl.match(/user-uploads\/([^?]+)/);
       if (!pathMatch) throw new Error("Invalid photo URL format");
@@ -197,18 +208,6 @@ const ProgressPhotos = () => {
 
       if (storageError) throw storageError;
 
-
-      // Extract file path from URL and delete from storage
-      const pathMatch = photoUrl.match(/user-uploads\/(.+)$/);  // Updated regex pattern
-      if (!pathMatch) throw new Error("Invalid photo URL format");
-      
-      const filePath = pathMatch[1];
-      const { error: storageError } = await supabase.storage
-        .from('user-uploads')  // Updated bucket name
-        .remove([filePath]);
-
-      if (storageError) throw storageError;
-
       toast.success("Photo deleted successfully");
       await loadPhotos();
     } catch (error) {
@@ -216,6 +215,7 @@ const ProgressPhotos = () => {
       toast.error("Failed to delete photo");
     }
   };
+
 
   return (
     <Card className="p-6 w-full max-w-2xl mx-auto mt-8">
