@@ -125,9 +125,10 @@ const ChatWindow = () => {
                 id: '',
                 meal_name: mealToLog.meal_name,
                 calories: mealToLog.calories,
-                protein: 0,
-                carbs: 0,
-                sugars: 0,
+                protein: mealToLog.protein,
+                carbs: mealToLog.carbs,
+                sugars: mealToLog.sugars,
+
                 user_id: '',
                 created_at: new Date().toISOString(),
               }}
