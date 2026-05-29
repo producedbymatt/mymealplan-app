@@ -56,7 +56,7 @@ const CalorieLogger = () => {
 
   const handleSubmit = async (meal: { meal_name: string; calories: number; protein: number; carbs: number; sugars: number }) => {
     try {
-      await addMeal(meal);
+  const handleSubmit = async (meal: { meal_name: string; calories: number; protein: number; carbs: number; sugars: number; fat: number }) => {
       toast.success("Meal added successfully");
     } catch (error) {
       console.error('Error saving meal:', error);
