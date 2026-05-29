@@ -55,7 +55,22 @@ serve(async (req) => {
       );
     }
 
-    const { message, messageHistory } = await req.json();
+    const body = await req.json();
+    const rawMessage = typeof body?.message === 'string' ? body.message : '';
+    const message = rawMessage.trim().slice(0, 2000);
+    if (!message) {
+      return new Response(
+        JSON.stringify({ error: 'Message is required' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+      );
+    }
+
+    const rawHistory = Array.isArray(body?.messageHistory) ? body.messageHistory : [];
+    const messageHistory = rawHistory
+      .filter((m: any) => m && (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string')
+      .slice(-20)
+      .map((m: any) => ({ role: m.role as 'user' | 'assistant', content: m.content.slice(0, 2000) }));
+
 
     const openai = new OpenAI({
       apiKey: openaiKey,
