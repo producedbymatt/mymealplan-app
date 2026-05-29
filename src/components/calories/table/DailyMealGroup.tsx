@@ -60,7 +60,8 @@ const DailyMealGroup = ({
 
       <AccordionContent className="px-4 pt-2">
         <div className="rounded-lg overflow-hidden mt-2">
-          <Table>
+          <Table className="table-fixed w-full">
+
             <TableBody>
               {meals.map((log) => (
                 <MealTableRow
