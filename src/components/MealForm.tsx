@@ -115,7 +115,6 @@ export const MealForm = ({ onSubmit, initialMeal, onCancel, submitButtonText }: 
         sugars: (selected.sugars ?? 0).toString(),
         fat: (selected.fat ?? 0).toString(),
       });
-      });
     }
   };
 
