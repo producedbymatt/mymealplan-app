@@ -11,6 +11,7 @@ export interface Meal {
   protein: number;
   carbs: number;
   fat: number;
+  sugars: number;
   recipe: Recipe;
   isFavorite?: boolean;
 }
