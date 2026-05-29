@@ -47,7 +47,7 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
         </TableHeader>
       </Table>
 
-      </Table>
+
 
       <Accordion
         type="multiple"
