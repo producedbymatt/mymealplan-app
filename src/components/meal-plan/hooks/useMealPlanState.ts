@@ -15,6 +15,16 @@ export const useMealPlanState = (dailyCalories: number = 1200) => {
   const { generateMealOptions } = useMealGeneration();
 
   useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUserId(session?.user?.id);
+    });
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUserId(session?.user?.id);
+    });
+    return () => sub.subscription.unsubscribe();
+  }, []);
+
+  useEffect(() => {
     const initializeMealPlan = async () => {
       console.log('Initializing meal plan with calories:', dailyCalories);
       setIsLoading(true);
