@@ -87,7 +87,7 @@ const ChatWindow = () => {
     setShowMealForm(true);
   };
 
-  };
+
 
   const handleSaveMeal = async (mealData: { meal_name: string; calories: number; protein: number; carbs: number; sugars: number }) => {
     console.log('Saving meal:', mealData);
