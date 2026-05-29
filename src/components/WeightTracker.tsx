@@ -10,15 +10,42 @@ import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import { subMonths, subYears, isAfter } from "date-fns";
 
+type TimeFilter = "all" | "1y" | "6m" | "3m";
+
 interface WeightTrackerProps {
   onWeightEntriesChange?: (entries: WeightEntry[]) => void;
   showGoalInputs?: boolean;
 }
 
+const filterOptions: { label: string; value: TimeFilter }[] = [
+  { label: "All Time", value: "all" },
+  { label: "1 Year", value: "1y" },
+  { label: "6 Months", value: "6m" },
+  { label: "3 Months", value: "3m" },
+];
+
 const WeightTracker = ({ onWeightEntriesChange }: WeightTrackerProps) => {
   const [newWeight, setNewWeight] = useState("");
   const [showMore, setShowMore] = useState(false);
+  const [timeFilter, setTimeFilter] = useState<TimeFilter>("all");
   const { entries, loadWeightLogs, addWeight, editWeight, deleteWeight } = useWeightLogs(showMore);
+
+  const filteredEntries = useMemo(() => {
+    if (timeFilter === "all") return entries;
+
+    const now = new Date();
+    const cutoff =
+      timeFilter === "1y"
+        ? subYears(now, 1)
+        : timeFilter === "6m"
+        ? subMonths(now, 6)
+        : subMonths(now, 3);
+
+    return entries.filter((entry) => {
+      const entryDate = entry.created_at ? new Date(entry.created_at) : new Date(entry.date);
+      return isAfter(entryDate, cutoff) || entryDate.getTime() === cutoff.getTime();
+    });
+  }, [entries, timeFilter]);
 
   useEffect(() => {
     loadWeightLogs();
