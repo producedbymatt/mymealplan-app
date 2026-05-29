@@ -166,4 +166,3 @@ IMPORTANT: This exact format must be followed for ALL food and calorie-related q
   }
 });
 
-});
