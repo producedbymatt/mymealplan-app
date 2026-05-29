@@ -24,7 +24,8 @@ const WELCOME_MESSAGE = {
 const ChatWindow = () => {
   const [input, setInput] = useState('');
   const [showMealForm, setShowMealForm] = useState(false);
-  const [mealToLog, setMealToLog] = useState<{ meal_name: string; calories: number } | null>(null);
+  const [mealToLog, setMealToLog] = useState<{ meal_name: string; calories: number; protein: number; carbs: number; sugars: number } | null>(null);
+
   const [userId, setUserId] = useState<string | undefined>();
   const [localMessages, setLocalMessages] = useState<Message[]>([WELCOME_MESSAGE]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -81,12 +82,12 @@ const ChatWindow = () => {
     // Then send the message to get AI response
     await sendMessage(userMessage);
   };
-
-  const handleMealLog = (mealName: string, calories: number) => {
-    console.log('Opening meal form with:', { mealName, calories });
-    setMealToLog({ meal_name: mealName, calories });
+  const handleMealLog = (meal: { meal_name: string; calories: number; protein: number; carbs: number; sugars: number }) => {
+    setMealToLog(meal);
     setShowMealForm(true);
   };
+
+
 
   const handleSaveMeal = async (mealData: { meal_name: string; calories: number; protein: number; carbs: number; sugars: number }) => {
     console.log('Saving meal:', mealData);
@@ -124,9 +125,10 @@ const ChatWindow = () => {
                 id: '',
                 meal_name: mealToLog.meal_name,
                 calories: mealToLog.calories,
-                protein: 0,
-                carbs: 0,
-                sugars: 0,
+                protein: mealToLog.protein,
+                carbs: mealToLog.carbs,
+                sugars: mealToLog.sugars,
+
                 user_id: '',
                 created_at: new Date().toISOString(),
               }}

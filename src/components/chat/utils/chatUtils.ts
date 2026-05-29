@@ -1,42 +1,41 @@
-export const extractMealInfo = (content: string) => {
-  console.log('Extracting meal info from:', content);
-  
-  // Look for meal name between single quotes
+export interface ExtractedMealInfo {
+  meal_name: string;
+  calories: number;
+  protein: number;
+  carbs: number;
+  sugars: number;
+}
+
+export const extractMealInfo = (content: string): ExtractedMealInfo | null => {
   const mealNameMatch = content.match(/'([^']+)'/);
-  if (!mealNameMatch) {
-    console.log('No meal name found between single quotes');
-  }
-
-  // Look for calories number with more flexible pattern
   const caloriesMatch = content.match(/contains approximately (\d+) calories/i);
-  if (!caloriesMatch) {
-    console.log('No calories found');
-  }
 
-  // Try to extract food item name from the question if no quoted name found
   let guessedMealName = "Unknown Food Item";
   if (!mealNameMatch) {
-    // Look for common food-related words in the user's question
-    const foodWordMatch = content.toLowerCase().match(/(?:a |an |one )?([a-z\s]+?)(?:\s+contains? approximately|\s+has|\s+is)/i);
+    const foodWordMatch = content
+      .toLowerCase()
+      .match(/(?:a |an |one )?([a-z\s]+?)(?:\s+contains? approximately|\s+has|\s+is)/i);
     if (foodWordMatch && foodWordMatch[1]) {
-      // Clean up and capitalize the first letter of each word
       guessedMealName = foodWordMatch[1]
         .trim()
         .split(' ')
         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');
-      console.log('Guessed meal name:', guessedMealName);
     }
   }
 
-  // If we have either calories or a meal name, return what we can
+  const proteinMatch = content.match(/(\d+)\s*g\s*protein/i);
+  const carbsMatch = content.match(/(\d+)\s*g\s*carbs/i);
+  const sugarsMatch = content.match(/(\d+)\s*g\s*sugars?/i);
+
   if (mealNameMatch || caloriesMatch) {
-    const mealInfo = {
+    return {
       meal_name: mealNameMatch ? mealNameMatch[1].trim() : guessedMealName,
-      calories: caloriesMatch ? parseInt(caloriesMatch[1]) : 0
+      calories: caloriesMatch ? parseInt(caloriesMatch[1]) : 0,
+      protein: proteinMatch ? parseInt(proteinMatch[1]) : 0,
+      carbs: carbsMatch ? parseInt(carbsMatch[1]) : 0,
+      sugars: sugarsMatch ? parseInt(sugarsMatch[1]) : 0,
     };
-    console.log('Extracted meal info:', mealInfo);
-    return mealInfo;
   }
 
   return null;

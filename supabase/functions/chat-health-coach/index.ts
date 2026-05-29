@@ -92,20 +92,25 @@ Key Guidelines to Follow:
 8. Clear Communication: Use simple language unless technical details are requested.
 
 VERY IMPORTANT: When users ask about calories in ANY food or meal:
-1. ALWAYS format your response exactly like this, starting with "Based on your description, your" followed by the food/meal name in single quotes, then "contains approximately X calories":
+1. ALWAYS start your response with this exact line format (single quotes around the meal name):
 
 Based on your description, your 'Food/Meal Name' contains approximately X calories.
 
-2. Then, if applicable, ALWAYS provide the caloric breakdown with each component on a new line:
+2. On the VERY NEXT line, ALWAYS include macro estimates in this exact format (integers only, in grams):
+
+Macros: ~Xg protein, ~Yg carbs, ~Zg sugars.
+
+3. Then, if applicable, ALWAYS provide the caloric breakdown with each component on a new line:
 Here's the breakdown:
 
 - Component 1: X calories
 - Component 2: X calories
 (etc.)
 
-3. ALWAYS end with EXACTLY this question: "Would you like to log this meal? If you need any tips or modifications, feel free to ask!" followed by an appropriate emoji.
+4. ALWAYS end with EXACTLY this question: "Would you like to log this meal? If you need any tips or modifications, feel free to ask!" followed by an appropriate emoji.
 
-IMPORTANT: This exact format must be followed for ALL food and calorie-related questions, whether it's a single ingredient or a complex meal.`
+IMPORTANT: This exact format (including the Macros line) must be followed for ALL food and calorie-related questions, whether it's a single ingredient or a complex meal.`
+
     };
 
     const messages = [
