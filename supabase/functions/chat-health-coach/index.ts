@@ -14,39 +14,49 @@ serve(async (req) => {
   }
 
   try {
-    console.log('Request method:', req.method);
-    console.log('Request headers:', Object.fromEntries(req.headers.entries()));
-
-    console.log('Initializing Supabase client...');
     const supabaseUrl = Deno.env.get('SUPABASE_URL');
     const supabaseKey = Deno.env.get('SUPABASE_ANON_KEY');
 
     if (!supabaseUrl || !supabaseKey) {
       console.error('Missing Supabase configuration');
-      throw new Error('Missing Supabase configuration');
+      return new Response(
+        JSON.stringify({ error: 'Server configuration error' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+      );
     }
 
-    console.log('Supabase URL found:', !!supabaseUrl);
-    console.log('Supabase Key found:', !!supabaseKey);
+    // Require authentication
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+      );
+    }
 
-    const supabaseClient = createClient(supabaseUrl, supabaseKey);
-    console.log('Supabase client initialized');
+    const supabaseClient = createClient(supabaseUrl, supabaseKey, {
+      global: { headers: { Authorization: authHeader } },
+    });
+
+    const { data: userData, error: userError } = await supabaseClient.auth.getUser();
+    if (userError || !userData?.user) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+      );
+    }
 
     const openaiKey = Deno.env.get('OPENAI_API_KEY');
-    console.log('OpenAI API key found:', !!openaiKey);
-    
     if (!openaiKey) {
       console.error('OpenAI API key not found');
-      throw new Error('OpenAI API key not found in environment variables');
+      return new Response(
+        JSON.stringify({ error: 'Server configuration error' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+      );
     }
 
     const { message, messageHistory } = await req.json();
-    console.log('Request payload received:', { 
-      messageReceived: !!message,
-      historyLength: messageHistory?.length 
-    });
 
-    console.log('Initializing OpenAI...');
     const openai = new OpenAI({
       apiKey: openaiKey,
       defaultHeaders: {
@@ -54,7 +64,6 @@ serve(async (req) => {
       }
     });
 
-    console.log('Fetching recipes...');
     const { data: recipes, error: recipesError } = await supabaseClient
       .from('recipes')
       .select('*');
@@ -63,8 +72,6 @@ serve(async (req) => {
       console.error('Error fetching recipes:', recipesError);
       throw recipesError;
     }
-
-    console.log('Recipes fetched successfully:', recipes?.length);
 
     const formattedRecipes = recipes.map(recipe => ({
       name: recipe.name,
@@ -138,7 +145,6 @@ IMPORTANT: This exact format must be followed for ALL food and calorie-related q
       { role: 'user', content: message },
     ];
 
-    console.log('Sending request to OpenAI...');
     const completion = await openai.chat.completions.create({
       model: 'gpt-4o-mini',
       messages,
@@ -146,7 +152,6 @@ IMPORTANT: This exact format must be followed for ALL food and calorie-related q
       max_tokens: 500,
     });
 
-    console.log('Received response from OpenAI');
     const aiResponse = completion.choices[0].message?.content || 'Sorry, I could not process your request.';
 
     return new Response(
@@ -158,10 +163,7 @@ IMPORTANT: This exact format must be followed for ALL food and calorie-related q
   } catch (error) {
     console.error('Error in chat-health-coach function:', error);
     return new Response(
-      JSON.stringify({ 
-        error: 'There was an error processing your request',
-        details: error.message 
-      }),
+      JSON.stringify({ error: 'There was an error processing your request' }),
       {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

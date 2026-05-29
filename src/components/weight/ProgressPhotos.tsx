@@ -52,7 +52,6 @@ const ProgressPhotos = () => {
         return;
       }
 
-      console.log('Loading progress photos...');
       const { data: photos, error } = await supabase
         .from('progress_photos')
         .select('*')
@@ -60,13 +59,25 @@ const ProgressPhotos = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      console.log('Loaded photos:', photos);
-      setPhotos(photos || []);
+
+      // Bucket is private — resolve signed URLs for display
+      const withSigned = await Promise.all(
+        (photos || []).map(async (p: Photo) => {
+          const match = p.photo_url.match(/user-uploads\/(.+)$/);
+          const path = match ? match[1] : p.photo_url;
+          const { data: signed } = await supabase.storage
+            .from('user-uploads')
+            .createSignedUrl(path, 60 * 60);
+          return { ...p, photo_url: signed?.signedUrl || p.photo_url };
+        })
+      );
+      setPhotos(withSigned);
     } catch (error) {
       console.error('Error loading photos:', error);
       toast.error("Failed to load progress photos");
     }
   };
+
 
   const convertHeicToJpg = async (file: File): Promise<File> => {
     try {
@@ -172,7 +183,7 @@ const ProgressPhotos = () => {
   const handleDelete = async (photoId: string, photoUrl: string) => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      
+
       if (!session) {
         toast.error("Please log in to delete photos");
         return;
@@ -186,13 +197,13 @@ const ProgressPhotos = () => {
 
       if (dbError) throw dbError;
 
-      // Extract file path from URL and delete from storage
-      const pathMatch = photoUrl.match(/user-uploads\/(.+)$/);  // Updated regex pattern
+      // Extract file path from URL (strip query string from signed URLs) and delete from storage
+      const pathMatch = photoUrl.match(/user-uploads\/([^?]+)/);
       if (!pathMatch) throw new Error("Invalid photo URL format");
-      
+
       const filePath = pathMatch[1];
       const { error: storageError } = await supabase.storage
-        .from('user-uploads')  // Updated bucket name
+        .from('user-uploads')
         .remove([filePath]);
 
       if (storageError) throw storageError;
@@ -204,6 +215,7 @@ const ProgressPhotos = () => {
       toast.error("Failed to delete photo");
     }
   };
+
 
   return (
     <Card className="p-6 w-full max-w-2xl mx-auto mt-8">
