@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import WeightTable from "./weight/WeightTable";
 import ProgressPhotos from "./weight/ProgressPhotos";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
+import { subMonths, subYears, isAfter } from "date-fns";
 
 interface WeightTrackerProps {
   onWeightEntriesChange?: (entries: WeightEntry[]) => void;
