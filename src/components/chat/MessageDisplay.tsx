@@ -54,10 +54,7 @@ const MessageDisplay = ({ messages, isLoading, messagesEndRef, onLogMeal }: Mess
     );
   };
 
-        </div>
-      </div>
-    );
-  };
+
 
   return (
     <div className="flex-1 overflow-y-auto p-4 space-y-4">
