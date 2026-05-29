@@ -64,6 +64,7 @@ export type Database = {
           calories: number
           carbs: number
           created_at: string
+          fat: number
           id: string
           meal_name: string
           protein: number
@@ -74,6 +75,7 @@ export type Database = {
           calories: number
           carbs?: number
           created_at?: string
+          fat?: number
           id?: string
           meal_name: string
           protein?: number
@@ -84,6 +86,7 @@ export type Database = {
           calories?: number
           carbs?: number
           created_at?: string
+          fat?: number
           id?: string
           meal_name?: string
           protein?: number

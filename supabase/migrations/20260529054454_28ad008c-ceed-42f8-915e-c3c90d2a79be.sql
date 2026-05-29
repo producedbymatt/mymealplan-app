@@ -1,0 +1,1 @@
+ALTER TABLE public.meal_logs ADD COLUMN IF NOT EXISTS fat integer NOT NULL DEFAULT 0;
