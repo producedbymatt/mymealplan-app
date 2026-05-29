@@ -88,7 +88,7 @@ const ChatWindow = () => {
     setShowMealForm(true);
   };
 
-  const handleSaveMeal = async (mealData: { meal_name: string; calories: number }) => {
+  const handleSaveMeal = async (mealData: { meal_name: string; calories: number; protein: number; carbs: number; sugars: number }) => {
     console.log('Saving meal:', mealData);
     if (addMeal) {
       await addMeal(mealData);
@@ -96,6 +96,7 @@ const ChatWindow = () => {
       setMealToLog(null);
     }
   };
+
 
   return (
     <div className="flex flex-col h-[calc(600px-64px)]">
