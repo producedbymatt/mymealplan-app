@@ -98,6 +98,7 @@ export const MealForm = ({ onSubmit, initialMeal, onCancel, submitButtonText }: 
       protein: parseInt(meal.protein) || 0,
       carbs: parseInt(meal.carbs) || 0,
       sugars: parseInt(meal.sugars) || 0,
+      fat: parseInt(meal.fat) || 0,
     });
 
     if (!initialMeal) setMeal(emptyMeal);
