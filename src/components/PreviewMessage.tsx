@@ -59,8 +59,8 @@ const PreviewMessage = () => {
               <Search className="h-5 w-5 text-[#1E2533]" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-[#1E2533]">You're in preview mode</h3>
-              <p className="text-[#1E2533]/80">Create a free account to make changes</p>
+              <h3 className="text-lg font-semibold text-[#1E2533]">Create a free account or sign in to make changes</h3>
+              <p className="text-[#1E2533]/80">Unlock full access to your meal plan</p>
             </div>
           </div>
           <div className="text-[#1E2533]">›</div>
