@@ -207,7 +207,7 @@ export const MealForm = ({ onSubmit, initialMeal, onCancel, submitButtonText }: 
           onChange={(e) => setMeal({ ...meal, calories: e.target.value })}
         />
       </div>
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1">
           <Label htmlFor="protein">Protein (g)</Label>
           <Input
@@ -239,6 +239,17 @@ export const MealForm = ({ onSubmit, initialMeal, onCancel, submitButtonText }: 
             placeholder="0"
             value={meal.sugars}
             onChange={(e) => setMeal({ ...meal, sugars: e.target.value })}
+          />
+        </div>
+        <div className="space-y-1">
+          <Label htmlFor="fat">Fat (g)</Label>
+          <Input
+            id="fat"
+            type="number"
+            min="0"
+            placeholder="0"
+            value={meal.fat}
+            onChange={(e) => setMeal({ ...meal, fat: e.target.value })}
           />
         </div>
       </div>
