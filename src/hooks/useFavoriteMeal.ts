@@ -3,12 +3,18 @@ import { supabase } from "@/lib/supabase";
 import { useToast } from "@/components/ui/use-toast";
 import { Meal } from "@/components/meal-plan/types";
 
-export const useFavoriteMeal = (meal: Meal) => {
-  const [isFavorite, setIsFavorite] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+export const useFavoriteMeal = (meal: Meal, initialIsFavorite?: boolean) => {
+  const [isFavorite, setIsFavorite] = useState(initialIsFavorite ?? false);
+  const [isLoading, setIsLoading] = useState(initialIsFavorite === undefined);
   const { toast } = useToast();
 
   useEffect(() => {
+    if (initialIsFavorite !== undefined) {
+      setIsFavorite(initialIsFavorite);
+      setIsLoading(false);
+      return;
+    }
+
     const loadFavoriteStatus = async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
@@ -17,29 +23,14 @@ export const useFavoriteMeal = (meal: Meal) => {
           return;
         }
 
-        console.log('Checking favorite status for:', {
-          user_id: session.user.id,
-          meal_name: meal.name
-        });
-
-        // First get the recipe ID
         const { data: recipeData, error: recipeError } = await supabase
           .from('recipes')
           .select('id')
           .eq('name', meal.name)
           .single();
 
-        if (recipeError) {
-          console.error('Error finding recipe:', recipeError);
-          return;
-        }
+        if (recipeError || !recipeData) return;
 
-        if (!recipeData) {
-          console.log('Recipe not found:', meal.name);
-          return;
-        }
-
-        // Then check if it's in user_favorite_recipes
         const { data, error } = await supabase
           .from('user_favorite_recipes')
           .select('*')
@@ -48,15 +39,10 @@ export const useFavoriteMeal = (meal: Meal) => {
 
         if (error) {
           console.error('Error loading favorite status:', error);
-          toast({
-            title: "Error",
-            description: "Failed to load favorite status. Please try again.",
-          });
           return;
         }
 
         setIsFavorite(data && data.length > 0);
-        console.log('Favorite status loaded:', { isFavorite: data && data.length > 0 });
       } catch (err) {
         console.error('Exception while loading favorite status:', err);
       } finally {
@@ -65,7 +51,8 @@ export const useFavoriteMeal = (meal: Meal) => {
     };
 
     loadFavoriteStatus();
-  }, [meal.name, toast]);
+  }, [meal.name, initialIsFavorite, toast]);
+
 
   const toggleFavorite = async (e: React.MouseEvent) => {
     e.stopPropagation();
