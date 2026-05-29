@@ -9,19 +9,15 @@ interface MessageDisplayProps {
   messages: Message[];
   isLoading: boolean;
   messagesEndRef: React.RefObject<HTMLDivElement>;
-  onLogMeal: (mealName: string, calories: number) => void;
+  onLogMeal: (meal: { meal_name: string; calories: number; protein: number; carbs: number; sugars: number }) => void;
 }
 
 const MessageDisplay = ({ messages, isLoading, messagesEndRef, onLogMeal }: MessageDisplayProps) => {
   const renderMessage = (message: Message) => {
     const mealInfo = message.role === 'assistant' ? extractMealInfo(message.content) : null;
-    const shouldShowLogButtons = message.role === 'assistant' && 
+    const shouldShowLogButtons = message.role === 'assistant' &&
       message.content.toLowerCase().includes('contains approximately') &&
       message.content.toLowerCase().includes('calories');
-
-    console.log('Message content:', message.content);
-    console.log('Should show log buttons:', shouldShowLogButtons);
-    console.log('Meal info:', mealInfo);
 
     return (
       <div className={`flex ${message.role === 'assistant' ? 'justify-start' : 'justify-end'} mb-4`}>
@@ -35,14 +31,17 @@ const MessageDisplay = ({ messages, isLoading, messagesEndRef, onLogMeal }: Mess
           <ReactMarkdown className="prose prose-invert">
             {message.content}
           </ReactMarkdown>
-          
+
           {shouldShowLogButtons && (
             <div className="mt-4">
               <Button
-                onClick={() => onLogMeal(
-                  mealInfo?.meal_name || "Unknown Food Item",
-                  mealInfo?.calories || 0
-                )}
+                onClick={() => onLogMeal({
+                  meal_name: mealInfo?.meal_name || "Unknown Food Item",
+                  calories: mealInfo?.calories || 0,
+                  protein: mealInfo?.protein || 0,
+                  carbs: mealInfo?.carbs || 0,
+                  sugars: mealInfo?.sugars || 0,
+                })}
                 variant="secondary"
                 className="bg-white text-blue-600 hover:bg-blue-50"
               >
@@ -50,6 +49,11 @@ const MessageDisplay = ({ messages, isLoading, messagesEndRef, onLogMeal }: Mess
               </Button>
             </div>
           )}
+        </div>
+      </div>
+    );
+  };
+
         </div>
       </div>
     );
