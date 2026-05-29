@@ -31,22 +31,41 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
   const [expandedSections, setExpandedSections] = useState<string[]>([today]);
 
   return (
-    <div className="bg-background rounded-lg shadow">
-      <Table className="table-fixed w-full">
-        <TableHeader>
-          <TableRow className="hover:bg-transparent">
-            <TableHead className="w-[18%]">Meal Name</TableHead>
-            <TableHead className="w-[9%]">Calories</TableHead>
-            <TableHead className="w-[9%]">Protein (g)</TableHead>
-            <TableHead className="w-[9%]">Carbs (g)</TableHead>
-            <TableHead className="w-[9%]">Sugars (g)</TableHead>
-            <TableHead className="w-[9%]">Fat (g)</TableHead>
-            <TableHead className="w-[9%]">Time</TableHead>
-            <TableHead className="w-[14%]">Date</TableHead>
-            <TableHead className="w-[14%] text-right">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-      </Table>
+    <div className="bg-background rounded-lg shadow overflow-x-auto">
+      <div className="min-w-[720px]">
+        <Table className="table-fixed w-full">
+          <TableHeader>
+            <TableRow className="hover:bg-transparent">
+              <TableHead className="w-[18%] text-xs md:text-sm">
+                <span className="hidden md:inline">Meal Name</span>
+                <span className="md:hidden">Meal</span>
+              </TableHead>
+              <TableHead className="w-[9%] text-xs md:text-sm">
+                <span className="hidden md:inline">Calories</span>
+                <span className="md:hidden">Cal</span>
+              </TableHead>
+              <TableHead className="w-[9%] text-xs md:text-sm">
+                <span className="hidden md:inline">Protein (g)</span>
+                <span className="md:hidden">Protein</span>
+              </TableHead>
+              <TableHead className="w-[9%] text-xs md:text-sm">
+                <span className="hidden md:inline">Carbs (g)</span>
+                <span className="md:hidden">Carbs</span>
+              </TableHead>
+              <TableHead className="w-[9%] text-xs md:text-sm">
+                <span className="hidden md:inline">Sugars (g)</span>
+                <span className="md:hidden">Sugar</span>
+              </TableHead>
+              <TableHead className="w-[9%] text-xs md:text-sm">
+                <span className="hidden md:inline">Fat (g)</span>
+                <span className="md:hidden">Fat</span>
+              </TableHead>
+              <TableHead className="w-[9%] text-xs md:text-sm">Time</TableHead>
+              <TableHead className="w-[14%] text-xs md:text-sm hidden md:table-cell">Date</TableHead>
+              <TableHead className="w-[14%] text-right text-xs md:text-sm"></TableHead>
+            </TableRow>
+          </TableHeader>
+        </Table>
 
 
 
@@ -67,6 +86,7 @@ const MealsTable = ({ mealLogs, onEdit, onDelete }: MealsTableProps) => {
           />
         ))}
       </Accordion>
+      </div>
     </div>
   );
 };
