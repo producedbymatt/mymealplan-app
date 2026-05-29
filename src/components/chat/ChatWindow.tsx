@@ -119,13 +119,17 @@ const ChatWindow = () => {
             <DialogTitle>Add Meal to Log</DialogTitle>
           </DialogHeader>
           {mealToLog && (
-            <MealForm
               initialMeal={{
                 id: '',
                 meal_name: mealToLog.meal_name,
                 calories: mealToLog.calories,
+                protein: 0,
+                carbs: 0,
+                sugars: 0,
                 user_id: '',
                 created_at: new Date().toISOString(),
+              }}
+
               }}
               onSubmit={handleSaveMeal}
               onCancel={() => setShowMealForm(false)}
