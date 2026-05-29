@@ -58,14 +58,14 @@ const MealTableRow = ({ log, onEdit, onDelete }: MealTableRowProps) => {
 
   return (
     <TableRow className="bg-background hover:bg-[#0EA5E9]/50 hover:text-white transition-colors">
-      <TableCell>
+      <TableCell className="w-[22%]">
         <EditableTableCell
           value={editValues.meal_name}
           isEditing={isEditing}
           onChange={(value) => setEditValues({ ...editValues, meal_name: value })}
         />
       </TableCell>
-      <TableCell>
+      <TableCell className="w-[10%]">
         <EditableTableCell
           value={editValues.calories}
           isEditing={isEditing}
@@ -73,7 +73,7 @@ const MealTableRow = ({ log, onEdit, onDelete }: MealTableRowProps) => {
           type="number"
         />
       </TableCell>
-      <TableCell>
+      <TableCell className="w-[10%]">
         <EditableTableCell
           value={editValues.protein}
           isEditing={isEditing}
@@ -81,7 +81,7 @@ const MealTableRow = ({ log, onEdit, onDelete }: MealTableRowProps) => {
           type="number"
         />
       </TableCell>
-      <TableCell>
+      <TableCell className="w-[10%]">
         <EditableTableCell
           value={editValues.carbs}
           isEditing={isEditing}
@@ -89,7 +89,7 @@ const MealTableRow = ({ log, onEdit, onDelete }: MealTableRowProps) => {
           type="number"
         />
       </TableCell>
-      <TableCell>
+      <TableCell className="w-[10%]">
         <EditableTableCell
           value={editValues.sugars}
           isEditing={isEditing}
@@ -97,9 +97,10 @@ const MealTableRow = ({ log, onEdit, onDelete }: MealTableRowProps) => {
           type="number"
         />
       </TableCell>
-      <TableCell>{format(new Date(log.created_at), "h:mm a")}</TableCell>
-      <TableCell>{format(new Date(log.created_at), "MMM d, yyyy")}</TableCell>
-      <TableCell className="text-right">
+      <TableCell className="w-[10%]">{format(new Date(log.created_at), "h:mm a")}</TableCell>
+      <TableCell className="w-[14%]">{format(new Date(log.created_at), "MMM d, yyyy")}</TableCell>
+      <TableCell className="w-[14%] text-right">
+
         <div className="flex justify-end gap-2">
           <Button
             variant="ghost"
