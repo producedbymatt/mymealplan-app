@@ -43,12 +43,11 @@ serve(async (req) => {
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
       );
     }
-
-    const openaiKey = Deno.env.get('OPENAI_API_KEY');
-    if (!openaiKey) {
-      console.error('OpenAI API key not found');
+    const lovableKey = Deno.env.get('LOVABLE_API_KEY');
+    if (!lovableKey) {
+      console.error('LOVABLE_API_KEY not configured');
       return new Response(
-        JSON.stringify({ error: 'Server configuration error' }),
+        JSON.stringify({ error: 'AI service not configured' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
       );
     }
@@ -69,14 +68,6 @@ serve(async (req) => {
       .slice(-20)
       .map((m: any) => ({ role: m.role as 'user' | 'assistant', content: m.content.slice(0, 2000) }));
 
-
-    const openai = new OpenAI({
-      apiKey: openaiKey,
-      defaultHeaders: {
-        'OpenAI-Beta': 'assistants=v2'
-      }
-    });
-
     const { data: recipes, error: recipesError } = await supabaseClient
       .from('recipes')
       .select('*');
@@ -85,25 +76,6 @@ serve(async (req) => {
       console.error('Error fetching recipes:', recipesError);
       throw recipesError;
     }
-
-    const formattedRecipes = recipes.map(recipe => ({
-      name: recipe.name,
-      type: recipe.meal_type,
-      category: recipe.category,
-      nutritionalInfo: {
-        calories: recipe.calories,
-        protein: recipe.protein,
-        carbs: recipe.carbs,
-        fat: recipe.fat
-      },
-      timing: {
-        prepTime: recipe.prep_time,
-        cookTime: recipe.cook_time
-      },
-      ingredients: recipe.ingredients,
-      instructions: recipe.instructions,
-      difficultyLevel: recipe.difficulty_level
-    }));
 
     const systemMessage = {
       role: 'system',
@@ -133,45 +105,54 @@ Here's the breakdown:
 
 3. ALWAYS end with EXACTLY this question: "Would you like to log this meal? If you need any tips or modifications, feel free to ask!" followed by an appropriate emoji.
 
-Example response:
-Based on your description, your 'Grilled Chicken Sandwich' contains approximately 450 calories.
-
-Here's the breakdown:
-- Whole wheat bread: 140 calories
-- Grilled chicken breast: 165 calories
-- Lettuce: 5 calories
-- Tomato: 10 calories
-- Mayo: 100 calories
-- Cheese: 30 calories
-
-Would you like to log this meal? If you need any tips or modifications, feel free to ask! 🥪
-
 IMPORTANT: This exact format must be followed for ALL food and calorie-related questions, whether it's a single ingredient or a complex meal.`
     };
 
     const messages = [
       systemMessage,
-      ...messageHistory.map((msg: any) => ({
-        role: msg.role,
-        content: msg.content,
-      })),
+      ...messageHistory,
       { role: 'user', content: message },
     ];
 
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages,
-      temperature: 0.7,
-      max_tokens: 500,
+    const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${lovableKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'google/gemini-2.5-flash',
+        messages,
+      }),
     });
 
-    const aiResponse = completion.choices[0].message?.content || 'Sorry, I could not process your request.';
+    if (!aiResponse.ok) {
+      const errText = await aiResponse.text();
+      console.error('AI gateway error:', aiResponse.status, errText);
+      if (aiResponse.status === 429) {
+        return new Response(
+          JSON.stringify({ error: 'Rate limit reached. Please try again in a moment.' }),
+          { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+        );
+      }
+      if (aiResponse.status === 402) {
+        return new Response(
+          JSON.stringify({ error: 'AI credits exhausted. Please add credits in Lovable settings.' }),
+          { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+        );
+      }
+      return new Response(
+        JSON.stringify({ error: 'AI service unavailable' }),
+        { status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+      );
+    }
+
+    const aiData = await aiResponse.json();
+    const replyText = aiData.choices?.[0]?.message?.content || 'Sorry, I could not process your request.';
 
     return new Response(
-      JSON.stringify({ message: aiResponse }),
-      {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      },
+      JSON.stringify({ message: replyText }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
     );
   } catch (error) {
     console.error('Error in chat-health-coach function:', error);
@@ -183,4 +164,6 @@ IMPORTANT: This exact format must be followed for ALL food and calorie-related q
       },
     );
   }
+});
+
 });
