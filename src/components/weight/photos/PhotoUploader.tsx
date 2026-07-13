@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { Upload, ImageIcon } from "lucide-react";
@@ -16,6 +16,7 @@ const PhotoUploader = ({ uploading, uploadProgress, onFileUpload }: PhotoUploade
         <Input
           type="file"
           accept="image/*,.heic"
+          multiple
           onChange={onFileUpload}
           disabled={uploading}
           className="hidden"
@@ -33,14 +34,14 @@ const PhotoUploader = ({ uploading, uploadProgress, onFileUpload }: PhotoUploade
           ) : (
             <>
               <ImageIcon className="w-6 h-6" />
-              <span>Click to upload a photo</span>
+              <span>Click to upload photos (select multiple for angles)</span>
             </>
           )}
         </label>
       </div>
 
       <div className="mt-2 text-sm text-muted-foreground text-center">
-        <p>Maximum file size: 5MB</p>
+        <p>Maximum file size: 5MB per photo</p>
         <p>Supported formats: JPEG, PNG, HEIC</p>
       </div>
 
