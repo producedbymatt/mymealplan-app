@@ -112,14 +112,6 @@ const CalorieCalculator = ({
         .limit(1)
         .single();
 
-      const calculatedCalories = calculateDailyCalories(
-        calculateBMR(currentWeight, height),
-        activityLevel,
-        targetWeight,
-        currentWeight,
-        targetDays
-      );
-
       const metricsToUpdate = {
         user_id: user.id,
         activity_level: selectedActivityKey,
