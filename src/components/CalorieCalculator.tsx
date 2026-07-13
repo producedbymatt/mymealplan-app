@@ -146,6 +146,7 @@ const CalorieCalculator = ({
     setActivityLevel(ACTIVITY_LEVELS[value].value);
     setHasUnsavedChanges(true);
     setSavedCalories(null);
+    setDisclaimerAcknowledged(false);
   };
 
   const bmr = calculateBMR(currentWeight, height);
