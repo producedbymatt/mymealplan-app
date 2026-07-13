@@ -27,19 +27,27 @@ interface Entry {
   photos: Photo[];
 }
 
+interface WeightLog {
+  weight: number;
+  created_at: string;
+}
+
 interface PhotoGalleryProps {
   photos: Photo[];
+  weightLogs?: WeightLog[];
   onDelete: (photoId: string, photoUrl: string) => void;
   onAddToEntry: (entryId: string, files: FileList) => void;
 }
 
 const EntryCard = ({
   entry,
+  weight,
   onDelete,
   onAddToEntry,
   onOpen,
 }: {
   entry: Entry;
+  weight: number | null;
   onDelete: (photoId: string, photoUrl: string) => void;
   onAddToEntry: (entryId: string, files: FileList) => void;
   onOpen: (photo: Photo) => void;
@@ -115,9 +123,14 @@ const EntryCard = ({
       )}
 
       <div className="mt-2 flex items-center justify-between gap-2">
-        <p className="text-xs text-muted-foreground">
-          {format(new Date(entry.created_at), "PPp")}
-        </p>
+        <div className="flex flex-col">
+          <p className="text-xs text-muted-foreground">
+            {format(new Date(entry.created_at), "PPp")}
+          </p>
+          {weight !== null && (
+            <p className="text-sm font-medium">{weight} lbs</p>
+          )}
+        </div>
         <label htmlFor={inputId}>
           <input
             id={inputId}
@@ -143,12 +156,11 @@ const EntryCard = ({
   );
 };
 
-const PhotoGallery = ({ photos, onDelete, onAddToEntry }: PhotoGalleryProps) => {
+const PhotoGallery = ({ photos, weightLogs = [], onDelete, onAddToEntry }: PhotoGalleryProps) => {
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
 
   const entries = useMemo<Entry[]>(() => {
     const map = new Map<string, Entry>();
-    // photos come sorted newest first; oldest photo in a group defines entry date
     for (const p of photos) {
       const existing = map.get(p.entry_id);
       if (existing) {
@@ -164,7 +176,6 @@ const PhotoGallery = ({ photos, onDelete, onAddToEntry }: PhotoGalleryProps) => 
         });
       }
     }
-    // sort photos within an entry oldest -> newest for consistent swipe order
     for (const entry of map.values()) {
       entry.photos.sort(
         (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
@@ -175,6 +186,22 @@ const PhotoGallery = ({ photos, onDelete, onAddToEntry }: PhotoGalleryProps) => 
     );
   }, [photos]);
 
+  const sortedWeights = useMemo(
+    () =>
+      [...weightLogs].sort(
+        (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      ),
+    [weightLogs]
+  );
+
+  const weightForEntry = (entryDate: string): number | null => {
+    const entryTime = new Date(entryDate).getTime();
+    const match = sortedWeights.find(
+      (w) => new Date(w.created_at).getTime() <= entryTime
+    );
+    return match ? Number(match.weight) : sortedWeights.length > 0 ? Number(sortedWeights[sortedWeights.length - 1].weight) : null;
+  };
+
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
@@ -182,6 +209,7 @@ const PhotoGallery = ({ photos, onDelete, onAddToEntry }: PhotoGalleryProps) => 
           <EntryCard
             key={entry.entry_id}
             entry={entry}
+            weight={weightForEntry(entry.created_at)}
             onDelete={onDelete}
             onAddToEntry={onAddToEntry}
             onOpen={setSelectedPhoto}

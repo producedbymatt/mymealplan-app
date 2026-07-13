@@ -13,8 +13,14 @@ interface Photo {
   entry_id: string;
 }
 
+interface WeightLog {
+  weight: number;
+  created_at: string;
+}
+
 const ProgressPhotos = () => {
   const [photos, setPhotos] = useState<Photo[]>([]);
+  const [weightLogs, setWeightLogs] = useState<WeightLog[]>([]);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
 
@@ -50,16 +56,26 @@ const ProgressPhotos = () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) return;
 
-      const { data, error } = await supabase
-        .from('progress_photos')
-        .select('*')
-        .eq('user_id', session.user.id)
-        .order('created_at', { ascending: false });
+      const [photosRes, weightsRes] = await Promise.all([
+        supabase
+          .from('progress_photos')
+          .select('*')
+          .eq('user_id', session.user.id)
+          .order('created_at', { ascending: false }),
+        supabase
+          .from('weight_logs')
+          .select('weight, created_at')
+          .eq('user_id', session.user.id)
+          .order('created_at', { ascending: false }),
+      ]);
 
-      if (error) throw error;
+      if (photosRes.error) throw photosRes.error;
+      if (weightsRes.error) throw weightsRes.error;
+
+      setWeightLogs((weightsRes.data || []) as WeightLog[]);
 
       const withSigned = await Promise.all(
-        ((data || []) as any[]).map(async (p) => {
+        ((photosRes.data || []) as any[]).map(async (p) => {
           const match = p.photo_url.match(/user-uploads\/(.+)$/);
           const path = match ? match[1] : p.photo_url;
           const { data: signed } = await supabase.storage
@@ -211,6 +227,7 @@ const ProgressPhotos = () => {
 
       <PhotoGallery
         photos={photos}
+        weightLogs={weightLogs}
         onDelete={handleDelete}
         onAddToEntry={handleAddToEntry}
       />
