@@ -144,9 +144,10 @@ const CalorieCalculator = ({
   };
 
   const bmr = calculateBMR(currentWeight, height);
-  const dailyCalories = hasUnsavedChanges 
-    ? calculateDailyCalories(bmr, activityLevel, targetWeight, currentWeight, targetDays)
-    : (savedCalories || calculateDailyCalories(bmr, activityLevel, targetWeight, currentWeight, targetDays));
+  // Always recompute from current inputs so the recommendation stays consistent
+  // with the user's current metrics, goal, and activity level (a stale saved
+  // value could disagree with the TDEE shown in the breakdown).
+  const dailyCalories = calculateDailyCalories(bmr, activityLevel, targetWeight, currentWeight, targetDays);
   
   const weightDifference = targetWeight - currentWeight;
   const isGainingWeight = weightDifference > 0;
