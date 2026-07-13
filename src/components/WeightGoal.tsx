@@ -120,7 +120,7 @@ const WeightGoal = ({ onGoalSet }: WeightGoalProps) => {
 
       const { error } = await supabase
         .from('user_metrics')
-        .upsert(metricsData)
+        .upsert(metricsData, { onConflict: 'user_id' })
         .select()
         .single();
 

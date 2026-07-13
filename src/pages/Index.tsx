@@ -106,7 +106,7 @@ const Index = () => {
           gender: userMetrics.gender,
           recommended_calories: userMetrics.recommended_calories,
           updated_at: new Date().toISOString(),
-        });
+        }, { onConflict: 'user_id' });
 
       if (error) {
         console.error('Error saving user metrics:', error);

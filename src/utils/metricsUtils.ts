@@ -36,7 +36,7 @@ export const updateUserMetrics = async (
 
     const { error } = await supabase
       .from('user_metrics')
-      .upsert(metricsToUpdate);
+      .upsert(metricsToUpdate, { onConflict: 'user_id' });
 
     if (error) {
       console.error('Error updating metrics:', error);
