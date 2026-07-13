@@ -13,8 +13,14 @@ interface Photo {
   entry_id: string;
 }
 
+interface WeightLog {
+  weight: number;
+  created_at: string;
+}
+
 const ProgressPhotos = () => {
   const [photos, setPhotos] = useState<Photo[]>([]);
+  const [weightLogs, setWeightLogs] = useState<WeightLog[]>([]);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
 
