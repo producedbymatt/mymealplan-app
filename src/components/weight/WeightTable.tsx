@@ -47,6 +47,8 @@ const WeightTable = ({ entries, showMore, onToggleShowMore, onEdit, onDelete }: 
     }
   };
 
+  const visibleEntries = showMore ? entries : entries.slice(0, 8);
+
   return (
     <div className="mt-4">
       <Table>
@@ -59,7 +61,7 @@ const WeightTable = ({ entries, showMore, onToggleShowMore, onEdit, onDelete }: 
           </TableRow>
         </TableHeader>
         <TableBody>
-          {entries.map((entry) => (
+          {visibleEntries.map((entry) => (
             <TableRow 
               key={entry.id}
               className="bg-background hover:bg-[#0EA5E9]/50 hover:text-white transition-colors rounded-lg overflow-hidden"
