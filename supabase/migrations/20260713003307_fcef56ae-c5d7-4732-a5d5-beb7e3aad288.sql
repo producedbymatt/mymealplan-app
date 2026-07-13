@@ -1,0 +1,1 @@
+ALTER TABLE public.progress_photos ADD COLUMN IF NOT EXISTS entry_id UUID NOT NULL DEFAULT gen_random_uuid(); CREATE INDEX IF NOT EXISTS progress_photos_entry_id_idx ON public.progress_photos(entry_id);
