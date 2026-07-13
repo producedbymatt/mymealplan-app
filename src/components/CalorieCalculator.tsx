@@ -184,6 +184,7 @@ const CalorieCalculator = ({
           <div className="flex justify-end">
             <Button 
               onClick={saveActivityLevel}
+              disabled={dailyCalories < 1200 && !disclaimerAcknowledged}
               className="bg-gradient-to-r from-blue-950/90 to-green-950/90 hover:from-blue-950 hover:to-green-950"
             >
               Save Activity Level
@@ -209,11 +210,23 @@ const CalorieCalculator = ({
             <AlertTriangle className="h-4 w-4" />
             <AlertTitle>Medical Disclaimer</AlertTitle>
             <AlertDescription>
-              Consuming fewer than 1,200 calories per day may not provide adequate
-              nutrition for most adults and should only be undertaken under the
-              supervision of a qualified healthcare professional. Very low calorie
-              diets can pose health risks. Please consult your physician or a
-              registered dietitian before following this recommendation.
+              <p>
+                Consuming fewer than 1,200 calories per day may not provide adequate
+                nutrition for most adults and should only be undertaken under the
+                supervision of a qualified healthcare professional. Very low calorie
+                diets can pose health risks. Please consult your physician or a
+                registered dietitian before following this recommendation.
+              </p>
+              <div className="flex items-center gap-2 mt-3">
+                <Checkbox
+                  id="medical-disclaimer"
+                  checked={disclaimerAcknowledged}
+                  onCheckedChange={(checked) => setDisclaimerAcknowledged(checked === true)}
+                />
+                <Label htmlFor="medical-disclaimer" className="font-medium cursor-pointer">
+                  I Acknowledge
+                </Label>
+              </div>
             </AlertDescription>
           </Alert>
         )}
