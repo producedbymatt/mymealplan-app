@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertTriangle } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import { ACTIVITY_LEVELS, ActivityLevelKey } from "./calories/constants";
@@ -192,6 +194,20 @@ const CalorieCalculator = ({
           bmr={bmr}
           activityLevel={activityLevel}
         />
+
+        {dailyCalories < 1200 && (
+          <Alert variant="destructive" className="mt-4">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertTitle>Medical Disclaimer</AlertTitle>
+            <AlertDescription>
+              Consuming fewer than 1,200 calories per day may not provide adequate
+              nutrition for most adults and should only be undertaken under the
+              supervision of a qualified healthcare professional. Very low calorie
+              diets can pose health risks. Please consult your physician or a
+              registered dietitian before following this recommendation.
+            </AlertDescription>
+          </Alert>
+        )}
       </div>
     </Card>
   );
