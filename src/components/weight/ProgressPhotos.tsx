@@ -10,6 +10,7 @@ interface Photo {
   id: string;
   photo_url: string;
   created_at: string;
+  entry_id: string;
 }
 
 const ProgressPhotos = () => {
@@ -47,12 +48,9 @@ const ProgressPhotos = () => {
   const loadPhotos = async () => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        console.log('No active session found');
-        return;
-      }
+      if (!session) return;
 
-      const { data: photos, error } = await supabase
+      const { data, error } = await supabase
         .from('progress_photos')
         .select('*')
         .eq('user_id', session.user.id)
@@ -60,15 +58,19 @@ const ProgressPhotos = () => {
 
       if (error) throw error;
 
-      // Bucket is private — resolve signed URLs for display
       const withSigned = await Promise.all(
-        (photos || []).map(async (p: Photo) => {
+        ((data || []) as any[]).map(async (p) => {
           const match = p.photo_url.match(/user-uploads\/(.+)$/);
           const path = match ? match[1] : p.photo_url;
           const { data: signed } = await supabase.storage
             .from('user-uploads')
             .createSignedUrl(path, 60 * 60);
-          return { ...p, photo_url: signed?.signedUrl || p.photo_url };
+          return {
+            id: p.id,
+            created_at: p.created_at,
+            entry_id: p.entry_id,
+            photo_url: signed?.signedUrl || p.photo_url,
+          } as Photo;
         })
       );
       setPhotos(withSigned);
@@ -78,40 +80,19 @@ const ProgressPhotos = () => {
     }
   };
 
-
   const convertHeicToJpg = async (file: File): Promise<File> => {
-    try {
-      console.log('Converting HEIC to JPG...');
-      const blob = await heic2any({
-        blob: file,
-        toType: 'image/jpeg',
-        quality: 0.85
-      }) as Blob;
-      
-      console.log('HEIC conversion successful');
-      return new File([blob], file.name.replace(/\.heic$/i, '.jpg'), {
-        type: 'image/jpeg'
-      });
-    } catch (error) {
-      console.error('Error converting HEIC to JPG:', error);
-      throw new Error('Failed to convert HEIC image');
-    }
+    const blob = await heic2any({
+      blob: file,
+      toType: 'image/jpeg',
+      quality: 0.85,
+    }) as Blob;
+    return new File([blob], file.name.replace(/\.heic$/i, '.jpg'), { type: 'image/jpeg' });
   };
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    let file = event.target.files?.[0];
-    if (!file) return;
-
-    // Validate file type
-    const validTypes = ['image/jpeg', 'image/png', 'image/heic'];
-    if (!validTypes.includes(file.type.toLowerCase())) {
-      toast.error("Please upload a JPEG, PNG, or HEIC file");
-      return;
-    }
-
-    // Validate file size (5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error("File size must be less than 5MB");
+  const uploadFiles = async (files: File[], entryId: string) => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      toast.error("Please log in to upload photos");
       return;
     }
 
@@ -119,96 +100,95 @@ const ProgressPhotos = () => {
     setUploadProgress(0);
 
     try {
-      // Convert HEIC to JPG if necessary
-      if (file.type.toLowerCase() === 'image/heic') {
-        toast.info("Converting HEIC image...");
-        file = await convertHeicToJpg(file);
-      }
+      const validTypes = ['image/jpeg', 'image/png', 'image/heic'];
+      const total = files.length;
+      let done = 0;
 
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        console.error('No active session found');
-        toast.error("Please log in to upload photos");
-        return;
-      }
+      for (let file of files) {
+        if (!validTypes.includes(file.type.toLowerCase())) {
+          toast.error(`Skipping ${file.name}: unsupported format`);
+          continue;
+        }
+        if (file.size > 5 * 1024 * 1024) {
+          toast.error(`Skipping ${file.name}: over 5MB`);
+          continue;
+        }
 
-      // Upload to Supabase Storage with proper path structure
-      const fileExt = file.type === 'image/jpeg' ? 'jpg' : 'png';
-      const fileName = `${Math.random()}.${fileExt}`;
-      const filePath = `${session.user.id}/${fileName}`;
+        if (file.type.toLowerCase() === 'image/heic') {
+          file = await convertHeicToJpg(file);
+        }
 
-      console.log('Uploading file to path:', filePath);
-      
-      const { error: uploadError, data } = await supabase.storage
-        .from('user-uploads')
-        .upload(filePath, file, {
-          upsert: false,
-          contentType: file.type,
-        });
+        const fileExt = file.type === 'image/jpeg' ? 'jpg' : 'png';
+        const fileName = `${crypto.randomUUID()}.${fileExt}`;
+        const filePath = `${session.user.id}/${fileName}`;
 
-      if (uploadError) {
-        console.error('Upload error:', uploadError);
-        throw uploadError;
-      }
+        const { error: uploadError } = await supabase.storage
+          .from('user-uploads')
+          .upload(filePath, file, { upsert: false, contentType: file.type });
 
-      // Get public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from('user-uploads')
-        .getPublicUrl(filePath);
+        if (uploadError) throw uploadError;
 
-      // Save to database
-      const { error: dbError } = await supabase
-        .from('progress_photos')
-        .insert([
-          {
+        const { data: { publicUrl } } = supabase.storage
+          .from('user-uploads')
+          .getPublicUrl(filePath);
+
+        const { error: dbError } = await supabase
+          .from('progress_photos')
+          .insert([{
             user_id: session.user.id,
             photo_url: publicUrl,
-          },
-        ]);
+            entry_id: entryId,
+          } as any]);
 
-      if (dbError) throw dbError;
+        if (dbError) throw dbError;
 
-      toast.success("Photo uploaded successfully");
+        done += 1;
+        setUploadProgress(Math.round((done / total) * 100));
+      }
+
+      toast.success(files.length > 1 ? "Photos uploaded" : "Photo uploaded");
       await loadPhotos();
     } catch (error: any) {
-      console.error('Error uploading photo:', error);
-      toast.error(error.message || "Failed to upload photo. Please try again.");
+      console.error('Error uploading photos:', error);
+      toast.error(error.message || "Failed to upload photos");
     } finally {
       setUploading(false);
       setUploadProgress(0);
     }
   };
 
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+    const entryId = crypto.randomUUID();
+    await uploadFiles(Array.from(files), entryId);
+    event.target.value = "";
+  };
+
+  const handleAddToEntry = async (entryId: string, files: FileList) => {
+    await uploadFiles(Array.from(files), entryId);
+  };
+
   const handleDelete = async (photoId: string, photoUrl: string) => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
-
       if (!session) {
         toast.error("Please log in to delete photos");
         return;
       }
 
-      // Delete from database
       const { error: dbError } = await supabase
         .from('progress_photos')
         .delete()
         .eq('id', photoId);
-
       if (dbError) throw dbError;
 
-      // Extract file path from URL (strip query string from signed URLs) and delete from storage
       const pathMatch = photoUrl.match(/user-uploads\/([^?]+)/);
-      if (!pathMatch) throw new Error("Invalid photo URL format");
+      if (pathMatch) {
+        await supabase.storage.from('user-uploads').remove([pathMatch[1]]);
+      }
 
-      const filePath = pathMatch[1];
-      const { error: storageError } = await supabase.storage
-        .from('user-uploads')
-        .remove([filePath]);
-
-      if (storageError) throw storageError;
-
-      toast.success("Photo deleted successfully");
+      toast.success("Photo deleted");
       await loadPhotos();
     } catch (error) {
       console.error('Error deleting photo:', error);
@@ -216,12 +196,11 @@ const ProgressPhotos = () => {
     }
   };
 
-
   return (
     <Card className="p-6 w-full max-w-2xl mx-auto mt-8">
       <h2 className="text-2xl font-bold mb-2 text-center">Progress Photos</h2>
       <p className="text-muted-foreground text-center mb-6">
-        Upload photos to visually track your progress over time
+        Upload photos to visually track your progress over time. Add multiple angles to a single entry.
       </p>
 
       <PhotoUploader
@@ -233,6 +212,7 @@ const ProgressPhotos = () => {
       <PhotoGallery
         photos={photos}
         onDelete={handleDelete}
+        onAddToEntry={handleAddToEntry}
       />
     </Card>
   );
