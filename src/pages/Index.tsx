@@ -62,11 +62,21 @@ const Index = () => {
         return;
       }
 
+      // Fetch latest weight log to use as source of truth for current weight
+      const { data: latestWeight } = await supabase
+        .from('weight_logs')
+        .select('weight')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
       if (data) {
         console.log('Loaded user metrics:', data);
+        const currentWeight = latestWeight?.weight ?? data.current_weight ?? 0;
         setUserMetrics({
           height: data.height || 0,
-          currentWeight: data.current_weight || 0,
+          currentWeight,
           targetWeight: data.target_weight || 0,
           targetDays: data.target_days || 0,
           gender: data.gender as "male" | "female" | undefined,
@@ -77,6 +87,7 @@ const Index = () => {
         console.log('No metrics found for user');
         setHasMetrics(false);
       }
+
     } catch (err) {
       console.error('Exception while loading metrics:', err);
       toast.error("An error occurred while loading your metrics");
