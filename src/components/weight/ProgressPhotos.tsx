@@ -227,6 +227,7 @@ const ProgressPhotos = () => {
 
       <PhotoGallery
         photos={photos}
+        weightLogs={weightLogs}
         onDelete={handleDelete}
         onAddToEntry={handleAddToEntry}
       />
