@@ -123,9 +123,14 @@ const EntryCard = ({
       )}
 
       <div className="mt-2 flex items-center justify-between gap-2">
-        <p className="text-xs text-muted-foreground">
-          {format(new Date(entry.created_at), "PPp")}
-        </p>
+        <div className="flex flex-col">
+          <p className="text-xs text-muted-foreground">
+            {format(new Date(entry.created_at), "PPp")}
+          </p>
+          {weight !== null && (
+            <p className="text-sm font-medium">{weight} lbs</p>
+          )}
+        </div>
         <label htmlFor={inputId}>
           <input
             id={inputId}
