@@ -42,12 +42,12 @@ const EditMetricsForm = ({ metrics, onCancel, onSave }: EditMetricsFormProps) =>
           user_id: user.id,
           height: formData.height,
           current_weight: formData.current_weight,
-          target_weight: formData.target_weight, // Keep in database
-          target_days: formData.target_days, // Keep in database
-          recommended_calories: formData.recommended_calories, // Keep in database
+          target_weight: formData.target_weight,
+          target_days: formData.target_days,
+          recommended_calories: formData.recommended_calories,
           gender: formData.gender,
           updated_at: new Date().toISOString(),
-        });
+        }, { onConflict: 'user_id' });
 
       if (error) throw error;
 
