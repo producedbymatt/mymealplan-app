@@ -43,6 +43,10 @@ const RecipeDetails = ({ meal }: RecipeDetailsProps) => {
     id: '', // Empty string as it's a new entry
     meal_name: meal.name,
     calories: meal.calories,
+    protein: meal.protein ?? 0,
+    carbs: meal.carbs ?? 0,
+    sugars: meal.sugars ?? 0,
+    fat: meal.fat ?? 0,
     user_id: '', // This will be set by the form component
     created_at: new Date().toISOString(),
   };
