@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import { AlertTriangle } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
@@ -36,6 +38,7 @@ const CalorieCalculator = ({
   const [selectedActivityKey, setSelectedActivityKey] = useState<ActivityLevelKey | "">("");
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [savedCalories, setSavedCalories] = useState<number | null>(null);
+  const [disclaimerAcknowledged, setDisclaimerAcknowledged] = useState(false);
 
   useEffect(() => {
     const fetchSavedCalories = async () => {
@@ -87,6 +90,19 @@ const CalorieCalculator = ({
         return;
       }
 
+      const calculatedCalories = calculateDailyCalories(
+        calculateBMR(currentWeight, height),
+        activityLevel,
+        targetWeight,
+        currentWeight,
+        targetDays
+      );
+
+      if (calculatedCalories < 1200 && !disclaimerAcknowledged) {
+        toast.error("Please acknowledge the medical disclaimer before saving");
+        return;
+      }
+
       console.log('Saving activity level:', selectedActivityKey);
       const { data: existingMetrics } = await supabase
         .from('user_metrics')
@@ -95,14 +111,6 @@ const CalorieCalculator = ({
         .order('created_at', { ascending: false })
         .limit(1)
         .single();
-
-      const calculatedCalories = calculateDailyCalories(
-        calculateBMR(currentWeight, height),
-        activityLevel,
-        targetWeight,
-        currentWeight,
-        targetDays
-      );
 
       const metricsToUpdate = {
         user_id: user.id,
@@ -143,6 +151,7 @@ const CalorieCalculator = ({
     setActivityLevel(ACTIVITY_LEVELS[value].value);
     setHasUnsavedChanges(true);
     setSavedCalories(null);
+    setDisclaimerAcknowledged(false);
   };
 
   const bmr = calculateBMR(currentWeight, height);
@@ -175,6 +184,7 @@ const CalorieCalculator = ({
           <div className="flex justify-end">
             <Button 
               onClick={saveActivityLevel}
+              disabled={dailyCalories < 1200 && !disclaimerAcknowledged}
               className="bg-gradient-to-r from-blue-950/90 to-green-950/90 hover:from-blue-950 hover:to-green-950"
             >
               Save Activity Level
@@ -200,11 +210,23 @@ const CalorieCalculator = ({
             <AlertTriangle className="h-4 w-4" />
             <AlertTitle>Medical Disclaimer</AlertTitle>
             <AlertDescription>
-              Consuming fewer than 1,200 calories per day may not provide adequate
-              nutrition for most adults and should only be undertaken under the
-              supervision of a qualified healthcare professional. Very low calorie
-              diets can pose health risks. Please consult your physician or a
-              registered dietitian before following this recommendation.
+              <p>
+                Consuming fewer than 1,200 calories per day may not provide adequate
+                nutrition for most adults and should only be undertaken under the
+                supervision of a qualified healthcare professional. Very low calorie
+                diets can pose health risks. Please consult your physician or a
+                registered dietitian before following this recommendation.
+              </p>
+              <div className="flex items-center gap-2 mt-3">
+                <Checkbox
+                  id="medical-disclaimer"
+                  checked={disclaimerAcknowledged}
+                  onCheckedChange={(checked) => setDisclaimerAcknowledged(checked === true)}
+                />
+                <Label htmlFor="medical-disclaimer" className="font-medium cursor-pointer">
+                  I Acknowledge
+                </Label>
+              </div>
             </AlertDescription>
           </Alert>
         )}
