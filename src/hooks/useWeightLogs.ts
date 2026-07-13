@@ -17,11 +17,12 @@ export const useWeightLogs = (showMore: boolean = false) => {
   const loadWeightLogs = async () => {
     try {
       console.log('Loading weight logs...');
-      const { data: weightLogs, error } = await supabase
+      let query = supabase
         .from('weight_logs')
         .select('*')
-        .order('created_at', { ascending: false })
-        .limit(showMore ? 100 : 8);
+        .order('created_at', { ascending: false });
+      if (!showMore) query = query.limit(8);
+      const { data: weightLogs, error } = await query;
 
       if (error) {
         console.error('Error loading weight logs:', error);
