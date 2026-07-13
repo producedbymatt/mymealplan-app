@@ -90,6 +90,19 @@ const CalorieCalculator = ({
         return;
       }
 
+      const calculatedCalories = calculateDailyCalories(
+        calculateBMR(currentWeight, height),
+        activityLevel,
+        targetWeight,
+        currentWeight,
+        targetDays
+      );
+
+      if (calculatedCalories < 1200 && !disclaimerAcknowledged) {
+        toast.error("Please acknowledge the medical disclaimer before saving");
+        return;
+      }
+
       console.log('Saving activity level:', selectedActivityKey);
       const { data: existingMetrics } = await supabase
         .from('user_metrics')
