@@ -27,19 +27,27 @@ interface Entry {
   photos: Photo[];
 }
 
+interface WeightLog {
+  weight: number;
+  created_at: string;
+}
+
 interface PhotoGalleryProps {
   photos: Photo[];
+  weightLogs?: WeightLog[];
   onDelete: (photoId: string, photoUrl: string) => void;
   onAddToEntry: (entryId: string, files: FileList) => void;
 }
 
 const EntryCard = ({
   entry,
+  weight,
   onDelete,
   onAddToEntry,
   onOpen,
 }: {
   entry: Entry;
+  weight: number | null;
   onDelete: (photoId: string, photoUrl: string) => void;
   onAddToEntry: (entryId: string, files: FileList) => void;
   onOpen: (photo: Photo) => void;
