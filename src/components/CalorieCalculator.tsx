@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import { AlertTriangle } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
@@ -36,6 +38,7 @@ const CalorieCalculator = ({
   const [selectedActivityKey, setSelectedActivityKey] = useState<ActivityLevelKey | "">("");
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [savedCalories, setSavedCalories] = useState<number | null>(null);
+  const [disclaimerAcknowledged, setDisclaimerAcknowledged] = useState(false);
 
   useEffect(() => {
     const fetchSavedCalories = async () => {
