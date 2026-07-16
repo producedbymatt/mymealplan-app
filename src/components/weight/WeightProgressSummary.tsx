@@ -8,9 +8,10 @@ import { Link } from "react-router-dom";
 interface WeightProgressSummaryProps {
   entries: WeightEntry[];
   label: string;
+  showViewAll?: boolean;
 }
 
-const WeightProgressSummary = ({ entries, label }: WeightProgressSummaryProps) => {
+const WeightProgressSummary = ({ entries, label, showViewAll = true }: WeightProgressSummaryProps) => {
   if (entries.length < 2) {
     return (
       <Card className="mb-6 bg-gradient-to-r from-blue-950/90 to-green-950/90 border-0">
