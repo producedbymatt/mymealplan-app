@@ -163,6 +163,7 @@ const WeightTracker = ({ onWeightEntriesChange }: WeightTrackerProps) => {
         <WeightProgressSummary
           entries={filteredEntries}
           label={filterOptions.find((opt) => opt.value === timeFilter)?.label || "Selected"}
+          showViewAll={false}
         />
 
         <WeightChart entries={filteredEntries} />
