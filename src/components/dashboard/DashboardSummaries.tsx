@@ -77,14 +77,6 @@ const DashboardSummaries = () => {
             proteinGoal={proteinGoal}
           />
         </div>
-        <div className="flex justify-center mt-4">
-          <Button asChild variant="secondary">
-            <Link to="/calorie-logger">
-              <UtensilsCrossed className="mr-2 h-4 w-4" />
-              Log Meal
-            </Link>
-          </Button>
-        </div>
       </div>
     </div>
   );
