@@ -78,7 +78,7 @@ const WeightTable = ({ entries, showMore, onToggleShowMore, onEdit, onDelete }: 
                     className="w-24"
                   />
                 ) : (
-                  entry.weight
+                  formatWeight(entry.weight)
                 )}
               </TableCell>
               <TableCell className="text-right rounded-r-lg">
