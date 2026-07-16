@@ -5,13 +5,15 @@ import ChatWindow from './ChatWindow';
 
 const ChatBubble = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [prefill, setPrefill] = useState<string | undefined>();
+  const [prefill, setPrefill] = useState<{ prompt: string; autoSend?: boolean; nonce: number } | undefined>();
 
   useEffect(() => {
     const handler = (e: Event) => {
-      const detail = (e as CustomEvent<{ prompt?: string }>).detail;
+      const detail = (e as CustomEvent<{ prompt?: string; autoSend?: boolean }>).detail;
       setIsOpen(true);
-      if (detail?.prompt) setPrefill(detail.prompt);
+      if (detail?.prompt) {
+        setPrefill({ prompt: detail.prompt, autoSend: detail.autoSend, nonce: Date.now() });
+      }
     };
     window.addEventListener('open-coach-chat', handler);
     return () => window.removeEventListener('open-coach-chat', handler);
@@ -32,7 +34,7 @@ const ChatBubble = () => {
               <X className="h-4 w-4" />
             </Button>
           </div>
-          <ChatWindow prefillInput={prefill} onPrefillConsumed={() => setPrefill(undefined)} />
+          <ChatWindow prefill={prefill} onPrefillConsumed={() => setPrefill(undefined)} />
         </div>
       ) : (
         <Button

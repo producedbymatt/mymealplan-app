@@ -22,11 +22,11 @@ const WELCOME_MESSAGE = {
 };
 
 interface ChatWindowProps {
-  prefillInput?: string;
+  prefill?: { prompt: string; autoSend?: boolean; nonce: number };
   onPrefillConsumed?: () => void;
 }
 
-const ChatWindow = ({ prefillInput, onPrefillConsumed }: ChatWindowProps = {}) => {
+const ChatWindow = ({ prefill, onPrefillConsumed }: ChatWindowProps = {}) => {
   const [input, setInput] = useState('');
   const [showMealForm, setShowMealForm] = useState(false);
   const [mealToLog, setMealToLog] = useState<{ meal_name: string; calories: number; protein: number; carbs: number; sugars: number } | null>(null);
@@ -37,12 +37,6 @@ const ChatWindow = ({ prefillInput, onPrefillConsumed }: ChatWindowProps = {}) =
   const { messages, isLoading, sendMessage } = useChatOperations();
   const { addMeal } = useMealLogs(userId);
 
-  useEffect(() => {
-    if (prefillInput) {
-      setInput(prefillInput);
-      onPrefillConsumed?.();
-    }
-  }, [prefillInput, onPrefillConsumed]);
 
 
   useEffect(() => {
@@ -52,6 +46,33 @@ const ChatWindow = ({ prefillInput, onPrefillConsumed }: ChatWindowProps = {}) =
     };
     getSession();
   }, []);
+
+  const lastPrefillNonce = useRef<number | undefined>(undefined);
+  useEffect(() => {
+    if (!prefill || lastPrefillNonce.current === prefill.nonce) return;
+    lastPrefillNonce.current = prefill.nonce;
+
+    if (prefill.autoSend) {
+      const userMessage = prefill.prompt.trim();
+      if (!userMessage) return;
+      setLocalMessages(prev => [...prev, { role: 'user', content: userMessage }]);
+      if (userId) {
+        sendMessage(userMessage);
+      } else {
+        setLocalMessages(prev => [
+          ...prev,
+          {
+            role: 'assistant',
+            content: "To continue our conversation and get personalized help, please sign in or create an account. 🔐",
+          },
+        ]);
+      }
+      onPrefillConsumed?.();
+    } else {
+      setInput(prefill.prompt);
+      onPrefillConsumed?.();
+    }
+  }, [prefill, userId, sendMessage, onPrefillConsumed]);
 
   // Update local messages when the server messages change, but only for authenticated users
   useEffect(() => {

@@ -90,14 +90,14 @@ const RecipeDetails = ({ meal }: RecipeDetailsProps) => {
           variant="ghost"
           onClick={() => {
             const prompt =
-              `I'm looking at this recipe and could use your help:\n\n` +
+              `I'd like some help with this recipe I'm viewing:\n\n` +
               `Recipe: ${meal.name}\n` +
               `Calories: ${meal.calories} | Protein: ${meal.protein ?? 0}g | Carbs: ${meal.carbs ?? 0}g | Fat: ${meal.fat ?? 0}g | Sugars: ${meal.sugars ?? 0}g\n` +
               `Prep: ${meal.recipe.prepTime} | Cook: ${meal.recipe.cookTime}\n\n` +
               `Ingredients:\n${meal.recipe.ingredients.map((i) => `- ${i}`).join('\n')}\n\n` +
               `Instructions:\n${meal.recipe.instructions.map((s, i) => `${i + 1}. ${s}`).join('\n')}\n\n` +
-              `Can you help me with a variation or clearer instructions?`;
-            window.dispatchEvent(new CustomEvent('open-coach-chat', { detail: { prompt } }));
+              `Please acknowledge the recipe briefly and then ask me an open-ended question about how you can help (for example: a variation, ingredient substitutions, clearer instructions, adjusting macros, scaling servings, etc.). Do not suggest any changes yet — wait for me to tell you what I need.`;
+            window.dispatchEvent(new CustomEvent('open-coach-chat', { detail: { prompt, autoSend: true } }));
           }}
           className="hover:bg-white/20 flex items-center gap-2 border border-white shrink-0"
         >
