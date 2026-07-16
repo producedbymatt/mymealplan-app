@@ -77,7 +77,7 @@ const MetricCards = ({
                 <DialogHeader>
                   <DialogTitle>Update Weight Goal</DialogTitle>
                 </DialogHeader>
-                <WeightGoal onGoalSet={() => setGoalOpen(false)} />
+                <WeightGoal onGoalSet={() => setGoalOpen(false)} collapsible={false} />
               </DialogContent>
             </Dialog>
           )}
