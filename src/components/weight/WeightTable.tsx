@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
+import { formatWeight } from "@/lib/utils";
 
 interface WeightTableProps {
   entries: WeightEntry[];
