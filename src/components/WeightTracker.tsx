@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useWeightLogs, WeightEntry } from "@/hooks/useWeightLogs";
 import WeightChart from "./weight/WeightChart";
 import WeightTable from "./weight/WeightTable";
+import WeightProgressSummary from "./weight/WeightProgressSummary";
 import ProgressPhotos from "./weight/ProgressPhotos";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
