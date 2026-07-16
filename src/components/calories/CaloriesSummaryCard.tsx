@@ -6,9 +6,10 @@ import { UtensilsCrossed } from "lucide-react";
 interface CaloriesSummaryCardProps {
   todayCalories: number;
   recommendedCalories: number | null;
+  showLogMeal?: boolean;
 }
 
-const CaloriesSummaryCard = ({ todayCalories, recommendedCalories }: CaloriesSummaryCardProps) => {
+const CaloriesSummaryCard = ({ todayCalories, recommendedCalories, showLogMeal = true }: CaloriesSummaryCardProps) => {
   return (
     <Card className="relative overflow-hidden">
       {/* Animated gradient background */}
