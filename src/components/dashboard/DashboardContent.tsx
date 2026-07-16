@@ -2,6 +2,7 @@ import React from "react";
 import StatsCards from "./StatsCards";
 import { useSession } from "@supabase/auth-helpers-react";
 import MotivationalMessage from "./MotivationalMessage";
+import DashboardSummaries from "./DashboardSummaries";
 
 interface DashboardContentProps {
   userMetrics: {
@@ -21,10 +22,6 @@ interface DashboardContentProps {
 const DashboardContent = ({
   userMetrics,
   hasMetrics,
-  onMetricsUpdate,
-  onGoalSet,
-  onCaloriesCalculated,
-  onSaveMetrics
 }: DashboardContentProps) => {
   const session = useSession();
   const isAuthenticated = !!session;
@@ -43,6 +40,7 @@ const DashboardContent = ({
         hasMetrics={hasMetrics}
         isAuthenticated={isAuthenticated}
       />
+      {hasMetrics && isAuthenticated && <DashboardSummaries />}
     </div>
   );
 };
