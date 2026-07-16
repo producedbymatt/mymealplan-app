@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
 import WeightProgressSummary from "@/components/weight/WeightProgressSummary";
 import CaloriesSummaryCard from "@/components/calories/CaloriesSummaryCard";
@@ -9,7 +7,7 @@ import { useWeightLogs } from "@/hooks/useWeightLogs";
 import { useMealLogs } from "@/hooks/useMealLogs";
 import { calculateProteinNeeds } from "@/components/calories/utils";
 import { ACTIVITY_LEVELS, ActivityLevelKey } from "@/components/calories/constants";
-import { Scale, UtensilsCrossed } from "lucide-react";
+
 
 const isToday = (dateStr: string) => {
   const today = new Date();
@@ -78,14 +76,6 @@ const DashboardSummaries = () => {
             todayProtein={todayProtein}
             proteinGoal={proteinGoal}
           />
-        </div>
-        <div className="flex justify-center mt-4">
-          <Button asChild variant="secondary">
-            <Link to="/calorie-logger">
-              <UtensilsCrossed className="mr-2 h-4 w-4" />
-              Log Meal
-            </Link>
-          </Button>
         </div>
       </div>
     </div>
