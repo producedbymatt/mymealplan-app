@@ -7,7 +7,7 @@ import { useWeightLogs } from "@/hooks/useWeightLogs";
 import { useMealLogs } from "@/hooks/useMealLogs";
 import { calculateProteinNeeds } from "@/components/calories/utils";
 import { ACTIVITY_LEVELS, ActivityLevelKey } from "@/components/calories/constants";
-import { Scale } from "lucide-react";
+
 
 const isToday = (dateStr: string) => {
   const today = new Date();
