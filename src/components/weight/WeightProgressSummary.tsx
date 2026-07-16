@@ -1,7 +1,9 @@
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { WeightEntry } from "@/hooks/useWeightLogs";
 import { formatWeight } from "@/lib/utils";
-import { TrendingDown, TrendingUp, Minus } from "lucide-react";
+import { TrendingDown, TrendingUp, Minus, List } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface WeightProgressSummaryProps {
   entries: WeightEntry[];
