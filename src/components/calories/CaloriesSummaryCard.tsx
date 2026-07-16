@@ -36,6 +36,12 @@ const CaloriesSummaryCard = ({ todayCalories, recommendedCalories }: CaloriesSum
                 }}
               ></div>
             </div>
+            <p className="mt-2 text-sm font-semibold text-white">
+              Remaining: {Math.max(recommendedCalories - todayCalories, 0)} cal
+              {todayCalories > recommendedCalories && (
+                <span className="text-red-300 ml-2">({todayCalories - recommendedCalories} over)</span>
+              )}
+            </p>
           </div>
         )}
       </CardContent>
