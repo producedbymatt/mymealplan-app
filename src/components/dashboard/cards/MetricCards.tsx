@@ -174,13 +174,13 @@ const MetricCards = ({
   };
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+    <div className="grid gap-4 md:grid-cols-2">
       <Card className="p-4 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-950/90 via-green-950/90 to-blue-950/90 animate-gradient-x" />
         <CardHeader className="relative z-10 p-0 flex flex-row items-center justify-between">
           <CardTitle className="text-white">Current Weight</CardTitle>
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             size="icon"
             className="h-8 w-8 text-white hover:text-white/80 hover:bg-blue-900 hover:border hover:border-white"
             onClick={() => handleRefresh('weight')}
@@ -201,8 +201,8 @@ const MetricCards = ({
         <div className="absolute inset-0 bg-gradient-to-r from-blue-950/90 via-green-950/90 to-blue-950/90 animate-gradient-x" />
         <CardHeader className="relative z-10 p-0 flex flex-row items-center justify-between">
           <CardTitle className="text-white">Target Weight</CardTitle>
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             size="icon"
             className="h-8 w-8 text-white hover:text-white/80 hover:bg-blue-900 hover:border hover:border-white"
             onClick={() => handleRefresh('target')}
@@ -216,74 +216,11 @@ const MetricCards = ({
             {isAuthenticated ? `${formatWeight(targetWeight)} lbs` : "N/A"}
           </div>
           <p className="text-xs text-white/80 mt-1">
-            {isAuthenticated 
-              ? targetWeight 
-                ? `${formatWeight(Math.abs(mostRecentWeight - targetWeight))} lbs to go` 
+            {isAuthenticated
+              ? targetWeight
+                ? `${formatWeight(Math.abs(mostRecentWeight - targetWeight))} lbs to go`
                 : "Set a goal to track progress"
               : "Sign in to set goals"}
-          </p>
-        </CardContent>
-      </Card>
-
-      <Card className="p-4 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-950/90 via-green-950/90 to-blue-950/90 animate-gradient-x" />
-        <CardHeader className="relative z-10 p-0 flex flex-row items-center justify-between">
-          <CardTitle className="text-white">Weight Progress</CardTitle>
-          <Button 
-            variant="ghost" 
-            size="icon"
-            className="h-8 w-8 text-white hover:text-white/80 hover:bg-blue-900 hover:border hover:border-white"
-            onClick={() => handleRefresh('progress')}
-            disabled={isRefreshingProgress}
-          >
-            <RefreshCw className={`h-4 w-4 ${isRefreshingProgress ? 'animate-spin' : ''}`} />
-          </Button>
-        </CardHeader>
-        <CardContent className="relative z-10 p-0 mt-2">
-          <div className="text-2xl font-bold text-white flex items-center gap-2">
-            {isAuthenticated 
-              ? initialWeight 
-                ? (
-                  <>
-                    {formatWeight(Math.abs(weightChange))} lbs
-                    {isWeightLoss ? (
-                      <TrendingDown className="h-5 w-5 text-green-400" />
-                    ) : (
-                      <TrendingUp className="h-5 w-5 text-blue-400" />
-                    )}
-                  </>
-                )
-                : "No data"
-              : "N/A"}
-          </div>
-          <p className="text-xs text-white/80 mt-1">
-            {isAuthenticated
-              ? initialWeight 
-                ? `${isWeightLoss ? 'Lost' : 'Gained'} since starting` 
-                : "Start logging to track progress"
-              : "Sign in to track progress"}
-          </p>
-        </CardContent>
-      </Card>
-
-      <Card className="p-4 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-950/90 via-green-950/90 to-blue-950/90 animate-gradient-x" />
-        <CardHeader className="relative z-10 p-0 flex flex-row items-center justify-between">
-          <CardTitle className="text-white">Daily Calories</CardTitle>
-          <Button 
-            variant="ghost" 
-            size="icon"
-            className="h-8 w-8 text-white hover:text-white/80 hover:bg-blue-900 hover:border hover:border-white"
-            onClick={() => handleRefresh('calories')}
-            disabled={isRefreshingCalories}
-          >
-            <RefreshCw className={`h-4 w-4 ${isRefreshingCalories ? 'animate-spin' : ''}`} />
-          </Button>
-        </CardHeader>
-        <CardContent className="relative z-10 p-0 mt-2">
-          <div className="text-2xl font-bold text-white">{formatCalories(recommendedCalories)}</div>
-          <p className="text-xs text-white/80 mt-1">
-            {isAuthenticated ? "Recommended daily intake" : "Sign in for recommendations"}
           </p>
         </CardContent>
       </Card>
