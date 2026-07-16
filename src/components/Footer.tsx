@@ -36,7 +36,7 @@ const Footer = () => {
         className="mx-auto mb-4 h-12 w-auto"
       />
       <p className="text-gray-600 text-sm">
-        © 2024 Matthew Campbell | MyMealPlan.App. All rights reserved.
+        © 2024-2026 Matthew Campbell | MyMealPlan.App. All rights reserved.
       </p>
     </footer>
   );
