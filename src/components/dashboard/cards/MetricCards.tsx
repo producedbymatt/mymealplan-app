@@ -190,7 +190,7 @@ const MetricCards = ({
           </Button>
         </CardHeader>
         <CardContent className="relative z-10 p-0 mt-2">
-          <div className="text-2xl font-bold text-white">{formatValue(mostRecentWeight, " lbs")}</div>
+          <div className="text-2xl font-bold text-white">{isAuthenticated ? `${formatWeight(mostRecentWeight)} lbs` : "N/A"}</div>
           <p className="text-xs text-white/80 mt-1">
             Height: {isAuthenticated ? `${heightFeet}'${heightInches}"` : "N/A"}
           </p>
@@ -213,12 +213,12 @@ const MetricCards = ({
         </CardHeader>
         <CardContent className="relative z-10 p-0 mt-2">
           <div className="text-2xl font-bold text-white">
-            {formatValue(targetWeight, " lbs")}
+            {isAuthenticated ? `${formatWeight(targetWeight)} lbs` : "N/A"}
           </div>
           <p className="text-xs text-white/80 mt-1">
             {isAuthenticated 
               ? targetWeight 
-                ? `${Math.abs(mostRecentWeight - targetWeight)} lbs to go` 
+                ? `${formatWeight(Math.abs(mostRecentWeight - targetWeight))} lbs to go` 
                 : "Set a goal to track progress"
               : "Sign in to set goals"}
           </p>
@@ -245,7 +245,7 @@ const MetricCards = ({
               ? initialWeight 
                 ? (
                   <>
-                    {Math.abs(weightChange).toFixed(1)} lbs
+                    {formatWeight(Math.abs(weightChange))} lbs
                     {isWeightLoss ? (
                       <TrendingDown className="h-5 w-5 text-green-400" />
                     ) : (
