@@ -22,11 +22,11 @@ const WELCOME_MESSAGE = {
 };
 
 interface ChatWindowProps {
-  prefillInput?: string;
+  prefill?: { prompt: string; autoSend?: boolean; nonce: number };
   onPrefillConsumed?: () => void;
 }
 
-const ChatWindow = ({ prefillInput, onPrefillConsumed }: ChatWindowProps = {}) => {
+const ChatWindow = ({ prefill, onPrefillConsumed }: ChatWindowProps = {}) => {
   const [input, setInput] = useState('');
   const [showMealForm, setShowMealForm] = useState(false);
   const [mealToLog, setMealToLog] = useState<{ meal_name: string; calories: number; protein: number; carbs: number; sugars: number } | null>(null);
@@ -37,12 +37,6 @@ const ChatWindow = ({ prefillInput, onPrefillConsumed }: ChatWindowProps = {}) =
   const { messages, isLoading, sendMessage } = useChatOperations();
   const { addMeal } = useMealLogs(userId);
 
-  useEffect(() => {
-    if (prefillInput) {
-      setInput(prefillInput);
-      onPrefillConsumed?.();
-    }
-  }, [prefillInput, onPrefillConsumed]);
 
 
   useEffect(() => {
