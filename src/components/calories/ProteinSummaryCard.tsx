@@ -34,6 +34,12 @@ const ProteinSummaryCard = ({ todayProtein, proteinGoal }: ProteinSummaryCardPro
                 }}
               ></div>
             </div>
+            <p className="mt-2 text-sm font-semibold text-white">
+              Remaining: {Math.max(proteinGoal - todayProtein, 0)}g
+              {todayProtein > proteinGoal && (
+                <span className="text-green-300 ml-2">({todayProtein - proteinGoal}g over)</span>
+              )}
+            </p>
           </div>
         )}
       </CardContent>
