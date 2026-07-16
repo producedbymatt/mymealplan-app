@@ -55,7 +55,7 @@ const WeightProgressSummary = ({ entries, label }: WeightProgressSummaryProps) =
         <Button asChild variant="ghost" size="sm" className="text-white hover:bg-white/20">
           <Link to="/weight-tracking">
             <List className="mr-1 h-4 w-4" />
-            View All
+            View Progress
           </Link>
         </Button>
       </CardHeader>
