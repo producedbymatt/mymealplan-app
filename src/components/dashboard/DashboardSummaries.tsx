@@ -65,17 +65,8 @@ const DashboardSummaries = () => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <WeightProgressSummary entries={entries} label="All Time" />
-        <div className="flex justify-center -mt-2">
-          <Button asChild variant="secondary">
-            <Link to="/weight-tracking">
-              <Scale className="mr-2 h-4 w-4" />
-              Update Weight
-            </Link>
-          </Button>
-        </div>
-      </div>
+      <WeightProgressSummary entries={entries} label="All Time" />
+
 
       <div>
         <div className="grid gap-4 md:grid-cols-2">

@@ -4,12 +4,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
-import { RefreshCw, TrendingDown, TrendingUp } from "lucide-react";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Scale, Target } from "lucide-react";
 import { formatWeight } from "@/lib/utils";
+import WeightGoal from "@/components/WeightGoal";
 
 interface MetricCardsProps {
   mostRecentWeight: number;
@@ -28,166 +29,29 @@ const MetricCards = ({
   heightFeet,
   heightInches,
   targetWeight,
-  startingWeight,
   isAuthenticated = true,
 }: MetricCardsProps) => {
-  const [recommendedCalories, setRecommendedCalories] = useState<number | null>(null);
-  const [isRefreshingWeight, setIsRefreshingWeight] = useState(false);
-  const [isRefreshingTarget, setIsRefreshingTarget] = useState(false);
-  const [isRefreshingProgress, setIsRefreshingProgress] = useState(false);
-  const [isRefreshingCalories, setIsRefreshingCalories] = useState(false);
-  const [initialWeight, setInitialWeight] = useState<number | null>(null);
-
-  const fetchCalories = async () => {
-    if (!isAuthenticated) return;
-
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      console.log('Fetching calories for user:', user.id);
-      const { data, error } = await supabase
-        .from('user_metrics')
-        .select('recommended_calories')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .single();
-
-      if (error) {
-        console.error('Error fetching calories:', error);
-        return;
-      }
-
-      if (data) {
-        console.log('Fetched recommended calories:', data.recommended_calories);
-        setRecommendedCalories(data.recommended_calories);
-      }
-    } catch (err) {
-      console.error('Exception while fetching calories:', err);
-    }
-  };
-
-  const fetchInitialWeight = async () => {
-    if (!isAuthenticated) return;
-
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      // Get the first weight log entry (oldest)
-      const { data, error } = await supabase
-        .from('weight_logs')
-        .select('weight')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: true })
-        .limit(1)
-        .single();
-
-      if (error) {
-        console.error('Error fetching initial weight:', error);
-        return;
-      }
-
-      if (data) {
-        console.log('Fetched initial weight:', data.weight);
-        setInitialWeight(data.weight);
-      }
-    } catch (err) {
-      console.error('Exception while fetching initial weight:', err);
-    }
-  };
-
-  useEffect(() => {
-    fetchCalories();
-    fetchInitialWeight();
-
-    const channel = supabase
-      .channel('schema-db-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'user_metrics'
-        },
-        async (payload) => {
-          console.log('Received real-time update for user_metrics:', payload);
-          await fetchCalories();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [isAuthenticated]);
-
-  const handleRefresh = async (metric: 'weight' | 'target' | 'progress' | 'calories') => {
-    const setLoading = {
-      'weight': setIsRefreshingWeight,
-      'target': setIsRefreshingTarget,
-      'progress': setIsRefreshingProgress,
-      'calories': setIsRefreshingCalories
-    }[metric];
-
-    setLoading(true);
-    try {
-      switch (metric) {
-        case 'calories':
-          await fetchCalories();
-          toast.success('Calories refreshed');
-          break;
-        case 'progress':
-          await fetchInitialWeight();
-          toast.success('Progress refreshed');
-          break;
-        default:
-          toast.success(`${metric} refreshed`);
-          break;
-      }
-    } catch (error) {
-      console.error(`Error refreshing ${metric}:`, error);
-      toast.error(`Failed to refresh ${metric}`);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const calculateWeightChange = () => {
-    if (!initialWeight || !mostRecentWeight) return 0;
-    return mostRecentWeight - initialWeight;
-  };
-
-  const weightChange = calculateWeightChange();
-  const isWeightLoss = weightChange < 0;
-
-  const formatValue = (value: any, suffix: string = "") => {
-    if (!isAuthenticated) return "N/A";
-    return value ? `${value}${suffix}` : "Not Set";
-  };
-
-  const formatCalories = (calories: number | null) => {
-    if (!isAuthenticated) return "N/A";
-    if (!calories) return "Not Set";
-    return `${Math.round(calories)} cal`;
-  };
+  const [goalOpen, setGoalOpen] = useState(false);
 
   return (
     <div className="grid gap-4 md:grid-cols-2">
       <Card className="p-4 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-950/90 via-green-950/90 to-blue-950/90 animate-gradient-x" />
-        <CardHeader className="relative z-10 p-0 flex flex-row items-center justify-between">
+        <CardHeader className="relative z-10 p-0 flex flex-row items-center justify-between gap-2">
           <CardTitle className="text-white">Current Weight</CardTitle>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 text-white hover:text-white/80 hover:bg-blue-900 hover:border hover:border-white"
-            onClick={() => handleRefresh('weight')}
-            disabled={isRefreshingWeight}
-          >
-            <RefreshCw className={`h-4 w-4 ${isRefreshingWeight ? 'animate-spin' : ''}`} />
-          </Button>
+          {isAuthenticated && (
+            <Button
+              asChild
+              size="sm"
+              variant="secondary"
+              className="h-8"
+            >
+              <Link to="/weight-tracking">
+                <Scale className="mr-1 h-4 w-4" />
+                New Weight
+              </Link>
+            </Button>
+          )}
         </CardHeader>
         <CardContent className="relative z-10 p-0 mt-2">
           <div className="text-2xl font-bold text-white">{isAuthenticated ? `${formatWeight(mostRecentWeight)} lbs` : "N/A"}</div>
@@ -199,17 +63,24 @@ const MetricCards = ({
 
       <Card className="p-4 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-950/90 via-green-950/90 to-blue-950/90 animate-gradient-x" />
-        <CardHeader className="relative z-10 p-0 flex flex-row items-center justify-between">
+        <CardHeader className="relative z-10 p-0 flex flex-row items-center justify-between gap-2">
           <CardTitle className="text-white">Target Weight</CardTitle>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 text-white hover:text-white/80 hover:bg-blue-900 hover:border hover:border-white"
-            onClick={() => handleRefresh('target')}
-            disabled={isRefreshingTarget}
-          >
-            <RefreshCw className={`h-4 w-4 ${isRefreshingTarget ? 'animate-spin' : ''}`} />
-          </Button>
+          {isAuthenticated && (
+            <Dialog open={goalOpen} onOpenChange={setGoalOpen}>
+              <DialogTrigger asChild>
+                <Button size="sm" variant="secondary" className="h-8">
+                  <Target className="mr-1 h-4 w-4" />
+                  Edit Goal
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Update Weight Goal</DialogTitle>
+                </DialogHeader>
+                <WeightGoal onGoalSet={() => setGoalOpen(false)} />
+              </DialogContent>
+            </Dialog>
+          )}
         </CardHeader>
         <CardContent className="relative z-10 p-0 mt-2">
           <div className="text-2xl font-bold text-white">
