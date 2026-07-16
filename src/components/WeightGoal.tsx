@@ -202,12 +202,7 @@ const WeightGoal = ({ onGoalSet, collapsible = true }: WeightGoalProps) => {
           </CollapsibleContent>
         </Collapsible>
       ) : (
-        <>
-          <CardHeader className="pb-2">
-            <CardTitle>Update Weight Goal</CardTitle>
-          </CardHeader>
-          <CardContent>{formContent}</CardContent>
-        </>
+        <CardContent className="pt-6">{formContent}</CardContent>
       )}
     </Card>
   );
