@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/card";
 import BMISlider from "../BMISlider";
 import BMICategories from "../BMICategories";
+import { formatWeight } from "@/lib/utils";
 
 interface BMICardProps {
   bmi: number;
