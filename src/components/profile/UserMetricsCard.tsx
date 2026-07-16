@@ -62,7 +62,7 @@ const UserMetricsCard = ({ metrics, onMetricsUpdate }: UserMetricsCardProps) => 
       </CardHeader>
       <CardContent className="space-y-2">
         <p><strong>Height:</strong> {heightFeet}'{heightInches}"</p>
-        <p><strong>Current Weight:</strong> {metrics.current_weight} lbs</p>
+        <p><strong>Current Weight:</strong> {formatWeight(metrics.current_weight)} lbs</p>
         <p><strong>Gender:</strong> {capitalizeGender(metrics.gender)}</p>
       </CardContent>
     </Card>
