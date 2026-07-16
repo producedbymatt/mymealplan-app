@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/lib/supabase";
@@ -10,9 +10,10 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 
 interface WeightGoalProps {
   onGoalSet: (weight: number, days: number) => void;
+  collapsible?: boolean;
 }
 
-const WeightGoal = ({ onGoalSet }: WeightGoalProps) => {
+const WeightGoal = ({ onGoalSet, collapsible = true }: WeightGoalProps) => {
   const [targetWeight, setTargetWeight] = useState<string>("");
   const [targetDays, setTargetDays] = useState<string>("");
   const [lastUpdated, setLastUpdated] = useState<string>("");
@@ -141,62 +142,68 @@ const WeightGoal = ({ onGoalSet }: WeightGoalProps) => {
     }
   };
 
+  const formContent = (
+    <form onSubmit={setGoal} className="space-y-4">
+      <div>
+        <label htmlFor="targetWeight" className="block text-sm font-medium mb-1">
+          Target Weight (lbs)
+        </label>
+        <Input
+          id="targetWeight"
+          type="number"
+          value={targetWeight}
+          onChange={(e) => setTargetWeight(e.target.value)}
+          placeholder="Enter target weight"
+          required
+        />
+      </div>
+      <div>
+        <label htmlFor="targetDays" className="block text-sm font-medium mb-1">
+          Days to Achieve Goal
+        </label>
+        <Input
+          id="targetDays"
+          type="number"
+          value={targetDays}
+          onChange={(e) => setTargetDays(e.target.value)}
+          placeholder="Enter number of days"
+          required
+        />
+      </div>
+      <Button type="submit" className="w-full bg-gradient-to-r from-blue-950/90 to-green-950/90 hover:from-blue-950 hover:to-green-950" disabled={loading}>
+        {loading ? "Saving..." : "Set Goal"}
+      </Button>
+      {lastUpdated && (
+        <p className="text-sm text-muted-foreground text-center">
+          Last updated: {lastUpdated}
+        </p>
+      )}
+    </form>
+  );
+
   return (
     <Card>
-      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-        <div className="flex items-center justify-between p-6">
-          <CardTitle>Set Weight Goal</CardTitle>
-          <CollapsibleTrigger asChild>
-            <Button variant="ghost" size="sm" className="hover:bg-[#0EA5E9] hover:text-white">
-              {isOpen ? (
-                <ChevronUp className="h-4 w-4" />
-              ) : (
-                <ChevronDown className="h-4 w-4" />
-              )}
-            </Button>
-          </CollapsibleTrigger>
-        </div>
-        <CollapsibleContent>
-          <CardContent>
-            <form onSubmit={setGoal} className="space-y-4">
-              <div>
-                <label htmlFor="targetWeight" className="block text-sm font-medium mb-1">
-                  Target Weight (lbs)
-                </label>
-                <Input
-                  id="targetWeight"
-                  type="number"
-                  value={targetWeight}
-                  onChange={(e) => setTargetWeight(e.target.value)}
-                  placeholder="Enter target weight"
-                  required
-                />
-              </div>
-              <div>
-                <label htmlFor="targetDays" className="block text-sm font-medium mb-1">
-                  Days to Achieve Goal
-                </label>
-                <Input
-                  id="targetDays"
-                  type="number"
-                  value={targetDays}
-                  onChange={(e) => setTargetDays(e.target.value)}
-                  placeholder="Enter number of days"
-                  required
-                />
-              </div>
-              <Button type="submit" className="w-full bg-gradient-to-r from-blue-950/90 to-green-950/90 hover:from-blue-950 hover:to-green-950" disabled={loading}>
-                {loading ? "Saving..." : "Set Goal"}
+      {collapsible ? (
+        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+          <div className="flex items-center justify-between p-6">
+            <CardTitle>Set Weight Goal</CardTitle>
+            <CollapsibleTrigger asChild>
+              <Button variant="ghost" size="sm" className="hover:bg-[#0EA5E9] hover:text-white">
+                {isOpen ? (
+                  <ChevronUp className="h-4 w-4" />
+                ) : (
+                  <ChevronDown className="h-4 w-4" />
+                )}
               </Button>
-              {lastUpdated && (
-                <p className="text-sm text-muted-foreground text-center">
-                  Last updated: {lastUpdated}
-                </p>
-              )}
-            </form>
-          </CardContent>
-        </CollapsibleContent>
-      </Collapsible>
+            </CollapsibleTrigger>
+          </div>
+          <CollapsibleContent>
+            <CardContent>{formContent}</CardContent>
+          </CollapsibleContent>
+        </Collapsible>
+      ) : (
+        <CardContent className="pt-6">{formContent}</CardContent>
+      )}
     </Card>
   );
 };
