@@ -10,9 +10,10 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 
 interface WeightGoalProps {
   onGoalSet: (weight: number, days: number) => void;
+  collapsible?: boolean;
 }
 
-const WeightGoal = ({ onGoalSet }: WeightGoalProps) => {
+const WeightGoal = ({ onGoalSet, collapsible = true }: WeightGoalProps) => {
   const [targetWeight, setTargetWeight] = useState<string>("");
   const [targetDays, setTargetDays] = useState<string>("");
   const [lastUpdated, setLastUpdated] = useState<string>("");
