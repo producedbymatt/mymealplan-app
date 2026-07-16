@@ -1,3 +1,5 @@
+import { formatWeight } from "@/lib/utils";
+
 interface CalorieResultsProps {
   dailyCalories: number;
   minProtein: number;
