@@ -1,3 +1,5 @@
+import { formatWeight } from "@/lib/utils";
+
 interface CalorieResultsProps {
   dailyCalories: number;
   minProtein: number;
@@ -70,8 +72,8 @@ const CalorieResults = ({
 
       <div className="bg-gradient-to-r from-blue-950/90 to-green-950/90 p-4 rounded-lg">
         <p className="text-sm text-center text-white">
-          To reach your goal weight of {targetWeight} lbs in {targetDays} days, you should aim to change approximately{" "}
-          <span className="font-semibold">{weeklyChange.toFixed(1)} lbs per week</span>
+          To reach your goal weight of {formatWeight(targetWeight)} lbs in {targetDays} days, you should aim to change approximately{" "}
+          <span className="font-semibold">{formatWeight(weeklyChange)} lbs per week</span>
         </p>
         <p className={`text-sm text-center mt-2 ${warningColor}`}>
           {warningMessage}

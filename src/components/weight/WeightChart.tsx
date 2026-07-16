@@ -2,6 +2,7 @@ import { WeightEntry } from "@/hooks/useWeightLogs";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { format } from "date-fns";
 import { Card } from "@/components/ui/card";
+import { formatWeight } from "@/lib/utils";
 
 interface WeightChartProps {
   entries: WeightEntry[];
@@ -13,7 +14,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
       <Card className="p-2 bg-blue-950 shadow-lg rounded-lg">
         <div className="text-center text-sm">
           <div className="font-semibold text-white">{label}</div>
-          <div className="text-white">{payload[0].value} lbs</div>
+          <div className="text-white">{formatWeight(payload[0].value)} lbs</div>
         </div>
       </Card>
     );

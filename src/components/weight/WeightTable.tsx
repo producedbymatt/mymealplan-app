@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
+import { formatWeight } from "@/lib/utils";
 
 interface WeightTableProps {
   entries: WeightEntry[];
@@ -77,7 +78,7 @@ const WeightTable = ({ entries, showMore, onToggleShowMore, onEdit, onDelete }: 
                     className="w-24"
                   />
                 ) : (
-                  entry.weight
+                  formatWeight(entry.weight)
                 )}
               </TableCell>
               <TableCell className="text-right rounded-r-lg">

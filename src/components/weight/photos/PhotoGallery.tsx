@@ -12,7 +12,7 @@ import {
   type CarouselApi,
 } from "@/components/ui/carousel";
 import { useEffect, useMemo, useState } from "react";
-import { cn } from "@/lib/utils";
+import { cn, formatWeight } from "@/lib/utils";
 
 interface Photo {
   id: string;
@@ -128,7 +128,7 @@ const EntryCard = ({
             {format(new Date(entry.created_at), "PPp")}
           </p>
           {weight !== null && (
-            <p className="text-sm font-medium">{weight} lbs</p>
+            <p className="text-sm font-medium">{formatWeight(weight)} lbs</p>
           )}
         </div>
         <label htmlFor={inputId}>
