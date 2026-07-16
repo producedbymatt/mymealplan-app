@@ -43,8 +43,8 @@ const MetricCards = ({
             <Button
               asChild
               size="sm"
-              variant="secondary"
-              className="h-8"
+              variant="ghost"
+              className="text-white hover:bg-white/20"
             >
               <Link to="/weight-tracking">
                 <Scale className="mr-1 h-4 w-4" />
