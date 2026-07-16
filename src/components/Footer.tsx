@@ -5,21 +5,21 @@ const Footer = () => {
 
   useEffect(() => {
     // Initial dark mode state
-    setIsDarkMode(document.documentElement.classList.contains('dark'));
+    setIsDarkMode(document.documentElement.classList.contains("dark"));
 
     // Watch for class changes on html element
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
-        if (mutation.attributeName === 'class') {
+        if (mutation.attributeName === "class") {
           const htmlElement = document.documentElement;
-          setIsDarkMode(htmlElement.classList.contains('dark'));
+          setIsDarkMode(htmlElement.classList.contains("dark"));
         }
       });
     });
 
     observer.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ['class'],
+      attributeFilter: ["class"],
     });
 
     return () => observer.disconnect();
@@ -27,16 +27,17 @@ const Footer = () => {
 
   return (
     <footer className="mt-auto py-6 text-center mx-8">
-      <img 
-        src={isDarkMode 
-          ? "/lovable-uploads/f6662a44-ab76-41ca-890b-b9da00a755af.png"  // White logo for dark mode
-          : "/lovable-uploads/67003c76-1908-4b2f-93d3-01ea4a4cf510.png"  // Original logo for light mode
+      <img
+        src={
+          isDarkMode
+            ? "/lovable-uploads/f6662a44-ab76-41ca-890b-b9da00a755af.png" // White logo for dark mode
+            : "/lovable-uploads/67003c76-1908-4b2f-93d3-01ea4a4cf510.png" // Original logo for light mode
         }
-        alt="MyMealPlan Logo" 
+        alt="MyMealPlan Logo"
         className="mx-auto mb-4 h-12 w-auto"
       />
       <p className="text-gray-600 text-sm">
-        © 2024-2026 Matthew Campbell | MyMealPlan.App. All rights reserved.
+        Support: Matt@CampbellMultimedia.com | © 2024-2026 Matthew Campbell | MyMealPlan.App. All rights reserved.
       </p>
     </footer>
   );
