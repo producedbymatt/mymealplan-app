@@ -1,5 +1,5 @@
 import React from "react";
-import { Plus } from "lucide-react";
+import { Plus, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -82,6 +82,28 @@ const RecipeDetails = ({ meal }: RecipeDetailsProps) => {
             <li key={i}>{instruction}</li>
           ))}
         </ol>
+      </div>
+
+      <div className="mt-4 p-3 rounded-lg border border-white/30 bg-white/10 flex items-center justify-between gap-3">
+        <p className="text-sm">Need help or want to edit this recipe?</p>
+        <Button
+          variant="ghost"
+          onClick={() => {
+            const prompt =
+              `I'm looking at this recipe and could use your help:\n\n` +
+              `Recipe: ${meal.name}\n` +
+              `Calories: ${meal.calories} | Protein: ${meal.protein ?? 0}g | Carbs: ${meal.carbs ?? 0}g | Fat: ${meal.fat ?? 0}g | Sugars: ${meal.sugars ?? 0}g\n` +
+              `Prep: ${meal.recipe.prepTime} | Cook: ${meal.recipe.cookTime}\n\n` +
+              `Ingredients:\n${meal.recipe.ingredients.map((i) => `- ${i}`).join('\n')}\n\n` +
+              `Instructions:\n${meal.recipe.instructions.map((s, i) => `${i + 1}. ${s}`).join('\n')}\n\n` +
+              `Can you help me with a variation or clearer instructions?`;
+            window.dispatchEvent(new CustomEvent('open-coach-chat', { detail: { prompt } }));
+          }}
+          className="hover:bg-white/20 flex items-center gap-2 border border-white shrink-0"
+        >
+          <Sparkles className="h-4 w-4" />
+          <span>Ask Coach</span>
+        </Button>
       </div>
 
       <Dialog open={showMealForm} onOpenChange={setShowMealForm}>

@@ -1,10 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { MessageCircle, X } from "lucide-react";
 import ChatWindow from './ChatWindow';
 
 const ChatBubble = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [prefill, setPrefill] = useState<string | undefined>();
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent<{ prompt?: string }>).detail;
+      setIsOpen(true);
+      if (detail?.prompt) setPrefill(detail.prompt);
+    };
+    window.addEventListener('open-coach-chat', handler);
+    return () => window.removeEventListener('open-coach-chat', handler);
+  }, []);
 
   return (
     <div className="fixed bottom-4 right-4 z-50">
@@ -21,7 +32,7 @@ const ChatBubble = () => {
               <X className="h-4 w-4" />
             </Button>
           </div>
-          <ChatWindow />
+          <ChatWindow prefillInput={prefill} onPrefillConsumed={() => setPrefill(undefined)} />
         </div>
       ) : (
         <Button
