@@ -99,6 +99,7 @@ const MealTimeSlot = ({
           />
         ))}
       </div>
+      {/* Hidden: Show All Options toggle — retained for future re-enable
       {!showFavoritesOnly && (
         <div className="mt-4">
           <Button
@@ -121,6 +122,7 @@ const MealTimeSlot = ({
           </Button>
         </div>
       )}
+      */}
       {!isLast && <Separator className="mt-6" />}
     </div>
   );
