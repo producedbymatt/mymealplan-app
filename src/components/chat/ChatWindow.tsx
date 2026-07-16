@@ -21,7 +21,12 @@ const WELCOME_MESSAGE = {
            "Remember, every small step counts—let's start this journey together! 🚀"
 };
 
-const ChatWindow = () => {
+interface ChatWindowProps {
+  prefillInput?: string;
+  onPrefillConsumed?: () => void;
+}
+
+const ChatWindow = ({ prefillInput, onPrefillConsumed }: ChatWindowProps = {}) => {
   const [input, setInput] = useState('');
   const [showMealForm, setShowMealForm] = useState(false);
   const [mealToLog, setMealToLog] = useState<{ meal_name: string; calories: number; protein: number; carbs: number; sugars: number } | null>(null);
@@ -31,6 +36,14 @@ const ChatWindow = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { messages, isLoading, sendMessage } = useChatOperations();
   const { addMeal } = useMealLogs(userId);
+
+  useEffect(() => {
+    if (prefillInput) {
+      setInput(prefillInput);
+      onPrefillConsumed?.();
+    }
+  }, [prefillInput, onPrefillConsumed]);
+
 
   useEffect(() => {
     const getSession = async () => {
