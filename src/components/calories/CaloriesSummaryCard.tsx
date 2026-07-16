@@ -6,9 +6,10 @@ import { UtensilsCrossed } from "lucide-react";
 interface CaloriesSummaryCardProps {
   todayCalories: number;
   recommendedCalories: number | null;
+  showLogMeal?: boolean;
 }
 
-const CaloriesSummaryCard = ({ todayCalories, recommendedCalories }: CaloriesSummaryCardProps) => {
+const CaloriesSummaryCard = ({ todayCalories, recommendedCalories, showLogMeal = true }: CaloriesSummaryCardProps) => {
   return (
     <Card className="relative overflow-hidden">
       {/* Animated gradient background */}
@@ -17,12 +18,14 @@ const CaloriesSummaryCard = ({ todayCalories, recommendedCalories }: CaloriesSum
       {/* Content */}
       <CardHeader className="relative z-10 flex flex-row items-center justify-between">
         <CardTitle className="text-white">Today's Calories</CardTitle>
-        <Button asChild variant="ghost" size="sm" className="text-white hover:bg-white/20">
-          <Link to="/calorie-logger">
-            <UtensilsCrossed className="mr-2 h-4 w-4" />
-            Log Meal
-          </Link>
-        </Button>
+        {showLogMeal && (
+          <Button asChild variant="ghost" size="sm" className="text-white hover:bg-white/20">
+            <Link to="/calorie-logger">
+              <UtensilsCrossed className="mr-2 h-4 w-4" />
+              Log Meal
+            </Link>
+          </Button>
+        )}
       </CardHeader>
       <CardContent className="relative z-10">
         <div className="flex justify-between items-center">

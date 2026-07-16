@@ -94,6 +94,7 @@ const CalorieLogger = () => {
             <CaloriesSummaryCard
               todayCalories={todayCalories}
               recommendedCalories={recommendedCalories}
+              showLogMeal={false}
             />
             <ProteinSummaryCard
               todayProtein={todayProtein}
