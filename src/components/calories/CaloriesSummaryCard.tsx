@@ -15,8 +15,14 @@ const CaloriesSummaryCard = ({ todayCalories, recommendedCalories }: CaloriesSum
       <div className="absolute inset-0 bg-gradient-to-r from-blue-950/90 via-green-950/90 to-blue-950/90 animate-gradient-x" />
       
       {/* Content */}
-      <CardHeader className="relative z-10">
+      <CardHeader className="relative z-10 flex flex-row items-center justify-between">
         <CardTitle className="text-white">Today's Calories</CardTitle>
+        <Button asChild variant="ghost" size="sm" className="text-white hover:bg-white/20">
+          <Link to="/calorie-logger">
+            <UtensilsCrossed className="mr-2 h-4 w-4" />
+            Log Meal
+          </Link>
+        </Button>
       </CardHeader>
       <CardContent className="relative z-10">
         <div className="flex justify-between items-center">
