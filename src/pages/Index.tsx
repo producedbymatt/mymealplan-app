@@ -182,17 +182,19 @@ const Index = () => {
                 />
               </div>
             )}
-            <div className="w-full">
-              <WeightGoal
-                onGoalSet={(weight, days) => {
-                  setUserMetrics(prev => ({
-                    ...prev,
-                    targetWeight: weight,
-                    targetDays: days
-                  }));
-                }}
-              />
-            </div>
+            {(!hasMetrics || !userMetrics.targetWeight) && (
+              <div className="w-full">
+                <WeightGoal
+                  onGoalSet={(weight, days) => {
+                    setUserMetrics(prev => ({
+                      ...prev,
+                      targetWeight: weight,
+                      targetDays: days
+                    }));
+                  }}
+                />
+              </div>
+            )}
           </div>
 
           {hasMetrics && (
