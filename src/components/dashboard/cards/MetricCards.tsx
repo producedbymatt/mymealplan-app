@@ -43,8 +43,8 @@ const MetricCards = ({
             <Button
               asChild
               size="sm"
-              variant="secondary"
-              className="h-8"
+              variant="ghost"
+              className="text-white hover:bg-white/20"
             >
               <Link to="/weight-tracking">
                 <Scale className="mr-1 h-4 w-4" />
@@ -68,7 +68,7 @@ const MetricCards = ({
           {isAuthenticated && (
             <Dialog open={goalOpen} onOpenChange={setGoalOpen}>
               <DialogTrigger asChild>
-                <Button size="sm" variant="secondary" className="h-8">
+                <Button size="sm" variant="ghost" className="text-white hover:bg-white/20">
                   <Target className="mr-1 h-4 w-4" />
                   Edit Goal
                 </Button>
