@@ -166,20 +166,22 @@ const Index = () => {
         />
 
         <div className="container mx-auto px-4 space-y-8 flex-grow">
-          {/* Two-column layout for BMI Calculator and Weight Goal */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-            <div className="w-full">
-              <BMICalculator
-                onBMICalculated={(calculatedBMI) => setBmi(calculatedBMI)}
-                onMetricsUpdate={(height, weight) => {
-                  setUserMetrics(prev => ({
-                    ...prev,
-                    height,
-                    currentWeight: weight
-                  }));
-                }}
-              />
-            </div>
+          {/* BMI Calculator and Weight Goal layout */}
+          <div className={`grid grid-cols-1 ${!hasMetrics ? 'md:grid-cols-2' : ''} gap-8 mb-8`}>
+            {!hasMetrics && (
+              <div className="w-full">
+                <BMICalculator
+                  onBMICalculated={(calculatedBMI) => setBmi(calculatedBMI)}
+                  onMetricsUpdate={(height, weight) => {
+                    setUserMetrics(prev => ({
+                      ...prev,
+                      height,
+                      currentWeight: weight
+                    }));
+                  }}
+                />
+              </div>
+            )}
             <div className="w-full">
               <WeightGoal
                 onGoalSet={(weight, days) => {
