@@ -5,11 +5,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
-import { RefreshCw, TrendingDown, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { formatWeight } from "@/lib/utils";
+import WeightGoal from "@/components/WeightGoal";
+
 
 interface MetricCardsProps {
   mostRecentWeight: number;
