@@ -1,7 +1,9 @@
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { WeightEntry } from "@/hooks/useWeightLogs";
 import { formatWeight } from "@/lib/utils";
-import { TrendingDown, TrendingUp, Minus } from "lucide-react";
+import { TrendingDown, TrendingUp, Minus, List } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface WeightProgressSummaryProps {
   entries: WeightEntry[];
@@ -48,12 +50,18 @@ const WeightProgressSummary = ({ entries, label }: WeightProgressSummaryProps) =
 
   return (
     <Card className="mb-6 bg-gradient-to-r from-blue-950/90 to-green-950/90 border-0">
-      <CardContent className="p-6">
+      <CardHeader className="relative z-10 flex flex-row items-center justify-between p-6 pb-0">
+        <CardTitle className="text-white text-base">{label} Weight Progress</CardTitle>
+        <Button asChild variant="ghost" size="sm" className="text-white hover:bg-white/20">
+          <Link to="/weight-tracking">
+            <List className="mr-1 h-4 w-4" />
+            View All
+          </Link>
+        </Button>
+      </CardHeader>
+      <CardContent className="p-6 pt-2">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="text-center sm:text-left">
-            <p className="text-white/70 text-sm font-medium uppercase tracking-wide">
-              {label} Weight Progress
-            </p>
             <div className="flex items-center justify-center sm:justify-start gap-2 mt-1">
               {icon}
               <p className={`text-3xl font-bold ${colorClass}`}>
