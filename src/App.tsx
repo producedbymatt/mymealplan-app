@@ -9,6 +9,7 @@ import CalorieLogger from "./pages/CalorieLogger";
 import WeightTracking from "./pages/WeightTracking";
 import Profile from "./pages/Profile";
 import AuthOverlay from "./components/auth/AuthOverlay";
+import ScrollToTop from "./components/ScrollToTop";
 import { supabase } from "@/lib/supabase";
 import Navigation from "./components/Navigation";
 import ChatBubble from "./components/chat/ChatBubble";
@@ -129,6 +130,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<Layout><Index /></Layout>} />
           <Route
