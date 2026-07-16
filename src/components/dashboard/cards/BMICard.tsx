@@ -108,7 +108,7 @@ const BMICard = ({
           </p>
           <p className="text-xs text-white mt-1">
             {isAuthenticated 
-              ? `Based on current weight: ${mostRecentWeight} lbs, height: ${heightFeet}'${heightInches}"`
+              ? `Based on current weight: ${formatWeight(mostRecentWeight)} lbs, height: ${heightFeet}'${heightInches}"`
               : "Track your BMI and get personalized insights"}
           </p>
         </div>
