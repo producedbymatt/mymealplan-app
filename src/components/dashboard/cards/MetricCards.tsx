@@ -33,128 +33,39 @@ const MetricCards = ({
   startingWeight,
   isAuthenticated = true,
 }: MetricCardsProps) => {
-  const [recommendedCalories, setRecommendedCalories] = useState<number | null>(null);
-  const [isRefreshingWeight, setIsRefreshingWeight] = useState(false);
-  const [isRefreshingTarget, setIsRefreshingTarget] = useState(false);
-  const [isRefreshingProgress, setIsRefreshingProgress] = useState(false);
-  const [isRefreshingCalories, setIsRefreshingCalories] = useState(false);
-  const [initialWeight, setInitialWeight] = useState<number | null>(null);
 
   const fetchCalories = async () => {
     if (!isAuthenticated) return;
-
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
-
-      console.log('Fetching calories for user:', user.id);
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from('user_metrics')
         .select('recommended_calories')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
         .limit(1)
-        .single();
-
-      if (error) {
-        console.error('Error fetching calories:', error);
-        return;
-      }
-
-      if (data) {
-        console.log('Fetched recommended calories:', data.recommended_calories);
-        setRecommendedCalories(data.recommended_calories);
-      }
+        .maybeSingle();
+      if (data) setRecommendedCalories(data.recommended_calories);
     } catch (err) {
       console.error('Exception while fetching calories:', err);
     }
   };
 
-  const fetchInitialWeight = async () => {
-    if (!isAuthenticated) return;
-
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      // Get the first weight log entry (oldest)
-      const { data, error } = await supabase
-        .from('weight_logs')
-        .select('weight')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: true })
-        .limit(1)
-        .single();
-
-      if (error) {
-        console.error('Error fetching initial weight:', error);
-        return;
-      }
-
-      if (data) {
-        console.log('Fetched initial weight:', data.weight);
-        setInitialWeight(data.weight);
-      }
-    } catch (err) {
-      console.error('Exception while fetching initial weight:', err);
-    }
-  };
-
   useEffect(() => {
     fetchCalories();
-    fetchInitialWeight();
-
     const channel = supabase
       .channel('schema-db-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'user_metrics'
-        },
-        async (payload) => {
-          console.log('Received real-time update for user_metrics:', payload);
-          await fetchCalories();
-        }
-      )
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'user_metrics' }, () => {
+        fetchCalories();
+      })
       .subscribe();
-
     return () => {
       supabase.removeChannel(channel);
     };
   }, [isAuthenticated]);
 
-  const handleRefresh = async (metric: 'weight' | 'target' | 'progress' | 'calories') => {
-    const setLoading = {
-      'weight': setIsRefreshingWeight,
-      'target': setIsRefreshingTarget,
-      'progress': setIsRefreshingProgress,
-      'calories': setIsRefreshingCalories
-    }[metric];
 
-    setLoading(true);
-    try {
-      switch (metric) {
-        case 'calories':
-          await fetchCalories();
-          toast.success('Calories refreshed');
-          break;
-        case 'progress':
-          await fetchInitialWeight();
-          toast.success('Progress refreshed');
-          break;
-        default:
-          toast.success(`${metric} refreshed`);
-          break;
-      }
-    } catch (error) {
-      console.error(`Error refreshing ${metric}:`, error);
-      toast.error(`Failed to refresh ${metric}`);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const calculateWeightChange = () => {
     if (!initialWeight || !mostRecentWeight) return 0;
