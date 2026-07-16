@@ -9,6 +9,7 @@ import { supabase } from "@/lib/supabase";
 import { RefreshCw, TrendingDown, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { formatWeight } from "@/lib/utils";
 
 interface MetricCardsProps {
   mostRecentWeight: number;
