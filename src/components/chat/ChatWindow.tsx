@@ -47,6 +47,33 @@ const ChatWindow = ({ prefill, onPrefillConsumed }: ChatWindowProps = {}) => {
     getSession();
   }, []);
 
+  const lastPrefillNonce = useRef<number | undefined>(undefined);
+  useEffect(() => {
+    if (!prefill || lastPrefillNonce.current === prefill.nonce) return;
+    lastPrefillNonce.current = prefill.nonce;
+
+    if (prefill.autoSend) {
+      const userMessage = prefill.prompt.trim();
+      if (!userMessage) return;
+      setLocalMessages(prev => [...prev, { role: 'user', content: userMessage }]);
+      if (userId) {
+        sendMessage(userMessage);
+      } else {
+        setLocalMessages(prev => [
+          ...prev,
+          {
+            role: 'assistant',
+            content: "To continue our conversation and get personalized help, please sign in or create an account. 🔐",
+          },
+        ]);
+      }
+      onPrefillConsumed?.();
+    } else {
+      setInput(prefill.prompt);
+      onPrefillConsumed?.();
+    }
+  }, [prefill, userId, sendMessage, onPrefillConsumed]);
+
   // Update local messages when the server messages change, but only for authenticated users
   useEffect(() => {
     if (userId && messages.length > 0) {
