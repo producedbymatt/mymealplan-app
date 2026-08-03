@@ -208,11 +208,11 @@ export const MealForm = ({ onSubmit, initialMeal, onCancel, submitButtonText }: 
           )}
         </div>
         {showSuggestions && filteredSuggestions.length > 0 && (
-          <div className="absolute z-10 w-full mt-1 bg-popover border rounded-md shadow-lg max-h-60 overflow-auto">
+          <div className="absolute z-10 w-full mt-1 bg-background text-foreground border border-border rounded-md shadow-lg max-h-60 overflow-auto">
             {filteredSuggestions.map((suggestion, index) => (
               <div
                 key={suggestion.id}
-                className="flex items-center justify-between px-1 hover:bg-accent"
+                className="flex items-center justify-between px-1 bg-background hover:bg-accent text-foreground"
               >
                 <button
                   type="button"
