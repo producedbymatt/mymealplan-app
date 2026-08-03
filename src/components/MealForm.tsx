@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -150,6 +150,37 @@ export const MealForm = ({ onSubmit, initialMeal, onCancel, submitButtonText }: 
     }
   };
 
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [suggestionFilter, setSuggestionFilter] = useState("");
+
+  const filteredSuggestions = useMemo(() => {
+    if (!suggestionFilter.trim()) return previousMeals.slice(0, 6);
+    const term = suggestionFilter.toLowerCase();
+    return previousMeals.filter(m =>
+      m.meal_name.toLowerCase().includes(term)
+    ).slice(0, 6);
+  }, [previousMeals, suggestionFilter]);
+
+  const handleMealNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setMeal({ ...meal, meal_name: value });
+    setSuggestionFilter(value);
+    setShowSuggestions(true);
+  };
+
+  const handleSuggestionSelect = (selected: MealLog) => {
+    setMeal({
+      meal_name: selected.meal_name,
+      calories: selected.calories.toString(),
+      protein: (selected.protein ?? 0).toString(),
+      carbs: (selected.carbs ?? 0).toString(),
+      sugars: (selected.sugars ?? 0).toString(),
+      fat: (selected.fat ?? 0).toString(),
+    });
+    setSuggestionFilter(selected.meal_name);
+    setShowSuggestions(false);
+  };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       {!initialMeal && previousMeals.length > 0 && (
@@ -188,14 +219,35 @@ export const MealForm = ({ onSubmit, initialMeal, onCancel, submitButtonText }: 
           </Select>
         </div>
       )}
-      <div className="space-y-1">
+      <div className="space-y-1 relative">
         <Label htmlFor="meal_name">Meal name</Label>
         <Input
           id="meal_name"
-          placeholder="Meal name"
+          placeholder="Start typing a meal name..."
           value={meal.meal_name}
-          onChange={(e) => setMeal({ ...meal, meal_name: e.target.value })}
+          onChange={handleMealNameChange}
+          onFocus={() => setShowSuggestions(true)}
+          onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
+          autoComplete="off"
         />
+        {showSuggestions && filteredSuggestions.length > 0 && (
+          <div className="absolute z-10 w-full mt-1 bg-popover border rounded-md shadow-lg max-h-60 overflow-auto">
+            {filteredSuggestions.map((suggestion) => (
+              <button
+                key={suggestion.id}
+                type="button"
+                className="w-full text-left px-3 py-2 hover:bg-accent hover:text-accent-foreground text-sm flex justify-between items-center"
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => handleSuggestionSelect(suggestion)}
+              >
+                <span className="truncate">{suggestion.meal_name}</span>
+                <span className="text-xs text-muted-foreground shrink-0 ml-2">
+                  {suggestion.calories} cal
+                </span>
+              </button>
+            ))}
+          </div>
+        )}
       </div>
       <div className="space-y-1">
         <Label htmlFor="calories">Calories</Label>
