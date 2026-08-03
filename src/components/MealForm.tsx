@@ -4,14 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { MealLog, MealInput } from "@/hooks/useMealLogs";
 import { Badge } from "@/components/ui/badge";
-import { Trash2 } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Trash2, ChevronDown } from "lucide-react";
+
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 
@@ -183,72 +177,81 @@ export const MealForm = ({ onSubmit, initialMeal, onCancel, submitButtonText }: 
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      {!initialMeal && previousMeals.length > 0 && (
-        <div>
-          <Select onValueChange={handlePreviousMealSelect}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select a previous meal" />
-            </SelectTrigger>
-            <SelectContent>
-              {previousMeals.map((prevMeal, index) => (
-                <SelectItem
-                  key={prevMeal.id}
-                  value={prevMeal.id}
-                  className="hover:bg-[#0EA5E9]/50 hover:text-white data-[highlighted]:bg-[#0EA5E9]/50 data-[highlighted]:text-white flex justify-between items-center pr-2"
-                >
-                  <div className="flex items-center gap-2 flex-1 min-w-0">
-                    <span className="truncate">
-                      {prevMeal.meal_name} ({prevMeal.calories} cal)
-                    </span>
-                    {index === 0 && (
-                      <Badge variant="secondary" className="ml-2 shrink-0">Recent</Badge>
-                    )}
-                  </div>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="h-6 w-6 shrink-0 ml-2"
-                    onClick={(e) => handleDeleteMeal(prevMeal.id, e)}
-                  >
-                    <Trash2 className="h-4 w-4 text-red-500" />
-                  </Button>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      )}
       <div className="space-y-1 relative">
         <Label htmlFor="meal_name">Meal name</Label>
-        <Input
-          id="meal_name"
-          placeholder="Start typing a meal name..."
-          value={meal.meal_name}
-          onChange={handleMealNameChange}
-          onFocus={() => setShowSuggestions(true)}
-          onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
-          autoComplete="off"
-        />
+        <div className="relative">
+          <Input
+            id="meal_name"
+            placeholder="Type a meal name or pick a saved meal"
+            value={meal.meal_name}
+            onChange={handleMealNameChange}
+            onFocus={() => setShowSuggestions(true)}
+            onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
+            autoComplete="off"
+            className="pr-9"
+          />
+          {!initialMeal && previousMeals.length > 0 && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="absolute right-0 top-0 h-full w-9 text-muted-foreground"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => {
+                setSuggestionFilter("");
+                setShowSuggestions((prev) => !prev);
+              }}
+              aria-label="Show saved meals"
+            >
+              <ChevronDown className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
         {showSuggestions && filteredSuggestions.length > 0 && (
           <div className="absolute z-10 w-full mt-1 bg-popover border rounded-md shadow-lg max-h-60 overflow-auto">
-            {filteredSuggestions.map((suggestion) => (
-              <button
+            {filteredSuggestions.map((suggestion, index) => (
+              <div
                 key={suggestion.id}
-                type="button"
-                className="w-full text-left px-3 py-2 hover:bg-accent hover:text-accent-foreground text-sm flex justify-between items-center"
-                onMouseDown={(e) => e.preventDefault()}
-                onClick={() => handleSuggestionSelect(suggestion)}
+                className="flex items-center justify-between px-1 hover:bg-accent"
               >
-                <span className="truncate">{suggestion.meal_name}</span>
-                <span className="text-xs text-muted-foreground shrink-0 ml-2">
-                  {suggestion.calories} cal
-                </span>
-              </button>
+                <button
+                  type="button"
+                  className="flex-1 text-left px-2 py-2 text-sm flex items-center gap-2 min-w-0"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => handleSuggestionSelect(suggestion)}
+                >
+                  <span className="truncate">{suggestion.meal_name}</span>
+                  {index === 0 && !suggestionFilter.trim() && (
+                    <Badge variant="secondary" className="shrink-0">Recent</Badge>
+                  )}
+                  <span className="text-xs text-muted-foreground shrink-0 ml-auto">
+                    {suggestion.calories} cal
+                  </span>
+                </button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="h-6 w-6 shrink-0"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={(e) => handleDeleteMeal(suggestion.id, e)}
+                >
+                  <Trash2 className="h-4 w-4 text-red-500" />
+                </Button>
+              </div>
             ))}
           </div>
         )}
+        {!initialMeal && meal.meal_name.trim() &&
+          !previousMeals.some(
+            (m) => m.meal_name.toLowerCase() === meal.meal_name.trim().toLowerCase()
+          ) && (
+            <p className="text-xs text-muted-foreground">
+              New meal — it'll be saved to your list when you log it.
+            </p>
+          )}
       </div>
+
       <div className="space-y-1">
         <Label htmlFor="calories">Calories</Label>
         <Input
